@@ -318,7 +318,7 @@ class PlayState extends MusicBeatState
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('data/${SONG.song.toLowerCase()}/$x')));
 		var globalScripts = Paths.scriptDir();
-		for (x in globalScripts) scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('data/scripts/$x')));
+		for (x in globalScripts) scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
 		for (k => v in scripts) HFunk.loadScript(k, v);
 
 		HFunk.doDaCallback("onCreate", []);
