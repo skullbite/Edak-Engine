@@ -46,4 +46,11 @@ class CoolUtil
 		}
 		return dumbArray;
 	}
+	
+	public static function msToTimestamp(ms:Float) {
+		var seconds = Math.round(ms) / 1000;
+		var minutesLeft = Std.string(seconds / 60).split(".")[0];
+		var secondsLeft = Std.string(seconds % 60).split(".")[0];
+        return '${minutesLeft}:${(secondsLeft.length == 1 ? "0" : "") + secondsLeft}';
+	}
 }

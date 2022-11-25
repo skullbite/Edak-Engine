@@ -1,5 +1,6 @@
 package;
 
+import openfl.filesystem.File;
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
@@ -16,7 +17,7 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	static function getPath(file:String, type:AssetType, library:Null<String>)
+	static public function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
@@ -53,6 +54,14 @@ class Paths
 	inline static public function file(file:String, type:AssetType = TEXT, ?library:String)
 	{
 		return getPath(file, type, library);
+	}
+
+	inline static public function songDataDir(key:String) {
+		return File.applicationDirectory.resolvePath('assets/data/$key').getDirectoryListing().map(d -> d.name);
+	}
+	
+	inline static public function scriptDir() {
+		return File.applicationDirectory.resolvePath('assets/scripts').getDirectoryListing().map(d -> d.name);
 	}
 
 	inline static public function lua(key:String,?library:String)
@@ -123,5 +132,23 @@ class Paths
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+	}
+}
+
+class CharacterPaths {
+	var curChar:String = "";
+	public function new(curChar) {
+		this.curChar = curChar;
+	}
+	public function image(key:String) {
+		return Paths.getPath('$curChar/$key.png', IMAGE, 'characters');
+	}
+
+    public function getSparrowAtlas(key:String) {
+		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curChar/$key.xml', 'characters'));
+	}
+	
+	public function getPackerAtlas(key:String) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curChar/$key.txt', 'characters'));
 	}
 }

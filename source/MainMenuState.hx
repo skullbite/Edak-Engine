@@ -37,9 +37,9 @@ class MainMenuState extends MusicBeatState
 	var newGaming2:FlxText;
 	public static var firstStart:Bool = true;
 
-	public static var nightly:String = "";
+	public static var nightly:String = "-alpha";
 
-	public static var kadeEngineVer:String = "1.5" + nightly;
+	public static var edakEngineVer:String = "1.0.0" + nightly;
 	public static var gameVer:String = "0.2.7.1";
 
 	var magenta:FlxSprite;
@@ -115,7 +115,7 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer +  (Main.watermarks ? " FNF - " + kadeEngineVer + " Kade Engine" : ""), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer +  (Main.watermarks ? " FNF - " + edakEngineVer + " Edak Engine" : ""), 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -238,6 +238,7 @@ class MainMenuState extends MusicBeatState
 
 	function changeItem(huh:Int = 0)
 	{
+		var last = curSelected;
 		if (finishedFunnyMove)
 		{
 			curSelected += huh;
@@ -253,10 +254,11 @@ class MainMenuState extends MusicBeatState
 
 			if (spr.ID == curSelected && finishedFunnyMove)
 			{
+				if (huh != 0) spr.y -= 20;
 				spr.animation.play('selected');
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
 			}
-
+			if (spr.ID == last && huh != 0) spr.y += 20;
 			spr.updateHitbox();
 		});
 	}
