@@ -312,6 +312,9 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
+		/*OpenFLAssets.getMusic(Paths.inst(SONG.song));
+		// me and my homies hate tutorial
+		if (SONG.needsVoices && SONG.song.toLowerCase() != "tutorial") OpenFLAssets.getMusic(Paths.voices(SONG.song));*/
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = Paths.songDataDir(SONG.song.toLowerCase()).filter(d -> d.endsWith(".hx"));
@@ -322,10 +325,6 @@ class PlayState extends MusicBeatState
 		for (k => v in scripts) HFunk.loadScript(k, v);
 
 		HFunk.doDaCallback("onCreate", []);
-
-		/*OpenFLAssets.getMusic(Paths.inst(SONG.song));
-		// me and my homies hate tutorial
-		if (SONG.needsVoices && SONG.song.toLowerCase() != "tutorial") OpenFLAssets.getMusic(Paths.voices(SONG.song));*/
 
 		//dialogue shit
 		switch (SONG.song.toLowerCase())
@@ -947,7 +946,7 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		songInfoTxt = new FlxText(0, 5, 0);
+		songInfoTxt = new FlxText(0, FlxG.save.data.downscroll ? 675 : 5, 0);
 		songInfoTxt.alpha = 0;
 		songInfoTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songInfoTxt.borderSize = 3;
@@ -963,7 +962,7 @@ class PlayState extends MusicBeatState
 		songInfoTxt.screenCenter(X);
 		add(songInfoTxt);
 
-		songTimeTxt = new FlxText(0, 35, "-:--/-:--");
+		songTimeTxt = new FlxText(0, FlxG.save.data.downscroll ? 645 : 35, "-:--/-:--");
 		songTimeTxt.alpha = 0;
 		songTimeTxt.visible = FlxG.save.data.songPosition;
 		songTimeTxt.setFormat(Paths.font("vcr.ttf"), 25, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -1291,6 +1290,8 @@ class PlayState extends MusicBeatState
 		songStarted = true;
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
+		
+		HFunk.doDaCallback("onSongStart", []);
 
 		if (!paused)
 		{
@@ -2377,6 +2378,7 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
+		HFunk.doDaCallback("onEndSong", []);
 		if (!loadRep)
 			rep.SaveReplay(saveNotes);
 		else
