@@ -312,10 +312,12 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = File.applicationDirectory.resolvePath('assets/characters').getDirectoryListing().filter(d -> d.resolvePath('init.hx').exists).map(d -> d.name);
 		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
-		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		var stages:Array<String> = File.applicationDirectory.resolvePath('assets/stages').getDirectoryListing().filter(d -> d.resolvePath('init.hx').exists).map(d -> d.name);
 		var noteStyles:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteStyleList'));
 		var extChars:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var extStages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 		if (extChars != [""]) characters.concat(extChars);
+		if (stages != [""]) stages.concat(extStages);
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -1165,17 +1167,18 @@ class ChartingState extends MusicBeatState
 		stepperSectionBPM.value = sec.bpm;
 	}
 
+	// bug: icons don't show up at all
 	function updateHeads():Void
 	{
 		if (check_mustHitSection.checked)
 		{
-			leftIcon.animation.play(_song.player1);
-			rightIcon.animation.play(_song.player2);
+			leftIcon.swapIcon(_song.player1);
+			rightIcon.swapIcon(_song.player2);
 		}
 		else
 		{
-			leftIcon.animation.play(_song.player2);
-			rightIcon.animation.play(_song.player1);
+			leftIcon.swapIcon(_song.player2);
+			rightIcon.swapIcon(_song.player1);
 		}
 	}
 

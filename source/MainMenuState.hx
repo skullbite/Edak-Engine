@@ -26,6 +26,7 @@ class MainMenuState extends MusicBeatState
 	var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
+	public static var menuTweenDone:Bool = false;
 
 	#if !switch
 	var optionShit:Array<String> = ['story mode', 'freeplay', 'donate', 'options'];
@@ -106,6 +107,7 @@ class MainMenuState extends MusicBeatState
 					{ 
 						finishedFunnyMove = true; 
 						changeItem();
+						if (menuItem.ID == optionShit.length - 1) menuTweenDone = true;
 					}});
 			else
 				menuItem.y = 60 + (i * 160);
@@ -115,9 +117,15 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer +  (Main.watermarks ? " FNF - " + edakEngineVer + " Edak Engine" : ""), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 40, 0, 'FNF: v$gameVer', 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.borderSize = 2;
+		add(versionShit);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 20, 0, 'Edak Engine: v$edakEngineVer', 12);
+		versionShit.scrollFactor.set();
+		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.borderSize = 2;
 		add(versionShit);
 
 		// NG.core.calls.event.logEvent('swag').send();
@@ -142,7 +150,7 @@ class MainMenuState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
-		if (!selectedSomethin)
+		if (!selectedSomethin && menuTweenDone)
 		{
 			if (controls.UP_P)
 			{

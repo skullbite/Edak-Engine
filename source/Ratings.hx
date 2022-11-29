@@ -2,6 +2,7 @@ import flixel.FlxG;
 
 class Ratings
 {
+    
     public static function GenerateLetterRank(accuracy:Float) // generate a letter ranking
     {
         var ranking:String = "N/A";
@@ -85,7 +86,7 @@ class Ratings
         }
 
         if (accuracy == 0)
-            ranking = "N/A";
+            ranking = "(N/A)";
 		else if(FlxG.save.data.botplay)
 			ranking = "BotPlay";
 
@@ -136,6 +137,6 @@ class Ratings
         "Score: " + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + 									// Score
         " ~ Misses: " + PlayState.misses + 																				// Misses/Combo Breaks
         " ~ Accuracy: " + (FlxG.save.data.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + "%") +  				// Accuracy
-        " | " + GenerateLetterRank(accuracy) : ""); 																			// Letter Rank
+        " " + GenerateLetterRank(accuracy) : ""); 																			// Letter Rank
     }
 }

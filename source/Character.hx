@@ -57,7 +57,7 @@ class Character extends FlxSprite
 
 		dance();
 
-		if (animation.getByName("danceLeft") != null && animation.getByName("danceRight") != null) bopSpeed = 1;
+		if (animation.exists("danceLeft") && animation.exists("danceRight")) bopSpeed = 1;
 
 		if (isPlayer)
 		{
@@ -174,7 +174,7 @@ class Character extends FlxSprite
 					else
 						playAnim('danceLeft');
 				default:
-					playAnim('idle');
+					playAnim('idle', true);
 			}
 		}
 	}
@@ -223,6 +223,7 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
+	
 		animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);

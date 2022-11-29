@@ -648,4 +648,4 @@
 [92600.0,0,0]]},
 {"mustHitSection":true,"typeOfSection":0,"lengthInSteps":16,"bpm":150,"changeBPM":true,"altAnim":false,"sectionNotes":[
 [92800.0,2,800]]}
-],"bpm":150,"sections":0,"needsVoices":true,"player1":"bf-christmas","player2":"parents-christmas","sectionLengths":[],"speed":1.9}}
+],"bpm":150,"sections":0,"needsVoices":true,"gfVersion":"gf-christmas","player1":"bf-christmas","player2":"parents-christmas","stage":"mall","sectionLengths":[],"speed":1.9}}

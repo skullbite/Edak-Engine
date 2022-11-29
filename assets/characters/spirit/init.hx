@@ -18,3 +18,7 @@ char.updateHitbox();
 char.playAnim('idle');
 
 char.antialiasing = false;
+
+char.displaceData.x -= 150;
+char.displaceData.y += 100;
+char.bopSpeed = 1;

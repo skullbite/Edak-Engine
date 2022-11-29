@@ -17,3 +17,5 @@ char.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
 char.updateHitbox();
 
 char.antialiasing = false;
+char.displaceData.x += 150;
+char.displaceData.y += 360;

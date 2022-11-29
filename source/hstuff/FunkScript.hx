@@ -1,7 +1,6 @@
 package hstuff;
 
 import flixel.util.FlxTimer;
-import flixel.FlxG;
 import flixel.tweens.FlxTween;
 
 
@@ -12,19 +11,12 @@ class FunkScript extends HBase {
     override public function new() {
         super();
         scripts = new Map();
-        interp.variables.set("FlxG", FlxG);
         interp.variables.set("FlxTween", FlxTween);
         interp.variables.set("FlxTimer", FlxTimer);
         interp.variables.set("Paths", Paths);
-        interp.variables.set("importLib", importLib);
     }
 
-    // psych engine??? i might switch to a different lib which will deprecate this
-    function importLib(lib:String) {
-        var name = lib.split(".").pop();
-        var target = Type.resolveClass(lib);
-        if (target != null && interp.variables.get(name) == null) interp.variables.set(name, target);
-    }
+   
 
     public function loadScript(name:String, code:String) {
         // dry run to make sure the code actually works
@@ -42,7 +34,8 @@ class FunkScript extends HBase {
     // long ahh line
     public function doDaCallback(name:String, args:Array<Dynamic>) { 
         for (k => v in scripts) { 
-            if (StringTools.contains(v, name)) interp.execute(parser.parseString(v + '\n$name(${args.join(", ")})', k));
+            // don't play with comments ig
+            if (StringTools.contains(v, "function " + name)) interp.execute(parser.parseString(v + '\n$name(${args.join(", ")})', k));
         }
 
     }

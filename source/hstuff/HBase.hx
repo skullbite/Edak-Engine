@@ -2,6 +2,7 @@ package hstuff;
 
 import hscript.Parser;
 import hscript.Interp;
+import flixel.FlxG;
 
 class HBase {
     public var parser:Parser;
@@ -11,8 +12,18 @@ class HBase {
         parser = new Parser();
         interp = new Interp();
         interp.variables.set("PlayState", PlayState);
+        interp.variables.set("FlxG", FlxG);
+        interp.variables.set("importLib", importLib);
+        interp.variables.set("Std", Std);
         parser.line = 1;
         parser.allowTypes = true;
+    }
+
+    // psych engine??? i might switch to a different lib which will deprecate this
+    function importLib(lib:String) {
+        var name = lib.split(".").pop();
+        var target = Type.resolveClass(lib);
+        if (target != null && interp.variables.get(name) == null) interp.variables.set(name, target);
     }
 
     function get_variables() {

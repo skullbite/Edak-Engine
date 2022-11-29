@@ -12,3 +12,5 @@ char.addOffset("singRIGHT", -51);
 char.addOffset("singLEFT", -30);
 char.addOffset("singDOWN", -40, -94);
 char.playAnim('idle');
+
+char.displaceData.y = 130;

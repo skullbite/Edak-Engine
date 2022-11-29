@@ -25,3 +25,4 @@ char.playAnim('idle');
 char.flipX = true;
 char.displaceData.camX = -20;
 char.displaceData.camY = 40;
+char.displaceData.y = 300;

@@ -140,6 +140,7 @@ class CharacterPaths {
 	public function new(curChar) {
 		this.curChar = curChar;
 	}
+
 	public function image(key:String) {
 		return Paths.getPath('$curChar/$key.png', IMAGE, 'characters');
 	}
@@ -150,5 +151,24 @@ class CharacterPaths {
 	
 	public function getPackerAtlas(key:String) {
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curChar/$key.txt', 'characters'));
+	}
+}
+
+class StagePaths {
+	var curStage:String = "";
+	public function new(curStage:String) {
+		this.curStage = curStage;
+	}
+
+	public function image(key:String) {
+		return Paths.getPath('$curStage/$key.png', IMAGE, 'stages');
+	}
+
+	public function getSparrowAtlas(key:String) {
+		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curStage/$key.xml', 'stages'));
+	}
+	
+	public function getPackerAtlas(key:String) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curStage/$key.txt', 'stages'));
 	}
 }

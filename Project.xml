@@ -48,6 +48,7 @@
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
 	<section if="PRELOAD_ALL">
+		<library name="stages"      preload="true" />
 		<library name="scripts"     preload="true" />
 		<library name="characters"  preload="true" />
 		<library name="songs"       preload="true" />
@@ -62,6 +63,7 @@
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
+		<library name="stages"      preload="false" />
 		<library name="scripts"     preload="false" />
 		<library name="characters"  preload="false" />
 		<library name="songs"       preload="false" />
@@ -74,7 +76,8 @@
 		<library name="week5"       preload="false" />
 		<library name="week6"       preload="false" />
 	</section>
-	
+
+	<assets path="assets/stages"   library="stages"/>
 	<assets path="assets/characters" library="characters"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>

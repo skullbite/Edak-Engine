@@ -54,9 +54,6 @@ class KadeEngineData
 		if (FlxG.save.data.accuracyMod == null)
 			FlxG.save.data.accuracyMod = 1;
 
-		if (FlxG.save.data.watermark == null)
-			FlxG.save.data.watermark = true;
-
 		if (FlxG.save.data.ghost == null)
 			FlxG.save.data.ghost = true;
 
@@ -78,8 +75,6 @@ class KadeEngineData
 		Conductor.recalculateTimings();
 		PlayerSettings.player1.controls.loadKeyBinds();
 		KeyBinds.keyCheck();
-
-		Main.watermarks = FlxG.save.data.watermark;
 
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 	}
