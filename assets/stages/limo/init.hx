@@ -5,6 +5,7 @@ function create() {
     // importLib("BackgroundDancer");
 	importLib("openfl.filters.ShaderFilter");
     vars["fastCarCanDrive"] = true;
+	vars["dancersDanced"] = false;
     var skyBG = new FlxSprite(-120, -50).loadGraphic(Paths.image('limoSunset'));
 	skyBG.scrollFactor.set(0.1, 0.1);
 	stage.add(skyBG);
@@ -29,6 +30,7 @@ function create() {
 			dancer.animation.addByIndices('danceLeft', 'bg dancer sketch PINK', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 12, false);
 		    dancer.animation.addByIndices('danceRight', 'bg dancer sketch PINK', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 12, false);
 			dancer.scrollFactor.set(0.4, 0.4);
+			dancer.animation.play("danceLeft");
 			grpLimoDancers.add(dancer);
 		}
 	}
@@ -63,13 +65,10 @@ function create() {
 
 function beatHit(beat) {
     if (FlxG.save.data.distractions) {
-        vars["grpLimoDancers"].forEach(function(dancer)
-            {
-                dancer.dance();
-            });
+        vars["grpLimoDancers"].forEach(d -> d.animation.play(vars["dancersDanced"] ? "danceLeft" : "danceRight"));
+		vars["dancersDanced"] = !vars["dancersDanced"];
 
-            if (FlxG.random.bool(10) && vars["fastCarCanDrive"])
-                fastCarDrive();
+        if (FlxG.random.bool(10) && vars["fastCarCanDrive"]) fastCarDrive();
     }
 }
 
