@@ -1,7 +1,7 @@
 package hstuff;
 
 class CallbackScript extends HBase {
-    var name:String;
+    var name:String = "h";
     var code:String;
     override public function new(code:String) {
         super();
@@ -12,7 +12,7 @@ class CallbackScript extends HBase {
 
     public function exec(target:String, args:Array<Dynamic>) {
         try {
-            interp.execute(parser.parseString(code + '\n$target(${args.join(", ")});'));
+            interp.execute(parser.parseString(code + '\n$target(${args.join(", ")});', name));
         }
         catch (e) {
             trace('Callback:$name function "$target" failed: ${e.message}');

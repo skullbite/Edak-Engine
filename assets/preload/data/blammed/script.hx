@@ -7,7 +7,6 @@ function onCountdownTick(tick) {
         PlayState.boyfriend.playAnim("hey");
         FlxTween.tween(game.camHUD, { alpha: 0 }, 0.5);
         importLib("flixel.tweens.FlxEase");
-        
     }
 } 
 

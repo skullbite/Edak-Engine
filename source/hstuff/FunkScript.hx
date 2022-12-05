@@ -24,6 +24,7 @@ class FunkScript extends HBase {
         }
         catch (e) {
             trace('hscript:$name failed to load: ${e.message}');
+            trace(e.stack);
         }
     }
 

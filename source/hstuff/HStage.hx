@@ -10,7 +10,7 @@ class HStage extends CallbackScript {
     var vars:Map<String, Dynamic> = [];
     public function new(stageClass:Stage, script:String) {
         super(script);
-        name = "Stage";
+        name = "Stage:" + stageClass.curStage;
         interp.variables.set("stage", stageClass);
         interp.variables.set("Paths", new StagePaths(stageClass.curStage));
         interp.variables.set("_Paths", Paths);

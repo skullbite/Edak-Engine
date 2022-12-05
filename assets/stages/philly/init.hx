@@ -22,7 +22,7 @@ function create() {
 
 	var phillyCityLights = new FlxTypedGroup();
 	if(FlxG.save.data.distractions) stage.add(phillyCityLights);
-    vars["phillyCityLights"] = phillyCityLights;
+    stage.publicSprites["phillyCityLights"] = phillyCityLights;
 
 
 	for (i in 0...5)
@@ -33,7 +33,7 @@ function create() {
 			light.scale.set(0.85, 0.85);
 			light.updateHitbox();
 			light.antialiasing = true;
-			vars["phillyCityLights"].add(light);
+			stage.publicSprites["phillyCityLights"].add(light);
 
 	}
 
@@ -76,16 +76,16 @@ function beatHit(beat) {
 
         if (beat % 4 == 0)
         {
-            vars["phillyCityLights"].forEach(function(light:FlxSprite)
+            stage.publicSprites["phillyCityLights"].forEach(function(light:FlxSprite)
             {
                 light.visible = false;
             });
 			
 			var lastLight = vars["curLight"];
 
-            while (vars["curLight"] == lastLight) vars["curLight"] = FlxG.random.int(0, vars["phillyCityLights"].length - 1);
+            while (vars["curLight"] == lastLight) vars["curLight"] = FlxG.random.int(0, stage.publicSprites["phillyCityLights"].length - 1);
 
-            vars["phillyCityLights"].members[vars["curLight"]].visible = true;
+            stage.publicSprites["phillyCityLights"].members[vars["curLight"]].visible = true;
         }
             // phillyCityLights.members[curLight].alpha = 1;
         if (beat % 8 == 4 && FlxG.random.bool(30) && !vars["trainMoving"] && vars["trainCooldown"] > 8)

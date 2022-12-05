@@ -21,6 +21,7 @@ class Character extends FlxSprite
 
 	public var holdTimer:Float = 0;
 	public var bopSpeed:Int = 2;
+	var CharScript:Null<HCharacter> = null;
 	public var displaceData = {
 		x: 0.0,
 		y: 0.0,
@@ -44,9 +45,11 @@ class Character extends FlxSprite
 				if (FileSystem.exists('assets/characters/$curCharacter/init.hx')) {
 					var charCode = File.getContent('assets/characters/$curCharacter/init.hx');
 					try {
-						new HCharacter(this, charCode);
+						CharScript = new HCharacter(this, charCode);
+						CharScript.exec("create", []);
 					}
 					catch (e) {
+						CharScript = null;
 						trace('Failed to load $curCharacter from hscript: ${e.message}');
 						loadBfInstead();
 					}
@@ -102,15 +105,20 @@ class Character extends FlxSprite
 			}
 		}
 
+		super.update(elapsed);
+
+		if (CharScript != null && CharScript.funcExists("update")) {
+			CharScript.exec("update", [elapsed]);
+			if (animation.curAnim.finished && animation.getByName('${animation.curAnim.name}Loop') != null) playAnim('${animation.curAnim.name}Loop');
+			return;
+		}
+
 		switch (curCharacter)
 		{
 			case 'gf':
 				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
 					playAnim('danceRight');
 		}
-		if (animation.curAnim.finished && animation.getByName('${animation.curAnim.name}Loop') != null) playAnim('${animation.curAnim.name}Loop');
-
-		super.update(elapsed);
 	}
 
 	private var danced:Bool = false;
@@ -120,6 +128,10 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
+		if (CharScript != null && CharScript.funcExists("dance")) {
+			CharScript.exec("dance", []);
+			return;
+		}
 		if (!debugMode)
 		{
 			switch (curCharacter)
