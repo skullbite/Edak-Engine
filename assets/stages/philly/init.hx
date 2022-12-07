@@ -1,5 +1,7 @@
 // i had multiple aneurysms porting this
 function create() {
+	stage.cameraDisplace.x = 400;
+	stage.cameraDisplace.y = -50;
     importLib("flixel.system.FlxSound");
     importLib("flixel.group.FlxTypedGroup");
     vars["trainMoving"] = false;
@@ -110,8 +112,6 @@ function updateTrainPos() {
 			}
             var phillyTrain = stage.publicSprites["phillyTrain"];
 
-			
-	
 			if (vars["startedMoving"])
 			{
 				phillyTrain.x -= 400;

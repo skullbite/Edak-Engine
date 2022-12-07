@@ -1,4 +1,5 @@
 function create() {
+	stage.cameraDisplace.x = 300;
     var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('evilBG'));
 	bg.antialiasing = true;
 	bg.scrollFactor.set(0.2, 0.2);
@@ -15,4 +16,8 @@ function create() {
 	var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic(Paths.image("evilSnow"));
 	evilSnow.antialiasing = true;
 	stage.add(evilSnow);
+}
+
+function reposCharacters() {
+	PlayState.dad.y -= 90;
 }

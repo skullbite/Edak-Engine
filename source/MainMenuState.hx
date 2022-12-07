@@ -103,11 +103,10 @@ class MainMenuState extends MusicBeatState
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
 			if (firstStart)
-				FlxTween.tween(menuItem,{y: 60 + (i * 160)},1 + (i * 0.25) ,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
+				FlxTween.tween(menuItem,{y: 60 + (i * 160)},1 + (i * 0.25) ,{ease: FlxEase.expoInOut, onUpdate: t -> if (menuItem.ID == optionShit.length - 1 && t.percent >= .7 && !menuTweenDone) menuTweenDone = true, onComplete: function(flxTween:FlxTween) 
 					{ 
 						finishedFunnyMove = true; 
 						changeItem();
-						if (menuItem.ID == optionShit.length - 1) menuTweenDone = true;
 					}});
 			else
 				menuItem.y = 60 + (i * 160);

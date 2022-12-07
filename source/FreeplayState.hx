@@ -27,8 +27,12 @@ class FreeplayState extends MusicBeatState
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
+	var rateText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
+	var lerpAcc:Float = 0;
+	var intendedAccuracy:Float = 0;
+	var curRating:String = "N/A";
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
@@ -98,15 +102,20 @@ class FreeplayState extends MusicBeatState
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		// scoreText.alignment = RIGHT;
 
-		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
+		rateText = new FlxText(FlxG.width * 0.7, 33, 0, "");
+		rateText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+
+		
+		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 86, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
+		diffText = new FlxText(scoreText.x, scoreText.y + 56, 0, "", 24);
 		diffText.font = scoreText.font;
 		add(diffText);
 
 		add(scoreText);
+		add(rateText);
 
 		changeSelection();
 		changeDiff();
@@ -171,11 +180,16 @@ class FreeplayState extends MusicBeatState
 		}
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
+		lerpAcc = Math.floor(FlxMath.lerp(lerpAcc, intendedAccuracy, 0.4));
+
 
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
+		if (Math.abs(lerpAcc - intendedScore) <= 10) lerpAcc = intendedScore;
 
-		scoreText.text = "PERSONAL BEST:" + lerpScore;
+		scoreText.text = "HIGH SCORE:" + lerpScore;
+		rateText.text = 'RATING: ${lerpAcc}% (${curRating != null ? curRating : "N/A"})';
+		
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
@@ -225,7 +239,10 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 0;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		var data = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = data.score;
+		intendedAccuracy = data.accuracy;
+		curRating = data.rating;
 		#end
 
 		switch (curDifficulty)
@@ -258,7 +275,10 @@ class FreeplayState extends MusicBeatState
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		var data = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = data.score;
+		intendedAccuracy = data.accuracy;
+		curRating = data.rating;
 		// lerpScore = 0;
 		#end
 

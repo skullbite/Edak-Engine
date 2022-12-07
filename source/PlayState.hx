@@ -78,6 +78,8 @@ class PlayState extends MusicBeatState
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
+	// cutscenes in freeplay without having to go through the whole week
+	public var forceCutscene:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
@@ -374,20 +376,8 @@ class PlayState extends MusicBeatState
 
 		add(stage);
 
-		var gfVersion:String = 'gf';
-
-		switch (SONG.gfVersion)
-		{
-			case 'gf-car':
-				gfVersion = 'gf-car';
-			case 'gf-christmas':
-				gfVersion = 'gf-christmas';
-			case 'gf-pixel':
-				gfVersion = 'gf-pixel';
-			default:
-				gfVersion = 'gf';
-		}
-
+		var gfVersion:String = SONG.gfVersion;
+		if (gfVersion == null) gfVersion = "gf";
 		gf = new Character(400, 130, gfVersion);
 		gfGroup.add(gf);
 		gf.scrollFactor.set(0.95, 0.95);
@@ -420,6 +410,9 @@ class PlayState extends MusicBeatState
 		add(stage.foreground);
 
 		stage.reposCharacters();
+
+		camPos.x += stage.cameraDisplace.x;
+		camPos.y += stage.cameraDisplace.y;
 
 		if (loadRep)
 		{
@@ -492,8 +485,6 @@ class PlayState extends MusicBeatState
 		healthBar.createFilledBar(FlxColor.fromString(dad.barColor), FlxColor.fromString(boyfriend.barColor));
 		// healthBar
 		add(healthBar);
-
-
 
 		replayTxt = new FlxText(healthBarBG.x + healthBarBG.width / 2 - 75, healthBarBG.y + (FlxG.save.data.downscroll ? 100 : -100), 0, "REPLAY", 20);
 		replayTxt.setFormat(Paths.font("vcr.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
@@ -571,38 +562,11 @@ class PlayState extends MusicBeatState
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 		
-		if (isStoryMode)
+		if (isStoryMode || forceCutscene)
 		{
 			switch (curSong.toLowerCase())
 			{
-				case "winter-horrorland":
-					var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
-					add(blackScreen);
-					blackScreen.scrollFactor.set();
-					camHUD.visible = false;
-
-					new FlxTimer().start(0.1, function(tmr:FlxTimer)
-					{
-						remove(blackScreen);
-						FlxG.sound.play(Paths.sound('Lights_Turn_On'));
-						camFollow.y = -2050;
-						camFollow.x += 200;
-						FlxG.camera.focusOn(camFollow.getPosition());
-						FlxG.camera.zoom = 1.5;
-
-						new FlxTimer().start(0.8, function(tmr:FlxTimer)
-						{
-							camHUD.visible = true;
-							remove(blackScreen);
-							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
-								ease: FlxEase.quadInOut,
-								onComplete: function(twn:FlxTween)
-								{
-									startCountdown();
-								}
-							});
-						});
-					});
+				// i need to rewrite the dialogue box tbh
 				case 'senpai':
 					schoolIntro(doof);
 				case 'roses':
@@ -611,17 +575,11 @@ class PlayState extends MusicBeatState
 				case 'thorns':
 					schoolIntro(doof);
 				default:
-					startCountdown();
+					if (HFunk.anyExists("onCutscene")) HFunk.doDaCallback("onCutscene", []);
+					else startCountdown();
 			}
 		}
-		else
-		{
-			switch (curSong.toLowerCase())
-			{
-				default:
-					startCountdown();
-			}
-		}
+		else startCountdown();
 
 		if (!loadRep)
 			rep = new Replay("na");
@@ -1978,7 +1936,7 @@ class PlayState extends MusicBeatState
 		if (SONG.validScore)
 		{
 			#if !switch
-			Highscore.saveScore(SONG.song, Math.round(songScore), storyDifficulty);
+			Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
 			#end
 		}
 
@@ -2039,17 +1997,6 @@ class PlayState extends MusicBeatState
 					trace('LOADING NEXT SONG');
 					trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
 
-					if (SONG.song.toLowerCase() == 'eggnog')
-					{
-						var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
-							-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-						blackShit.scrollFactor.set();
-						add(blackShit);
-						camHUD.visible = false;
-
-						FlxG.sound.play(Paths.sound('Lights_Shut_off'));
-					}
-
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
 					prevCamFollow = camFollow;
@@ -2096,9 +2043,6 @@ class PlayState extends MusicBeatState
 			var rating:FlxSprite = new FlxSprite();
 			var score:Float = 350;
 
-			if (FlxG.save.data.accuracyMod == 1)
-				totalNotesHit += wife;
-
 			var daRating = daNote.rating;
 
 			switch(daRating)
@@ -2110,16 +2054,14 @@ class PlayState extends MusicBeatState
 					health -= 0.2;
 					ss = false;
 					shits++;
-					if (FlxG.save.data.accuracyMod == 0)
-						totalNotesHit += 0.25;
+					totalNotesHit += 0.25;
 				case 'bad':
 					daRating = 'bad';
 					score = 0;
 					health -= 0.06;
 					ss = false;
 					bads++;
-					if (FlxG.save.data.accuracyMod == 0)
-						totalNotesHit += 0.50;
+					totalNotesHit += 0.50;
 				case 'good':
 					daRating = 'good';
 					score = 200;
@@ -2127,13 +2069,11 @@ class PlayState extends MusicBeatState
 					goods++;
 					if (health < 2)
 						health += 0.04;
-					if (FlxG.save.data.accuracyMod == 0)
-						totalNotesHit += 0.75;
+					totalNotesHit += 0.75;
 				case 'sick':
 					if (health < 2)
 						health += 0.1;
-					if (FlxG.save.data.accuracyMod == 0)
-						totalNotesHit += 1;
+					totalNotesHit += 1;
 					sicks++;
 			}
 
@@ -2162,8 +2102,9 @@ class PlayState extends MusicBeatState
 				pixelShitPart1 = 'weeb/pixelUI/';
 				pixelShitPart2 = '-pixel';
 			}
+
 	
-			rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2));
+			rating.loadGraphic(Paths.image(pixelShitPart1 + daRating.replace("miss", "shit") + pixelShitPart2));
 			rating.screenCenter();
 			rating.y -= 50;
 			rating.x = coolText.x - 125;
@@ -2568,9 +2509,6 @@ class PlayState extends MusicBeatState
 			//var noteDiff:Float = Math.abs(daNote.strumTime - Conductor.songPosition);
 			//var wife:Float = EtternaFunctions.wife3(noteDiff, FlxG.save.data.etternaMode ? 1 : 1.7);
 
-			if (FlxG.save.data.accuracyMod == 1)
-				totalNotesHit -= 1;
-
 			songScore -= 10;
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
@@ -2874,7 +2812,7 @@ class PlayState extends MusicBeatState
 		super.stepHit();
 		HFunk.doDaCallback("onStepHit", [curStep]);
 		stage.stepHit(curStep);
-		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
+		if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
 		{
 			resyncVocals();
 		}

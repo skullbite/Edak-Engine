@@ -1,6 +1,7 @@
 function create() {
     importLib("BackgroundGirls");
-    import("CoolUtil");
+    importLib("CoolUtil");
+	stage.cameraDisplace.x = 200;
     var bgSky = new FlxSprite().loadGraphic(Paths.image('weebSky'));
 	bgSky.scrollFactor.set(0.1, 0.1);
 	stage.add(bgSky);

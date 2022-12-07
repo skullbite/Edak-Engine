@@ -2,16 +2,22 @@ package;
 
 import flixel.FlxG;
 
+typedef ScoreData = {
+	score:Int,
+	accuracy:Float,
+	rating:String
+};
+
 class Highscore
 {
 	#if (haxe >= "4.0.0")
-	public static var songScores:Map<String, Int> = new Map();
+	public static var songScores:Map<String, ScoreData> = new Map();
 	#else
-	public static var songScores:Map<String, Int> = new Map<String, Int>();
+	public static var songScores:Map<String, ScoreData> = new Map<String, ScoreData>();
 	#end
 
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveScore(song:String, score:Int = 0, accuracy:Float = 0, rating:String = "N/A", ?diff:Int = 0):Void
 	{
 		var daSong:String = formatSong(song, diff);
 
@@ -24,11 +30,11 @@ class Highscore
 		{
 			if (songScores.exists(daSong))
 			{
-				if (songScores.get(daSong) < score)
-					setScore(daSong, score);
+				if (songScores.get(daSong).score < score)
+					setScore(daSong, score, accuracy, rating);
 			}
 			else
-				setScore(daSong, score);
+				setScore(daSong, score, accuracy, rating);
 		}else trace('BotPlay detected. Score saving is disabled.');
 	}
 
@@ -45,7 +51,7 @@ class Highscore
 
 			if (songScores.exists(daWeek))
 			{
-				if (songScores.get(daWeek) < score)
+				if (songScores.get(daWeek).score < score)
 					setScore(daWeek, score);
 			}
 			else
@@ -56,10 +62,10 @@ class Highscore
 	/**
 	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE
 	 */
-	static function setScore(song:String, score:Int):Void
+	static function setScore(song:String, score:Int, accuracy:Float = 0, rating:String = "N/A"):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
-		songScores.set(song, score);
+		songScores.set(song, { score: score, accuracy: accuracy, rating: rating });
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
 	}
@@ -76,7 +82,7 @@ class Highscore
 		return daSong;
 	}
 
-	public static function getScore(song:String, diff:Int):Int
+	public static function getScore(song:String, diff:Int):ScoreData
 	{
 		if (!songScores.exists(formatSong(song, diff)))
 			setScore(formatSong(song, diff), 0);
@@ -84,7 +90,7 @@ class Highscore
 		return songScores.get(formatSong(song, diff));
 	}
 
-	public static function getWeekScore(week:Int, diff:Int):Int
+	public static function getWeekScore(week:Int, diff:Int):ScoreData
 	{
 		if (!songScores.exists(formatSong('week' + week, diff)))
 			setScore(formatSong('week' + week, diff), 0);

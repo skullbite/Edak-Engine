@@ -14,6 +14,10 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     public var ScriptStage:Null<HStage> = null;
     public var curStage:String;
     public var defaultCamZoom:Float = 1.05;
+    public var cameraDisplace:{x:Float,y:Float} = {
+        x: 0.0,
+        y: 0.0
+    };
     public function new() {
         super();
         publicSprites = new Map();
@@ -91,7 +95,6 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 		stageCurtains.scrollFactor.set(1.3, 1.3);
 		stageCurtains.active = false;
         foreground.add(stageCurtains);
-
     }
 
 }

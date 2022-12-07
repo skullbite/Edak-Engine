@@ -20,8 +20,8 @@ class HBase {
     }
 
     // psych engine??? i might switch to a different lib which will deprecate this
-    function importLib(lib:String) {
-        var name = lib.split(".").pop();
+    function importLib(lib:String, alias="") {
+        var name = alias != "" ? alias : lib.split(".").pop();
         var target = Type.resolveClass(lib);
         if (target != null && interp.variables.get(name) == null) interp.variables.set(name, target);
     }
