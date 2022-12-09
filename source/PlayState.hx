@@ -332,9 +332,19 @@ class PlayState extends MusicBeatState
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = Paths.songDataDir(SONG.song.toLowerCase()).filter(d -> d.endsWith(".hx"));
 		var scripts:Map<String, String> = [];
-		for (x in songScripts) scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('data/${SONG.song.toLowerCase()}/$x')));
+		for (x in songScripts) {
+			try {
+				scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('data/${SONG.song.toLowerCase()}/$x')));
+			}
+			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
+		}
 		var globalScripts = Paths.scriptDir();
-		for (x in globalScripts) scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
+		 for (x in globalScripts) {
+			try { 
+				scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
+			}
+			catch (e) {}
+		}
 		for (k => v in scripts) HFunk.loadScript(k, v);
 
 		HFunk.doDaCallback("onCreate", []);
@@ -567,13 +577,13 @@ class PlayState extends MusicBeatState
 			switch (curSong.toLowerCase())
 			{
 				// i need to rewrite the dialogue box tbh
-				case 'senpai':
-					schoolIntro(doof);
+				/*case 'senpai':
+					schoolIntro(doof);*
 				case 'roses':
 					FlxG.sound.play(Paths.sound('ANGRY'));
 					schoolIntro(doof);
 				case 'thorns':
-					schoolIntro(doof);
+					schoolIntro(doof);*/
 				default:
 					if (HFunk.anyExists("onCutscene")) HFunk.doDaCallback("onCutscene", []);
 					else startCountdown();
@@ -595,7 +605,7 @@ class PlayState extends MusicBeatState
 		black.scrollFactor.set();
 		add(black);
 
-		var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
+		var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31); // 0x1b84ff
 		red.scrollFactor.set();
 
 		var senpaiEvil:FlxSprite = new FlxSprite();
@@ -1570,12 +1580,15 @@ class PlayState extends MusicBeatState
 						camFollow.x = dad.getMidpoint().x - 100;
 				}
 
+				HFunk.doDaCallback("onCamMove", ["dad"]);
+
 				if (dad.curCharacter == 'mom')
 					vocals.volume = 1;
 			}
 
 			if (PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100)
 			{
+
 				var offsetX = 0;
 				var offsetY = 0;
 				#if windows
@@ -1586,7 +1599,6 @@ class PlayState extends MusicBeatState
 				}
 				#end
 				camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX + boyfriend.displaceData.camX, boyfriend.getMidpoint().y - 100 + offsetY + boyfriend.displaceData.camY);
-
 				#if windows
 				if (luaModchart != null)
 					luaModchart.executeState('playerOneTurn', []);
@@ -1605,6 +1617,7 @@ class PlayState extends MusicBeatState
 						camFollow.x = boyfriend.getMidpoint().x - 200;
 						camFollow.y = boyfriend.getMidpoint().y - 200;
 				}
+				HFunk.doDaCallback("onCamMove", ["bf"]);
 			}
 		}
 
@@ -1773,6 +1786,7 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
+						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData]);
 						if (SONG.song != 'Tutorial')
 							camZooming = true;
 
@@ -2637,6 +2651,7 @@ class PlayState extends MusicBeatState
 
 		function goodNoteHit(note:Note, resetMashViolation = true):Void
 			{
+				HFunk.doDaCallback("goodNoteHit", [note.ID, note.noteData]);
 
 				if (mashing != 0)
 					mashing = 0;

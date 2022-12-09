@@ -1,5 +1,6 @@
 package;
 
+import sys.FileSystem;
 import openfl.Lib;
 #if windows
 import llua.Lua;
@@ -120,7 +121,7 @@ class PauseSubState extends MusicBeatSubstate
 			{
 				oldOffset = PlayState.songOffset;
 				PlayState.songOffset -= 1;
-				sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
+				if (FileSystem.exists(songPath + oldOffset + '.offset')) sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
 				perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.';
 
 				// Prevent loop from happening every single time the offset changes
