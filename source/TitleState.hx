@@ -24,7 +24,7 @@ import io.newgrounds.NG;
 import lime.app.Application;
 import openfl.Assets;
 
-#if windows
+#if desktop
 import Discord.DiscordClient;
 #end
 
@@ -63,7 +63,7 @@ class TitleState extends MusicBeatState
 		
 		PlayerSettings.init();
 
-		#if windows
+		#if desktop
 		DiscordClient.initialize();
 
 		Application.current.onExit.add (function (exitCode) {
@@ -164,7 +164,7 @@ class TitleState extends MusicBeatState
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		logoBl.antialiasing = true;
 		logoBl.setGraphicSize(Std.int(logoBl.width * .5));
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
 		// logoBl.screenCenter();
@@ -384,7 +384,7 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.animation.play('bump');
+		logoBl.animation.play('bump', true);
 		danceLeft = !danceLeft;
 
 		if (danceLeft)

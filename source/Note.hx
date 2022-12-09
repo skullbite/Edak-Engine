@@ -25,7 +25,8 @@ class Note extends FlxSprite
 	public var isSustainNote:Bool = false;
 
 	public var noteScore:Float = 1;
-
+	
+	public static var colors:Array<String> = ["purple", "blue", "green", "red"];
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var PURP_NOTE:Int = 0;
 	public static var GREEN_NOTE:Int = 2;
@@ -106,21 +107,8 @@ class Note extends FlxSprite
 				antialiasing = true;
 		}
 
-		switch (noteData)
-		{
-			case 0:
-				x += swagWidth * 0;
-				animation.play('purpleScroll');
-			case 1:
-				x += swagWidth * 1;
-				animation.play('blueScroll');
-			case 2:
-				x += swagWidth * 2;
-				animation.play('greenScroll');
-			case 3:
-				x += swagWidth * 3;
-				animation.play('redScroll');
-		}
+		x += swagWidth * noteData;
+		animation.play('${colors[noteData]}Scroll');
 
 		// trace(prevNote);
 
@@ -136,6 +124,8 @@ class Note extends FlxSprite
 			alpha = 0.6;
 
 			x += width / 2;
+
+			// animation.play('${colors[noteData]}holdend');
 
 			switch (noteData)
 			{
@@ -158,7 +148,8 @@ class Note extends FlxSprite
 
 			if (prevNote.isSustainNote)
 			{
-				switch (prevNote.noteData)
+				prevNote.animation.play('${colors[noteData]}hold');
+				/*switch (prevNote.noteData)
 				{
 					case 0:
 						prevNote.animation.play('purplehold');
@@ -168,7 +159,7 @@ class Note extends FlxSprite
 						prevNote.animation.play('greenhold');
 					case 3:
 						prevNote.animation.play('redhold');
-				}
+				}*/
 
 
 				if(FlxG.save.data.scrollSpeed != 1)

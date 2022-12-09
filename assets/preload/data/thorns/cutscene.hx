@@ -1,5 +1,5 @@
 function onCreate() {
-    game.camHUD.visible = false;
+    if (PlayState.isStoryMode) game.camHUD.visible = false;
 }
 function onCutscene() {
     var blue = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
