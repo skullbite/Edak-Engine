@@ -285,13 +285,8 @@ class PlayState extends MusicBeatState
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
-
-		var dummyCam = new FlxCamera();
-		dummyCam.bgColor.alpha = 0;
-
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
-		FlxG.cameras.add(dummyCam);
 
 		FlxCamera.defaultCameras = [camGame];
 
