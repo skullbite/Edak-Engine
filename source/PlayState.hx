@@ -104,13 +104,13 @@ class PlayState extends MusicBeatState
 
 	var songLength:Float = 0;
 	
-	#if windows
+	/*#if windows
 	// Discord RPC variables
 	var storyDifficultyText:String = "";
 	var iconRPC:String = "";
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
-	#end
+	#end*/
 
 	private var vocals:FlxSound;
 
@@ -302,8 +302,12 @@ class PlayState extends MusicBeatState
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
+		var dummyCam = new FlxCamera();
+		dummyCam.bgColor.alpha = 0;
+
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(dummyCam);
 
 		FlxCamera.defaultCameras = [camGame];
 
@@ -1801,9 +1805,7 @@ class PlayState extends MusicBeatState
 								dad.playAnim('singLEFT' + altAnim, true);
 						}
 						
-						if (FlxG.save.data.cpuStrums)
-						{
-							cpuStrums.forEach(function(spr:FlxSprite)
+						cpuStrums.forEach(function(spr:FlxSprite)
 							{
 								if (Math.abs(daNote.noteData) == spr.ID)
 								{
@@ -1818,7 +1820,6 @@ class PlayState extends MusicBeatState
 								else
 									spr.centerOffsets();
 							});
-						}
 	
 						#if windows
 						if (luaModchart != null)
@@ -1888,17 +1889,14 @@ class PlayState extends MusicBeatState
 				});
 			}
 
-		if (FlxG.save.data.cpuStrums)
-		{
-			cpuStrums.forEach(function(spr:FlxSprite)
+		cpuStrums.forEach(function(spr:FlxSprite)
 			{
 				if (spr.animation.finished)
 				{
 					spr.animation.play('static');
 					spr.centerOffsets();
 				}
-			});
-		}
+		});
 
 		if (!inCutscene)
 			keyShit();

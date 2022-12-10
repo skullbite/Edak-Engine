@@ -66,8 +66,6 @@ class KadeEngineData
 		if (FlxG.save.data.botplay == null)
 			FlxG.save.data.botplay = false;
 
-		if (FlxG.save.data.cpuStrums == null)
-			FlxG.save.data.cpuStrums = false;
 
 		Conductor.recalculateTimings();
 		PlayerSettings.player1.controls.loadKeyBinds();

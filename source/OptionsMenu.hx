@@ -43,8 +43,7 @@ class OptionsMenu extends MusicBeatState
 			new RainbowFPSOption("Make the FPS Counter Rainbow"),
 			new AccuracyOption("Display accuracy information."),
 			new NPSDisplayOption("Shows your current Notes Per Second."),
-			new SongPositionOption("Show the songs current position (as a bar)"),
-			new CpuStrums("CPU's strumline lights up when a note hits it."),
+			new SongPositionOption("Show the songs current position (as a bar)")
 			#else
 			new DistractionsAndEffectsOption("Toggle stage distractions that can hinder your gameplay.")
 			#end

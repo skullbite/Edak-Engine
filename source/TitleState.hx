@@ -1,5 +1,6 @@
 package;
 
+import flixel.addons.display.FlxBackdrop;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -39,6 +40,7 @@ class TitleState extends MusicBeatState
 	static var initialized:Bool = false;
 
 	var blackScreen:FlxSprite;
+	var checkers:FlxBackdrop = null;
 	var credGroup:FlxGroup;
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
@@ -160,6 +162,10 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
+		checkers = new FlxBackdrop(Paths.image("checkers"), 1, 1, true, true, 1, 1);
+		checkers.alpha = .07;
+		add(checkers);
+
 		logoBl = new FlxSprite(-25, -100);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		logoBl.antialiasing = true;
@@ -249,6 +255,10 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		if (checkers != null) {
+			checkers.x -= 20 * elapsed;
+		    checkers.y -= 20 * elapsed;
+		}
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);

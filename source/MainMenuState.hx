@@ -249,12 +249,11 @@ class MainMenuState extends MusicBeatState
 		var last = curSelected;
 		if (finishedFunnyMove)
 		{
-			curSelected += huh;
+			
 
-			if (curSelected >= menuItems.length)
-				curSelected = 0;
-			if (curSelected < 0)
-				curSelected = menuItems.length - 1;
+			if (curSelected+huh >= menuItems.length) curSelected = 0;
+			else if (curSelected+huh < 0) curSelected = menuItems.length - 1;
+			else curSelected += huh;
 		}
 		menuItems.forEach(function(spr:FlxSprite)
 		{
