@@ -122,11 +122,9 @@
 
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
-	<haxelib name="newgrounds"/>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="polymod"/>
 	<haxelib name="discord_rpc" if="desktop"/>
-	<haxelib name="linc_luajit" if="windows"/>
 
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
@@ -185,6 +183,5 @@
 
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
-	<haxedef name="NG_LOGIN" if="newgrounds" />
 	
 </project>
