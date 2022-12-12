@@ -15,6 +15,8 @@ class HBase {
         interp.variables.set("FlxG", FlxG);
         interp.variables.set("importLib", importLib);
         interp.variables.set("Std", Std);
+        interp.variables.set("Reflect", Reflect);
+        interp.variables.set("Conductor", Conductor);
         parser.line = 1;
         parser.allowTypes = true;
     }

@@ -1,6 +1,10 @@
+function onCreate() {
+    // if (PlayState.isStoryMode) game.camHUD.visible = false;
+}
 function onCutscene() {
-    FlxG.sound.playMusic(Paths.music('Lunchbox'), 0);
-	FlxG.sound.music.fadeIn(1, 0, 0.8);
+    importLib("CoolUtil");
+    var lunchbox = FlxG.sound.play(Paths.music('Lunchbox'), 0);
+	lunchbox.fadeIn(1, 0, 0.8);
     var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
 	blackScreen.height = Std.int(FlxG.height * 2);
 	blackScreen.width = Std.int(FlxG.width * 2);
@@ -11,8 +15,9 @@ function onCutscene() {
 		blackScreen.alpha -= 0.15;
 		if (blackScreen.alpha > 0) t.reset(0.3);
         else {
-            FlxG.sound.music.fadeOut(2.2, 0, t -> { 
-                FlxG.sound.music = null;
+            game.openDialogueBox("senpai", CoolUtil.coolTextFile(Paths.txt('senpai/senpaiDialogue')), () -> {
+                lunchbox.fadeOut(2.2, 0);
+                // game.camHUD.visible = true;
                 game.startCountdown();
             });
         }

@@ -1,7 +1,10 @@
 function onCreate() {
-    if (PlayState.isStoryMode) game.camHUD.visible = false;
+    // if (PlayState.isStoryMode) game.camHUD.visible = false;
 }
 function onCutscene() {
+    importLib("CoolUtil");
+    var lunchboxScary = FlxG.sound.play(Paths.music('LunchboxScary'), 0, true);
+	lunchboxScary.fadeIn(1, 0, 0.8);
     var blue = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
 	blue.height = Std.int(FlxG.height * 2);
 	blue.width = Std.int(FlxG.width * 2);
@@ -29,10 +32,13 @@ function onCutscene() {
         senpaiEvil.animation.play("idle");
 		FlxG.sound.play(Paths.sound('Senpai_Dies'), 1, false, null, true, () -> {
             FlxG.camera.stopFX();
-            game.camHUD.visible = true;
             game.remove(blue);
             game.remove(senpaiEvil);
-            game.startCountdown();
+            game.openDialogueBox("thorns", CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue')), () -> {
+                lunchboxScary.fadeOut(2.2, 0);
+                // game.camHUD.visible = true;
+                game.startCountdown();
+            });
         }, true);
         new FlxTimer().start(3.2, t -> FlxG.camera.fade(0xffffff, 1.6, false));
     });

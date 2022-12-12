@@ -36,6 +36,8 @@ class FunkScript extends HBase {
         
     }
     public function doDaCallback(name:String, args:Array<Dynamic>) { 
-        for (script in scripts) script.exec(name, args);
+        for (script in scripts) {
+            if (script.funcExists(name)) script.exec(name, args);
+        }
     }
 }

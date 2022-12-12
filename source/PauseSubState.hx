@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxCamera;
 import sys.FileSystem;
 import openfl.Lib;
 #if windows
@@ -29,10 +30,13 @@ class PauseSubState extends MusicBeatSubstate
 	var perSongOffset:FlxText;
 	
 	var offsetChanged:Bool = false;
+	var pauseCam:FlxCamera = new FlxCamera();
 
 	public function new(x:Float, y:Float)
 	{
 		super();
+		pauseCam.bgColor.alpha = 0;
+		FlxG.cameras.add(pauseCam);
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -89,7 +93,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		changeSelection();
 
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		cameras = [pauseCam];
 	}
 
 	override function update(elapsed:Float)
@@ -141,7 +145,7 @@ class PauseSubState extends MusicBeatSubstate
 
 					changeSelection();
 
-					cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+					cameras = [pauseCam];
 					offsetChanged = true;
 				}
 			}else if (rightP)
@@ -166,7 +170,7 @@ class PauseSubState extends MusicBeatSubstate
 
 					changeSelection();
 
-					cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+					cameras = [pauseCam];
 					offsetChanged = true;
 				}
 			}
@@ -179,6 +183,7 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
+					FlxG.cameras.remove(pauseCam);
 					close();
 				case "Restart Song":
 					FlxG.resetState();

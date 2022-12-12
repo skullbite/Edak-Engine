@@ -1,5 +1,6 @@
 package;
 
+import EdakDialogueBox.EdakeDialogueBox;
 import hstuff.FunkScript;
 import openfl.Assets as OpenFLAssets;
 import sys.io.File;
@@ -324,7 +325,8 @@ class PlayState extends MusicBeatState
 		HFunk.doDaCallback("onCreate", []);
 
 		//dialogue shit
-		switch (SONG.song.toLowerCase())
+		// considering making a non-week 6 dialogue box
+		/*switch (SONG.song.toLowerCase())
 		{
 			case 'tutorial':
 				dialogue = ["Hey you're pretty cute.", 'Use the arrow keys to keep up \nwith me singing.'];
@@ -349,7 +351,7 @@ class PlayState extends MusicBeatState
 				dialogue = CoolUtil.coolTextFile(Paths.txt('roses/rosesDialogue'));
 			case 'thorns':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
-		}
+		}*/
 
 		curStage = SONG.stage.replace('halloween', 'spooky');
 		if (curStage == '') curStage = 'stage';
@@ -408,12 +410,6 @@ class PlayState extends MusicBeatState
 			FlxG.save.data.downscroll = rep.replay.isDownscroll;
 			// FlxG.watch.addQuick('Queued',inputsQueued);
 		}
-
-		var doof:DialogueBox = new DialogueBox(false, dialogue);
-		// doof.x += 70;
-		// doof.y = FlxG.height * 0.5;
-		doof.scrollFactor.set();
-		doof.finishThing = startCountdown;
 
 		Conductor.songPosition = -5000;
 		
@@ -535,7 +531,6 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-		doof.cameras = [camHUD];
 		if (loadRep)
 			replayTxt.cameras = [camHUD];
 
@@ -550,14 +545,7 @@ class PlayState extends MusicBeatState
 		{
 			switch (curSong.toLowerCase())
 			{
-				// i need to rewrite the dialogue box tbh
-				/*case 'senpai':
-					schoolIntro(doof);*
-				case 'roses':
-					FlxG.sound.play(Paths.sound('ANGRY'));
-					schoolIntro(doof);
-				case 'thorns':
-					schoolIntro(doof);*/
+				/* hard coded cutscenes here i guess */
 				default:
 					if (HFunk.anyExists("onCutscene")) HFunk.doDaCallback("onCutscene", []);
 					else startCountdown();
@@ -571,90 +559,6 @@ class PlayState extends MusicBeatState
 		super.create();
 
 		HFunk.doDaCallback("onCreatePost", []);
-	}
-
-	function schoolIntro(?dialogueBox:DialogueBox):Void
-	{
-		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
-		black.scrollFactor.set();
-		add(black);
-
-		var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31); // 0x1b84ff
-		red.scrollFactor.set();
-
-		var senpaiEvil:FlxSprite = new FlxSprite();
-		senpaiEvil.frames = Paths.getSparrowAtlas('weeb/senpaiCrazy');
-		senpaiEvil.animation.addByPrefix('idle', 'Senpai Pre Explosion', 24, false);
-		senpaiEvil.setGraphicSize(Std.int(senpaiEvil.width * 6));
-		senpaiEvil.scrollFactor.set();
-		senpaiEvil.updateHitbox();
-		senpaiEvil.screenCenter();
-
-		if (SONG.song.toLowerCase() == 'roses' || SONG.song.toLowerCase() == 'thorns')
-		{
-			remove(black);
-
-			if (SONG.song.toLowerCase() == 'thorns')
-			{
-				add(red);
-			}
-		}
-
-		new FlxTimer().start(0.3, function(tmr:FlxTimer)
-		{
-			black.alpha -= 0.15;
-
-			if (black.alpha > 0)
-			{
-				tmr.reset(0.3);
-			}
-			else
-			{
-				if (dialogueBox != null)
-				{
-					inCutscene = true;
-
-					if (SONG.song.toLowerCase() == 'thorns')
-					{
-						add(senpaiEvil);
-						senpaiEvil.alpha = 0;
-						new FlxTimer().start(0.3, function(swagTimer:FlxTimer)
-						{
-							senpaiEvil.alpha += 0.15;
-							if (senpaiEvil.alpha < 1)
-							{
-								swagTimer.reset();
-							}
-							else
-							{
-								senpaiEvil.animation.play('idle');
-								FlxG.sound.play(Paths.sound('Senpai_Dies'), 1, false, null, true, function()
-								{
-									remove(senpaiEvil);
-									remove(red);
-									FlxG.camera.fade(FlxColor.WHITE, 0.01, true, function()
-									{
-										add(dialogueBox);
-									}, true);
-								});
-								new FlxTimer().start(3.2, function(deadTime:FlxTimer)
-								{
-									FlxG.camera.fade(FlxColor.WHITE, 1.6, false);
-								});
-							}
-						});
-					}
-					else
-					{
-						add(dialogueBox);
-					}
-				}
-				else
-					startCountdown();
-
-				remove(black);
-			}
-		});
 	}
 
 	var startTimer:FlxTimer;
@@ -1172,6 +1076,8 @@ class PlayState extends MusicBeatState
 
 		HFunk.doDaCallback("onUpdate", [elapsed]);
 		stage.stageUpdate(elapsed);
+		
+		//trace(FlxG.sound.music.name);
 
 		if (songStarted) { 
 			songTimeTxt.text = CoolUtil.msToTimestamp(FlxG.sound.music.time) + "/" + CoolUtil.msToTimestamp(FlxG.sound.music.length);
@@ -1412,21 +1318,9 @@ class PlayState extends MusicBeatState
 
 			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
-				var offsetX = 0;
-				var offsetY = 0;
-				// camFollow.setPosition(lucky.getMidpoint().x - 120, lucky.getMidpoint().y + 210);
-
-				switch (dad.curCharacter)
-				{
-					case 'mom':
-						camFollow.y = dad.getMidpoint().y;
-					case 'senpai':
-						camFollow.y = dad.getMidpoint().y - 430;
-						camFollow.x = dad.getMidpoint().x - 100;
-					case 'senpai-angry':
-						camFollow.y = dad.getMidpoint().y - 430;
-						camFollow.x = dad.getMidpoint().x - 100;
-				}
+				var offsetX = dad.displaceData.camX;
+				var offsetY = dad.displaceData.camY;
+				camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
 
 				HFunk.doDaCallback("onCamMove", ["dad"]);
 
@@ -1437,8 +1331,9 @@ class PlayState extends MusicBeatState
 			if (PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100)
 			{
 
-				var offsetX = 0;
-				var offsetY = 0;
+				var offsetX = boyfriend.displaceData.camX;
+				var offsetY = boyfriend.displaceData.camY;
+				camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
 
 				switch (curStage)
 				{
@@ -2597,5 +2492,10 @@ class PlayState extends MusicBeatState
 			}
 	}
 
-	var curLight:Int = 0;
+	function openDialogueBox(boxType:String, dialogue:Array<String>, callback:Void -> Void) {
+		var dialogueBox = new EdakeDialogueBox(boxType, dialogue);
+		dialogueBox.finishCallback = callback;
+		dialogueBox.cameras = [camHUD];
+		add(dialogueBox);
+	}
 }

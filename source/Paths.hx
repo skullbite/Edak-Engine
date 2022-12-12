@@ -172,3 +172,22 @@ class StagePaths {
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curStage/$key.txt', 'stages'));
 	}
 }
+
+class DialoguePaths {
+	var curDialogue:String = "";
+	public function new(curDialogue:String) {
+		this.curDialogue = curDialogue;
+	}
+	
+	public function image(key:String) {
+		return Paths.getPath('$curDialogue/$key.png', IMAGE, 'dialogue');
+	}
+
+	public function getSparrowAtlas(key:String) {
+		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curDialogue/$key.xml', 'dialogue'));
+	}
+	
+	public function getPackerAtlas(key:String) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curDialogue/$key.txt', 'dialogue'));
+	}
+}

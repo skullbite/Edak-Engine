@@ -21,4 +21,6 @@ function create() {
     char.antialiasing = false;
     char.displaceData.x += 150;
     char.displaceData.y += 360;
+    char.displaceData.camX -= 200;
+    char.displaceData.camY -= 330;
 }

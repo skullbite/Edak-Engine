@@ -105,7 +105,7 @@ function trainStart() {
 
 function updateTrainPos() {
 	if(FlxG.save.data.distractions){
-		if (vars["trainSound"].time >= 4700)
+		if (vars["trainSound"].time >= 4700 && vars["trainSound"].time <= 4900)
 			{
 				vars["startedMoving"] = true;
 				PlayState.gf.playAnim('hairBlow');
