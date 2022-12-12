@@ -1,6 +1,6 @@
 # Edak Engine (Alpha)
 
-A fork of Kade Engine v1.5 that makes characters, songs events and stages h-scriptable.
+A fork of Kade Engine v1.5 that makes characters, song events and stages h-scriptable.
 
 (Not intended for use on web right now.)
 # Credits
