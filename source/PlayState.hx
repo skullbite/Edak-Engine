@@ -703,7 +703,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
 		}
 
-		FlxG.sound.music.onComplete = endSong;
+		FlxG.sound.music.onComplete = HFunk.anyExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
 		vocals.play();
 
 		// Song duration in a float, useful for the time left feature
@@ -1643,7 +1643,6 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
-		HFunk.doDaCallback("onEndSong", []);
 		if (!loadRep)
 			rep.SaveReplay(saveNotes);
 		else
