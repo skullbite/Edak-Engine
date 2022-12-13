@@ -2232,7 +2232,7 @@ class PlayState extends MusicBeatState
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
 
-			HFunk.doDaCallback("noteMiss", [direction, Conductor.songPosition]);
+			HFunk.doDaCallback("noteMiss", [daNote.ID, direction]);
 
 			updateAccuracy();
 		}
