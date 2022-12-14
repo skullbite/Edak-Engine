@@ -1,5 +1,6 @@
 function onCreate() {
 	importLib("flixel.tweens.FlxEase");
+	game.forceCutscene = true;
 }
 
 function onCutscene() {
@@ -47,4 +48,12 @@ function onCutscene() {
 			});
 		});
 	});
+}
+
+function onCountdownTick(tick) {
+	if (tick == 0) {
+		var offsetX = PlayState.boyfriend.displaceData.camX;
+	    var offsetY = PlayState.boyfriend.displaceData.camY;
+        game.camFollow.setPosition(PlayState.boyfriend.getMidpoint().x - 100 + offsetX, PlayState.boyfriend.getMidpoint().y - 100 + offsetY);
+	}
 }
