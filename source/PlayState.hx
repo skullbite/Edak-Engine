@@ -313,7 +313,7 @@ class PlayState extends MusicBeatState
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
-		var globalScripts = Paths.scriptDir();
+		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx"));;
 		 for (x in globalScripts) {
 			try { 
 				scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
