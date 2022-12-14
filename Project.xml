@@ -83,7 +83,7 @@
 	<assets path="assets/dialogue" library="dialogue"/>
 	<assets path="assets/stages"   library="stages"/>
 	<assets path="assets/characters" library="characters"/>
-	<assets paths="assets/scripts" library="scripts"/>
+	<assets path="assets/scripts" library="scripts"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web"/>
