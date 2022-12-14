@@ -1,6 +1,5 @@
 function onCreate() {
 	importLib("flixel.tweens.FlxEase");
-	game.forceCutscene = true;
 }
 
 function onCutscene() {
