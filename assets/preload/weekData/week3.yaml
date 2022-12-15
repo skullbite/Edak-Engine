@@ -1,0 +1,13 @@
+---
+name: PICO
+songs:
+  - Pico
+  - Philly
+  - Blammed
+colors:
+  - 0x8978cc 
+icons:
+  - pico
+storyDad: pico
+storyBf: bf
+storyGf: gf

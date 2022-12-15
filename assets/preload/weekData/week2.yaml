@@ -1,0 +1,17 @@
+---
+name: Spooky Month
+songs:
+  - Spookeez
+  - South
+  - Monster
+colors:
+  - 0xb2b2b2
+  - 0xb2b2b2
+  - 0x78ff71
+icons:
+  - spooky
+  - spooky
+  - monster
+storyDad: spooky
+storyBf: bf
+storyGf: gf

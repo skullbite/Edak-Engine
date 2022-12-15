@@ -1,5 +1,9 @@
 package;
 
+import yaml.util.ObjectMap.AnyObjectMap;
+import sys.io.File;
+import yaml.Yaml;
+import sys.FileSystem;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
@@ -19,42 +23,24 @@ import Discord.DiscordClient;
 
 using StringTools;
 
+typedef WeekData = {
+	name:String,
+	songs:Array<String>,
+	icons:Array<String>,
+	colors:Array<Array<Int>>,
+	?storyDad:String,
+	storyBf:String,
+	?storyGf:String
+}
+
 class StoryMenuState extends MusicBeatState
 {
 	var scoreText:FlxText;
 
-	var weekData:Array<Dynamic> = [
-		['Tutorial'],
-		['Bopeebo', 'Fresh', 'DadBattle'],
-		['Spookeez', 'South', "Monster"],
-		['Pico', 'Philly', "Blammed"],
-		['Satin-Panties', "High", "Milf"],
-		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
-		['Senpai', 'Roses', 'Thorns']
-	];
+	var weekData:Array<AnyObjectMap> = [];
 	var curDifficulty:Int = 1;
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
-
-	var weekCharacters:Array<Dynamic> = [
-		['', 'bf', 'gf'],
-		['dad', 'bf', 'gf'],
-		['spooky', 'bf', 'gf'],
-		['pico', 'bf', 'gf'],
-		['mom', 'bf', 'gf'],
-		['parents-christmas', 'bf', 'gf'],
-		['senpai', 'bf', 'gf']
-	];
-
-	var weekNames:Array<String> = [
-		"",
-		"Daddy Dearest",
-		"Spooky Month",
-		"PICO",
-		"MOMMY MUST MURDER",
-		"RED SNOW",
-		"Hating Simulator ft. Moawling"
-	];
 
 	var txtWeekTitle:FlxText;
 
@@ -81,6 +67,11 @@ class StoryMenuState extends MusicBeatState
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
+
+		for (x in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$x')));
+			weekData.push(coolWeekData);
+		}
 
 		if (FlxG.sound.music != null)
 		{
@@ -145,9 +136,9 @@ class StoryMenuState extends MusicBeatState
 
 		trace("Line 96");
 
-		grpWeekCharacters.add(new MenuCharacter(0, 100, 0.5, false));
-		grpWeekCharacters.add(new MenuCharacter(450, 25, 0.9, true));
-		grpWeekCharacters.add(new MenuCharacter(850, 100, 0.5, true));
+		grpWeekCharacters.add(new MenuCharacter(weekData[curWeek].get("storyDad"), 0, 100));
+		grpWeekCharacters.add(new MenuCharacter(weekData[curWeek].get("storyBf"), 450, 25));
+		grpWeekCharacters.add(new MenuCharacter(weekData[curWeek].get("storyGf"), 850, 100));
 
 		difficultySelectors = new FlxGroup();
 		add(difficultySelectors);
@@ -206,7 +197,7 @@ class StoryMenuState extends MusicBeatState
 
 		scoreText.text = "WEEK SCORE:" + lerpScore;
 
-		txtWeekTitle.text = weekNames[curWeek].toUpperCase();
+		txtWeekTitle.text = weekData[curWeek].get("name").toUpperCase();
 		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
 
 		// FlxG.watch.addQuick('font', scoreText.font);
@@ -277,11 +268,14 @@ class StoryMenuState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('confirmMenu'));
 
 				grpWeekText.members[curWeek].startFlashing();
-				grpWeekCharacters.members[1].animation.play('bfConfirm');
+				// grpWeekCharacters.members[1].animation.play('bfConfirm');
+				grpWeekCharacters.forEach(d -> {
+					if (d.animation.exists("confirm")) d.animation.play("confirm");
+				});
 				stopspamming = true;
 			}
 
-			PlayState.storyPlaylist = weekData[curWeek];
+			PlayState.storyPlaylist = weekData[curWeek].get("songs");
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
@@ -375,12 +369,12 @@ class StoryMenuState extends MusicBeatState
 
 	function updateText()
 	{
-		grpWeekCharacters.members[0].setCharacter(weekCharacters[curWeek][0]);
-		grpWeekCharacters.members[1].setCharacter(weekCharacters[curWeek][1]);
-		grpWeekCharacters.members[2].setCharacter(weekCharacters[curWeek][2]);
+		grpWeekCharacters.members[0].setCharacter(weekData[curWeek].get("storyDad"));
+		grpWeekCharacters.members[1].setCharacter(weekData[curWeek].get("storyBf"));
+		grpWeekCharacters.members[2].setCharacter(weekData[curWeek].get("storyGf"));
 
 		txtTracklist.text = "Tracks\n";
-		var stringThing:Array<String> = weekData[curWeek];
+		var stringThing:Array<String> = weekData[curWeek].get("songs");
 
 		for (i in stringThing)
 			txtTracklist.text += "\n" + i;

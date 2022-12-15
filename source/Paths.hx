@@ -64,6 +64,10 @@ class Paths
 		return File.applicationDirectory.resolvePath('assets/scripts').getDirectoryListing().map(d -> d.name);
 	}
 
+	inline static public function weekData(key:String) {
+		return getPath('weekData/$key.yaml', TEXT, null);
+	}
+
 	inline static public function lua(key:String,?library:String)
 	{
 		return getPath('data/$key.lua', TEXT, library);
@@ -88,6 +92,7 @@ class Paths
 	{
 		return getPath('data/$key.json', TEXT, library);
 	}
+
 
 	static public function sound(key:String, ?library:String)
 	{

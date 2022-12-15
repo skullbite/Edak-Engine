@@ -1,8 +1,24 @@
 package;
 
+import yaml.util.ObjectMap.AnyObjectMap;
+import yaml.Yaml;
+import sys.FileSystem;
+import sys.io.File;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+typedef CharacterJsonData = {
+	?storyAssets:String,
+	anims: {
+		idle:String,
+		?confirm:String
+	},
+	x: Int,
+	y: Int,
+	scale: Float,
+	flipped: Bool,
+	framerate: Int
+}
 class CharacterSetting
 {
 	public var x(default, null):Int;
@@ -33,33 +49,37 @@ class MenuCharacter extends FlxSprite
 	];
 
 	private var flipped:Bool = false;
+	private var charData:AnyObjectMap;
 
-	public function new(x:Int, y:Int, scale:Float, flipped:Bool)
+	public function new(char:String, x:Int, y:Int)
 	{
 		super(x, y);
-		this.flipped = flipped;
-
 		antialiasing = true;
+		if (char == null) {
+			animation.add("idle", [0]);
+			visible = false;
+			return;
+		}
+		else visible = true;
+		
+		if (FileSystem.exists(Sys.getCwd() + Paths.weekData('characters/$char'))) charData = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('characters/$char')));
+		flipped = charData.get("flipped");
 
-		frames = Paths.getSparrowAtlas('campaign_menu_UI_characters');
+		
 
-		animation.addByPrefix('bf', "BF idle dance white", 24);
-		animation.addByPrefix('bfConfirm', 'BF HEY!!', 24, false);
-		animation.addByPrefix('gf', "GF Dancing Beat WHITE", 24);
-		animation.addByPrefix('dad', "Dad idle dance BLACK LINE", 24);
-		animation.addByPrefix('spooky', "spooky dance idle BLACK LINES", 24);
-		animation.addByPrefix('pico', "Pico Idle Dance", 24);
-		animation.addByPrefix('mom', "Mom Idle BLACK LINES", 24);
-		animation.addByPrefix('parents-christmas', "Parent Christmas Idle", 24);
-		animation.addByPrefix('senpai', "SENPAI idle Black Lines", 24);
+		frames = Paths.getSparrowAtlas(charData.get("storyAssets") != null ? charData.get("storyAssets") : "campaign_menu_UI_characters");
 
-		setGraphicSize(Std.int(width * scale));
+		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
+		if (charData.get("anims").get("confirm") != null) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
+		
+		// offset.set(charData.get("x"), charData.get("y"));
+		setGraphicSize(Std.int(width * charData.get("scale")));
 		updateHitbox();
 	}
 
 	public function setCharacter(character:String):Void
 	{
-		if (character == '')
+		if (character == '' || character == null)
 		{
 			visible = false;
 			return;
@@ -69,11 +89,16 @@ class MenuCharacter extends FlxSprite
 			visible = true;
 		}
 
-		animation.play(character);
+		if (FileSystem.exists(Sys.getCwd() + Paths.weekData('characters/$character'))) charData = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('characters/$character')));
+		frames = Paths.getSparrowAtlas(charData.get("storyAssets") != null ? charData.get("storyAssets") : "campaign_menu_UI_characters");
 
-		var setting:CharacterSetting = settings[character];
-		offset.set(setting.x, setting.y);
-		setGraphicSize(Std.int(width * setting.scale));
-		flipX = setting.flipped != flipped;
+		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
+		if (charData.get("anims").get("confirm") != null) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
+
+		animation.play("idle");
+
+		offset.set(charData.get("x"), charData.get("y"));
+		setGraphicSize(Std.int(width * charData.get("scale")));
+		flipX = charData.get("flipped");
 	}
 }

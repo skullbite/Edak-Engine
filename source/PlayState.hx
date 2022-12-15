@@ -101,8 +101,6 @@ class PlayState extends MusicBeatState
 
 	public static var noteBools:Array<Bool> = [false, false, false, false];
 
-	var halloweenLevel:Bool = false;
-
 	var songLength:Float = 0;
 	
 	/*#if windows
@@ -246,6 +244,7 @@ class PlayState extends MusicBeatState
 
 		repPresses = 0;
 		repReleases = 0;
+		Paths.setCurrentLevel("week" + PlayState.storyWeek);
 
 		#if windows
 		executeModchart = FileSystem.exists(Paths.lua(PlayState.SONG.song.toLowerCase()  + "/modchart"));
@@ -254,7 +253,7 @@ class PlayState extends MusicBeatState
 		executeModchart = false; // FORCE disable for non cpp targets
 		#end
 
-		trace('Mod chart: ' + executeModchart + " - " + Paths.lua(PlayState.SONG.song.toLowerCase() + "/modchart"));
+		// trace('Mod chart: ' + executeModchart + " - " + Paths.lua(PlayState.SONG.song.toLowerCase() + "/modchart"));
 
 		#if desktop
 		// Making difficulty text for Discord Rich Presence.
@@ -314,7 +313,7 @@ class PlayState extends MusicBeatState
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
 		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx"));
-		 for (x in globalScripts) {
+		for (x in globalScripts) {
 			try { 
 				scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
 			}
@@ -323,6 +322,7 @@ class PlayState extends MusicBeatState
 		for (k => v in scripts) HFunk.loadScript(k, v);
 
 		HFunk.doDaCallback("onCreate", []);
+		
 
 		//dialogue shit
 		// considering making a non-week 6 dialogue box
@@ -2187,8 +2187,8 @@ class PlayState extends MusicBeatState
 						spr.animation.play('pressed');
 					if (!holdArray[spr.ID])
 						spr.animation.play('static');
-		 
-					if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
+
+					if (spr.animation.curAnim != null && spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
 					{
 						spr.centerOffsets();
 						spr.offset.x -= 13;

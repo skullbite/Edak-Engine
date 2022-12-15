@@ -1,5 +1,10 @@
 package;
 
+import flixel.tweens.FlxTween;
+import yaml.util.ObjectMap.AnyObjectMap;
+import yaml.Yaml;
+import sys.io.File;
+import sys.FileSystem;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -11,7 +16,7 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 
 
-#if windows
+#if desktop
 import Discord.DiscordClient;
 #end
 
@@ -21,6 +26,8 @@ class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
 
+	var bg:FlxSprite;
+	var colorTween:FlxTween;
 	var selector:FlxText;
 	public static var curSelected:Int = 0;
 	var curDifficulty:Int = 1;
@@ -43,11 +50,18 @@ class FreeplayState extends MusicBeatState
 	{
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
-		for (i in 0...initSonglist.length)
-		{
-			var data:Array<String> = initSonglist[i].split(':');
-			songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1]));
+		for (x in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$x')));
+			var songList:Array<String> = coolWeekData.get("songs");
+			var colorList:Array<Int> = coolWeekData.get("colors");
+			var iconList:Array<String> = coolWeekData.get("icons");
+			for (x in 0...songList.length) {
+				var icon = iconList[iconList.length == 1 ? 0 : x];
+				var color = colorList[colorList.length == 1 ? 0 : x];
+				songs.push(new SongMetadata(songList[x], x, icon, color));
+			}
 		}
+
 
 		// todo: play song button because lag
 		if (FlxG.sound.music != null)
@@ -57,7 +71,7 @@ class FreeplayState extends MusicBeatState
 		}
 		 
 
-		 #if windows
+		 #if desktop
 		 // Updating Discord Rich Presence
 		 DiscordClient.changePresence("In the Freeplay Menu", null);
 		 #end
@@ -72,7 +86,7 @@ class FreeplayState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
+		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -150,7 +164,7 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
+	/*public function addSong(songName:String, weekNum:Int, songCharacter:String)
 	{
 		songs.push(new SongMetadata(songName, weekNum, songCharacter));
 	}
@@ -168,7 +182,7 @@ class FreeplayState extends MusicBeatState
 			if (songCharacters.length != 1)
 				num++;
 		}
-	}
+	}*/
 
 	override function update(elapsed:Float)
 	{
@@ -277,6 +291,17 @@ class FreeplayState extends MusicBeatState
 		// lerpScore = 0;
 		#end
 
+		bg.color = songs[curSelected].color;
+
+		// i honestly don't know why this isn't working so i'll come back to it
+		/*if (bg.color != songs[curSelected].color) {
+			trace(songs[curSelected].color);
+			if (colorTween != null) colorTween.cancel();
+		    colorTween = FlxTween.color(bg, .5, bg.color, songs[curSelected].color, {
+		    	onComplete: t -> colorTween = null
+		    });
+		}*/
+		
 		/*#if PRELOAD_ALL
 		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 		#end*/
@@ -312,11 +337,13 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
+	public var color:FlxColor = 0;
 
-	public function new(song:String, week:Int, songCharacter:String)
+	public function new(song:String, week:Int, songCharacter:String, color:FlxColor)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
+		this.color = color;
 	}
 }

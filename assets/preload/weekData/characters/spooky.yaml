@@ -1,0 +1,9 @@
+---
+storyAssets: campaign_menu_UI_characters
+anims:
+  idle: spooky dance idle BLACK LINES
+x: 20
+y: 70
+scale: 0.7
+flipped: false
+framerate: 24

@@ -1,0 +1,17 @@
+---
+name: RED SNOW
+songs:
+  - Cocoa
+  - Eggnog
+  - Winter-Horrorland
+colors:
+  - 0xf191ba
+  - 0xf191ba
+  - 0x78ff71
+icons:
+  - parents-christmas
+  - parents-christmas
+  - monster
+storyDad: parents-christmas
+storyBf: bf
+storyGf: gf
