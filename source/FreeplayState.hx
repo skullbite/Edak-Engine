@@ -48,7 +48,7 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
+		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
 		for (x in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
 			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$x')));
