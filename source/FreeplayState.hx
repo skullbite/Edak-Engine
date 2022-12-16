@@ -50,15 +50,15 @@ class FreeplayState extends MusicBeatState
 	{
 		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
-		for (x in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$x')));
+		for (week in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$week')));
 			var songList:Array<String> = coolWeekData.get("songs");
 			var colorList:Array<Int> = coolWeekData.get("colors");
 			var iconList:Array<String> = coolWeekData.get("icons");
 			for (x in 0...songList.length) {
 				var icon = iconList[iconList.length == 1 ? 0 : x];
 				var color = colorList[colorList.length == 1 ? 0 : x];
-				songs.push(new SongMetadata(songList[x], x, icon, color));
+				songs.push(new SongMetadata(songList[x], week, icon, color));
 			}
 		}
 

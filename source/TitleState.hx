@@ -79,8 +79,10 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-
 		FlxG.save.bind('funkin', 'ninjamuffin99');
+		/*trace(Reflect.getProperty(FlxG.save.data, "downscroll"));
+		Reflect.setProperty(FlxG.save.data, "downscroll", true);
+		trace(Reflect.getProperty(FlxG.save.data, "downscroll"));*/
 
 		KadeEngineData.initSave();
 
