@@ -773,7 +773,7 @@ class PlayState extends MusicBeatState
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 		for (section in noteData)
 		{
-			var coolSection:Int = Std.int(section.lengthInSteps / 4);
+			var coolSection:Int = Std.int(16 / 4);
 
 			for (songNotes in section.sectionNotes)
 			{
@@ -1658,12 +1658,9 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
-		if (SONG.validScore)
-		{
-			#if !switch
-			Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
-			#end
-		}
+		#if !switch
+		Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
+		#end
 
 		if (offsetTesting)
 		{
@@ -1692,7 +1689,7 @@ class PlayState extends MusicBeatState
 					// if ()
 					StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 
-					if (SONG.validScore) Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 
 					FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
 					FlxG.save.flush();
@@ -2452,7 +2449,7 @@ class PlayState extends MusicBeatState
 		var nextSect = SONG.notes[Math.floor(curStep / 16)];
 		if (nextSect != null)
 		{
-			if (nextSect.changeBPM && nextSect.bpm != Conductor.bpm)
+			if (nextSect.bpm != null && nextSect.bpm != Conductor.bpm)
 			{
 				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
 				FlxG.log.add('CHANGED BPM!');

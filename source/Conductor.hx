@@ -50,7 +50,7 @@ class Conductor
 		var totalPos:Float = 0;
 		for (i in 0...song.notes.length)
 		{
-			if(song.notes[i].changeBPM && song.notes[i].bpm != curBPM)
+			if(song.notes[i].bpm != null && song.notes[i].bpm != curBPM)
 			{
 				curBPM = song.notes[i].bpm;
 				var event:BPMChangeEvent = {
@@ -61,7 +61,7 @@ class Conductor
 				bpmChangeMap.push(event);
 			}
 
-			var deltaSteps:Int = song.notes[i].lengthInSteps;
+			var deltaSteps:Int = 16;
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
