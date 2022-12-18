@@ -44,6 +44,7 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
+	var menuTween:FlxTween;
 	public static var finishedFunnyMove:Bool = false;
 
 	override function create()
@@ -261,7 +262,9 @@ class MainMenuState extends MusicBeatState
 			{
 				if (huh != 0) spr.y -= 20;
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				// camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				if (menuTween != null) menuTween.cancel();
+				menuTween = FlxTween.tween(camFollow, { x: spr.getGraphicMidpoint().x, y: spr.getGraphicMidpoint().y }, 0.7, { ease: FlxEase.circOut });
 			}
 			if (spr.ID == last && huh != 0) spr.y += 20;
 			spr.updateHitbox();
