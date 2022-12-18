@@ -1666,7 +1666,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			offsetTesting = false;
-			LoadingState.loadAndSwitchState(new OptionsMenu());
+			LoadingState.loadAndSwitchState(new OptionsState());
 			FlxG.save.data.offset = offsetTest;
 		}
 		else
@@ -2228,8 +2228,8 @@ class PlayState extends MusicBeatState
 				case 3:
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
-
-			HFunk.doDaCallback("noteMiss", [daNote.ID, direction]);
+ 
+			if (Settings.get("ghost")) HFunk.doDaCallback("noteMiss", [daNote.ID, direction]);
 
 			updateAccuracy();
 		}

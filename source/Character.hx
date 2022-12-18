@@ -107,9 +107,10 @@ class Character extends FlxSprite
 
 		super.update(elapsed);
 
+		if (animation.curAnim.finished && animation.getByName('${animation.curAnim.name}Loop') != null) playAnim('${animation.curAnim.name}Loop', true);
 		if (CharScript != null && CharScript.funcExists("update")) {
 			CharScript.exec("update", [elapsed]);
-			if (animation.curAnim.finished && animation.getByName('${animation.curAnim.name}Loop') != null) playAnim('${animation.curAnim.name}Loop');
+			
 			return;
 		}
 

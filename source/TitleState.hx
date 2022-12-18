@@ -80,7 +80,13 @@ class TitleState extends MusicBeatState
 		super.create();
 
 		FlxG.save.bind('funkin', 'ninjamuffin99');
-		KadeEngineData.initSave();
+		
+		#if FORCERESET
+		    // this flag causes random lag so be careful
+		    FlxG.save.erase();
+		#end
+		
+		Settings.init();
 
 		Highscore.load();
 

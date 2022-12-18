@@ -24,6 +24,7 @@ function create() {
 	
 		for (i in 0...5) {
 			var dancer = new FlxSprite((370 * i) + 130, bgLimo.y - 400);
+			dancer.antialiasing = true;
 			/*dancer.animation.remove("danceLeft");
 			dancer.animation.remove("danceRight");*/
 			dancer.frames = Paths.getSparrowAtlas('limoDancer');

@@ -1,3 +1,4 @@
+import openfl.Lib;
 import flixel.FlxG;
 
 typedef SettingsData = {
@@ -5,8 +6,8 @@ typedef SettingsData = {
     value:Dynamic,
     ?description:String,
     type:String,
-    ?min:Int,
-    ?max:Int,
+    ?min:Float,
+    ?max:Float,
     ?options:Array<String>
 }; 
 // todo
@@ -16,7 +17,21 @@ class Settings {
             "downscroll" => {
                 displayName: "Downscroll",
                 type: "bool",
-                value: true
+                value: false
+            },
+            "scrollSpeed" => {
+                displayName: "Scroll Speed",
+                type: "float",
+                value: 1,
+                min: 1,
+                max: 4
+            },
+            "offset" => {
+                displayName: "Audio Offset",
+                type: "float",
+                value: 0,
+                min: -999,
+                max: 999
             },
             "ghost" => {
                 displayName: "Ghost Tapping",
@@ -41,6 +56,16 @@ class Settings {
                 displayName: "Allow Reset",
                 type: "bool",
                 value: false
+            },
+            "controls" => {
+                displayName: "Set Controls",
+                type: "substate",
+                value: null
+            },
+            "customize" => {
+                displayName: "Customize Gameplay",
+                type: "state",
+                value: null
             }
         ],
         "Appearance" => [
@@ -84,12 +109,32 @@ class Settings {
         ]
     ];
 
+    // if you intend on editing a variable via the state/substate, instead of the settings menu, you can init those variables here
+    public static var extInits:Map<String, Dynamic> = [
+        "changedHit" => false,
+        "changedHitX" => -1,
+        "changedHitY" => -1,
+    ];
+
     public static function init() {
         for (cat in categories) {
             for (k => v in cat) {
-                if (!Reflect.hasField(FlxG.save.data, k)) Reflect.setProperty(FlxG.save.data, k, v.value);
+                if (v.value != null) {
+                    if (!Reflect.hasField(FlxG.save.data, k)) set(k, v.value);
+                }
             } 
-        } 
+        }
+        for (k => v in extInits) {
+            if (!Reflect.hasField(FlxG.save.data, k)) set(k, v);
+        }
+
+        Conductor.recalculateTimings();
+		PlayerSettings.player1.controls.loadKeyBinds();
+		KeyBinds.keyCheck();
+
+        FlxG.save.flush();
+
+		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
     }
 
     public static function get(settingKey:String):Dynamic return Reflect.getProperty(FlxG.save.data, settingKey);

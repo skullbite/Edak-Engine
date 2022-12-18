@@ -1,15 +1,15 @@
 function create() {
     char.frames = Paths.getSparrowAtlas("bfCar");
     char.animation.addByPrefix('idle', 'BF idle dance', 24, false);
-    char.animation.addByIndices('idleLoop', 'BF idle dance', [8, 9, 10, 11, 12, 13], "", 24);
+    char.animation.addByIndices('idleLoop', 'BF idle dance', [8, 9, 10, 11, 12, 13], "", 24, true);
     char.animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
-    char.animation.addByIndices('singUPLoop', 'BF NOTE UP0', [18, 19, 20, 21, 22, 13], "", 24);
+    char.animation.addByIndices('singUPLoop', 'BF NOTE UP0', [18, 19, 20, 21, 22, 13], "", 24, true);
     char.animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
-    char.animation.addByIndices('singLEFTLoop', 'BF NOTE LEFT0', [10, 11, 12, 13, 14, 15], "", 24);
+    char.animation.addByIndices('singLEFTLoop', 'BF NOTE LEFT0', [10, 11, 12, 13, 14, 15], "", 24, true);
     char.animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
-    char.animation.addByIndices('singRIGHTLoop', 'BF NOTE RIGHT0', [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46], "", 24);
+    char.animation.addByIndices('singRIGHTLoop', 'BF NOTE RIGHT0', [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46], "", 24, true);
     char.animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
-    char.animation.addByIndices('singDOWNLoop', 'BF NOTE DOWN0', [20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+    char.animation.addByIndices('singDOWNLoop', 'BF NOTE DOWN0', [20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, true);
     char.animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
     char.animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
     char.animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);

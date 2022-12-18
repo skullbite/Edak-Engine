@@ -1,5 +1,7 @@
 package;
 
+import flixel.math.FlxMath;
+import flixel.FlxCamera;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -13,8 +15,10 @@ import flixel.FlxSprite;
 class TickText extends FlxText {
     public var key:String;
     public var firstTick:Bool = true;
-    override function new(x:Int, y:Int, settingsKey:String) {
+    public var type:String;
+    override function new(x:Int, y:Int, type:String, settingsKey:String) {
         super(x, y, 0, "", 35);
+        this.type = type;
         key = settingsKey;
         font = Paths.font("vcr.ttf");
         borderStyle = OUTLINE;
@@ -27,7 +31,7 @@ class BoolValueText extends TickText {
     var value:Bool;
     var markupRules:Array<FlxTextFormatMarkerPair>;
     override public function new(x:Int, y:Int, key:String) {
-        super(x, y, key);
+        super(x, y, "bool", key);
         this.value = Settings.get(key);
         markupRules = [new FlxTextFormatMarkerPair(new FlxTextFormat(FlxColor.LIME), "!"), new FlxTextFormatMarkerPair(new FlxTextFormat(FlxColor.RED), ".")];
 
@@ -48,7 +52,7 @@ class StringValueText extends TickText {
     var values:Array<String> = [];
     var curValue:Int;
     override public function new(x:Int, y:Int, key:String, values:Array<String>) {
-        super(x, y, key);
+        super(x, y, "string", key);
         this.values = values;
         curValue = values.indexOf(Settings.get(key));
 
@@ -66,11 +70,11 @@ class StringValueText extends TickText {
 }
 
 class IntValueText extends TickText {
-    var min:Int;
-    var max:Int;
-    public var curValue:Int;
-    override public function new(x:Int, y:Int, key:String, min:Int, max:Int) {
-        super(x, y, key);
+    var min:Float;
+    var max:Float;
+    public var curValue:Float;
+    override public function new(x:Int, y:Int, type:String, key:String, min:Float, max:Float) {
+        super(x, y, type, key);
         curValue = Settings.get(key);
         this.min = min;
         this.max = max;
@@ -90,9 +94,57 @@ class IntValueText extends TickText {
     }
 }
 
-// incomplete replacement state for the options state
-// inspired by the v1.8 options menu
-class OptionsTestState extends MusicBeatState {
+class FloatValueText extends IntValueText {
+    override public function tick(change=0) {
+        var floatChange = Std.int(change * 100) * 0.001;
+        floatChange = FlxMath.roundDecimal(floatChange, 1);
+       
+        if (curValue + floatChange  < min) return;
+        else if (curValue + floatChange > max) return;
+        else curValue += floatChange;
+        var finalThing = FlxMath.roundDecimal(curValue, 1);
+        if (!firstTick) Settings.set(key, finalThing);
+        
+        var thingy = Std.string(finalThing);
+        if (thingy.length == 1) thingy += ".0";
+        text = '< $thingy >';
+        if (firstTick) firstTick = false;
+    }
+}
+
+class StateOpenText extends TickText {
+    override public function new(x:Int, y:Int, key:String) {
+        super(x, y, "state", key);
+        text = "PRESS ENTER TO EDIT";
+    }
+
+    override public function tick(_=0) {
+        switch (key) {
+            case "customize": FlxG.switchState(new GameplayCustomizeState());
+        }
+    }
+    
+}
+class SubStateOpenText extends TickText {
+    override public function new(x:Int, y:Int, key:String) {
+        super(x, y, "substate", key);
+        text = "PRESS ENTER TO EDIT";
+    }
+
+    override public function tick(_=0) {
+        OptionsState.instance.persistentUpdate = false;
+        OptionsState.instance.persistentDraw = false;
+        OptionsState.instance.acceptInput = false;
+        switch (key) {
+            case "controls": OptionsState.instance.openSubState(new KeyBindMenu());
+        }
+    }
+}
+
+// replacement state for the options state
+// inspired by the KE v1.8 options menu
+class OptionsState extends MusicBeatState {
+    static public var instance:OptionsState;
     var baseBox:FlxSprite;
     var topBox:FlxSprite;
     var settingCatText:FlxText;
@@ -105,10 +157,17 @@ class OptionsTestState extends MusicBeatState {
     var highlightChar:FlxText;
     var bgHighlight:FlxSprite;
     var darkThing:FlxSprite;
+    public var acceptInput:Bool = true;
+    // public var subCam:FlxCamera;
+
     override function create() {
         super.create();
+        instance = this;
         for (k => _ in Settings.categories) categories.push(k);
         categories.reverse();
+        /*subCam = new FlxCamera();
+        subCam.bgColor.alpha = 0;
+        FlxG.cameras.add(subCam);*/
 
         var bg = new FlxSprite(Paths.image('menuDesat'));
         bg.color = 0xFFea71fd;
@@ -161,8 +220,13 @@ class OptionsTestState extends MusicBeatState {
         super.update(elapsed);
         highlightChar.visible = categorySelected;
         darkThing.visible = !categorySelected;
+        if (!acceptInput) return;
         if (FlxG.keys.justPressed.ESCAPE) { 
-            if (!categorySelected) FlxG.switchState(new MainMenuState());
+            if (!categorySelected) {
+                // FlxG.cameras.remove(subCam);
+                FlxG.save.flush();
+                FlxG.switchState(new MainMenuState());
+            }
             else {
                 categorySelected = false;
                 curSetting = 0;
@@ -175,12 +239,20 @@ class OptionsTestState extends MusicBeatState {
         if (controls.LEFT_P) {
             FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
             if (!categorySelected) switchCategory(-1);
-            else changeSetting(-1);
+            else {
+                if (!StringTools.contains(optionTicks.members[curSetting].type, "state")) changeSetting(-1);
+                //else if (optionTicks.members[curSetting].key)
+            }
         }
         if (controls.RIGHT_P) {
             FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
             if (!categorySelected) switchCategory(1);
-            else changeSetting(1);
+            else {
+                if (!StringTools.contains(optionTicks.members[curSetting].type, "state")) changeSetting(1);
+                /*else if (optionTicks.members[curSetting].type == "float") {
+                    if (FlxG.keys.pressed.RIGHT) changed
+                }*/
+            }
         }
         if (controls.UP_P && categorySelected) {
             FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
@@ -191,10 +263,12 @@ class OptionsTestState extends MusicBeatState {
             switchSetting(1);
         }
         if (FlxG.keys.justPressed.ENTER) {
-            
             if (!categorySelected) {
                 FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
                 categorySelected = true;
+            }
+            else {
+                if (StringTools.contains(optionTicks.members[curSetting].type, "state")) changeSetting();
             }
         }
     }
@@ -241,8 +315,11 @@ class OptionsTestState extends MusicBeatState {
             var tick:TickText = null;
             switch (v.type) {
                 case "string": tick = new StringValueText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), k, v.options);
-                case "int": tick = new IntValueText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), k, v.min, v.max);
+                case "int": tick = new IntValueText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), "int", k, v.min, v.max);
+                case "float": tick = new FloatValueText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), "float", k, v.min, v.max);
                 case "bool": tick = new BoolValueText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), k);
+                case "state": tick = new StateOpenText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), k);
+                case "substate": tick = new SubStateOpenText(Std.int(baseBox.width - 20), Std.int((topBox.height + 60) + (stuff * mod)), k);
             }
             tick.x = baseBox.width - tick.width + 60;
             settingsGroup.add(option);
