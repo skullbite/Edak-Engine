@@ -201,8 +201,6 @@ class PlayState extends MusicBeatState
 	private var allowedToHeadbang:Bool = false;
 	// Per song additive offset
 	public static var songOffset:Float = 0;
-	// BotPlay text
-	private var botPlayState:FlxText;
 	// Replay shit
 	private var saveNotes:Array<Float> = [];
 
@@ -473,13 +471,6 @@ class PlayState extends MusicBeatState
 		{
 			add(replayTxt);
 		}
-		// Literally copy-paste of the above, fu
-		botPlayState = new FlxText(healthBarBG.x + healthBarBG.width / 2 - 75, healthBarBG.y + (FlxG.save.data.downscroll ? 100 : -100), 0, "BOTPLAY", 20);
-		botPlayState.setFormat(Paths.font("vcr.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-		botPlayState.borderSize = 3;
-		botPlayState.scrollFactor.set();
-		
-		if(FlxG.save.data.botplay && !loadRep) add(botPlayState);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -515,7 +506,7 @@ class PlayState extends MusicBeatState
 
 		scoreTxt = new FlxText(0, healthBarBG.y + 30, 0, "", 20);
 		scoreTxt.screenCenter(X);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), Settings.get("botplay") ? 30 : 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		scoreTxt.borderSize = 2;
 		scoreTxt.scrollFactor.set();
 		if (offsetTesting)
@@ -795,7 +786,9 @@ class PlayState extends MusicBeatState
 				else
 					oldNote = null;
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
+				var daNoteType:String = songNotes[3] != null ? songNotes[3] : "Normal";
+
+				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, daNoteType);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.scrollFactor.set(0, 0);
 
@@ -808,7 +801,7 @@ class PlayState extends MusicBeatState
 				{
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, daNoteType);
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -1116,7 +1109,14 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		scoreTxt.text = Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy);
+		if (!Settings.get("botplay")) {
+			scoreTxt.text = Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy);
+			scoreTxt.size = 20;
+		}
+		else {
+			scoreTxt.size = 30;
+			scoreTxt.text = "BOTPLAY";
+		}
 		scoreTxt.screenCenter(X);
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
@@ -1517,7 +1517,7 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
-						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData]);
+						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData, daNote.isSustainNote, daNote.dadShouldHit]);
 						if (SONG.song != 'Tutorial')
 							camZooming = true;
 
@@ -1528,7 +1528,16 @@ class PlayState extends MusicBeatState
 							if (SONG.notes[Math.floor(curStep / 16)].altAnim)
 								altAnim = '-alt';
 						}
-	
+
+						if (!daNote.dadShouldHit) {
+							new FlxTimer().start(2, t -> {
+								daNote.active = false;
+						        daNote.kill();
+						        notes.remove(daNote, true);
+						        daNote.destroy();
+							});
+							return;
+						}
 						switch (Math.abs(daNote.noteData))
 						{
 							case 2:
@@ -1597,7 +1606,7 @@ class PlayState extends MusicBeatState
 					// WIP interpolation shit? Need to fix the pause issue
 					// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 	
-					if ((daNote.mustPress && daNote.tooLate && !FlxG.save.data.downscroll || daNote.mustPress && daNote.tooLate && FlxG.save.data.downscroll) && daNote.mustPress)
+					if ((daNote.mustPress && daNote.tooLate && !FlxG.save.data.downscroll || daNote.mustPress && daNote.tooLate && FlxG.save.data.downscroll) && daNote.mustPress && daNote.bfShouldHit)
 					{
 							if (daNote.isSustainNote && daNote.wasGoodHit)
 							{
@@ -2334,7 +2343,21 @@ class PlayState extends MusicBeatState
 
 		function goodNoteHit(note:Note, resetMashViolation = true):Void
 			{
-				HFunk.doDaCallback("goodNoteHit", [note.ID, note.noteData]);
+				if (!note.bfShouldHit) {
+					playerStrums.forEach(function(spr:FlxSprite){
+							if (Math.abs(note.noteData) == spr.ID)
+							{
+								spr.animation.play('confirm', true);
+							}
+					});
+					noteMiss(note.noteData, note);
+					note.kill();
+					notes.remove(note, true);
+					note.destroy();
+					return;
+				}
+
+				HFunk.doDaCallback("goodNoteHit", [note.ID, note.noteData, note.isSustainNote, note.noteType]);
 
 				if (mashing != 0)
 					mashing = 0;
@@ -2380,6 +2403,7 @@ class PlayState extends MusicBeatState
 
 					if(!loadRep && note.mustPress)
 						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));
+					
 					
 					playerStrums.forEach(function(spr:FlxSprite)
 					{

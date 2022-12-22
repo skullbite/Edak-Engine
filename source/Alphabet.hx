@@ -274,7 +274,7 @@ class AlphaCharacter extends FlxSprite
 		}
 
 		animation.addByPrefix(letter, letter + " " + letterCase, 24);
-		animation.play(letter);
+		if (animation.exists(letter)) animation.play(letter);
 		updateHitbox();
 
 		FlxG.log.add('the row' + row);

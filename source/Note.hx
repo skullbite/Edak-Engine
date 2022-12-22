@@ -23,8 +23,14 @@ class Note extends FlxSprite
 	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var noteType:String;
+	public var noteAssetPath:String = "NOTE_assets";
+	public var dadShouldHit:Bool = true;
+	public var bfShouldHit:Bool = true;
 
 	public var noteScore:Float = 1;
+	// v1.8 stuff
+	public var yOFF:Int = 0;
 	
 	public static var colors:Array<String> = ["purple", "blue", "green", "red"];
 	public static var swagWidth:Float = 160 * 0.7;
@@ -35,7 +41,7 @@ class Note extends FlxSprite
 
 	public var rating:String = "shit";
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?noteType:String="Normal")
 	{
 		super();
 
@@ -43,6 +49,16 @@ class Note extends FlxSprite
 			prevNote = this;
 
 		this.prevNote = prevNote;
+		
+		// hardcoding this at first but when it's done i'll get it on hscript or whatever.
+		// i guess your custom notes have to have the same xml anim names as the default one
+		this.noteType = noteType;
+		switch (this.noteType) {
+			case "Normal": 
+				if (PlayState.SONG.noteStyle == "pixel") noteAssetPath = "arrows-pixels";
+			case "Blammed Note":
+				noteAssetPath = "blammed_notes_idk";
+		}
 		isSustainNote = sustainNote;
 
 		x += 50;
@@ -60,7 +76,7 @@ class Note extends FlxSprite
 		switch (PlayState.SONG.noteStyle)
 		{
 			case 'pixel':
-				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels','week6'), true, 17, 17);
+				loadGraphic(Paths.image('weeb/pixelUI/$noteAssetPath','week6'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
 				animation.add('redScroll', [7]);
@@ -85,7 +101,7 @@ class Note extends FlxSprite
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
 			default:
-				frames = Paths.getSparrowAtlas('NOTE_assets');
+				frames = Paths.getSparrowAtlas(noteAssetPath);
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');
@@ -108,7 +124,7 @@ class Note extends FlxSprite
 		}
 
 		x += swagWidth * noteData;
-		animation.play('${colors[noteData]}Scroll');
+		if (animation.exists('${colors[noteData]}Scroll')) animation.play('${colors[noteData]}Scroll');
 
 		// trace(prevNote);
 
@@ -138,6 +154,7 @@ class Note extends FlxSprite
 				case 0:
 					animation.play('purpleholdend');
 			}
+			yOFF = 20;
 
 			updateHitbox();
 
@@ -160,7 +177,6 @@ class Note extends FlxSprite
 					case 3:
 						prevNote.animation.play('redhold');
 				}*/
-
 
 				if(FlxG.save.data.scrollSpeed != 1)
 					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * FlxG.save.data.scrollSpeed;

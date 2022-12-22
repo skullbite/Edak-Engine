@@ -41,7 +41,7 @@ class HealthIcon extends FlxSprite
 				antialiasing = false;
 		}
 
-		scrollFactor.set();
+		// scrollFactor.set();
 	}
 
 

@@ -1,5 +1,6 @@
 package;
 
+import openfl.Lib;
 import flixel.math.FlxMath;
 import flixel.FlxCamera;
 import flixel.tweens.FlxEase;
@@ -41,6 +42,9 @@ class BoolValueText extends TickText {
         if (!firstTick) {
             value = !value;
             Settings.set(key, value);
+            switch (key) {
+                case "fps": (cast (Lib.current.getChildAt(0), Main)).toggleFPS(value);
+            }
         }
 
         applyMarkup('< ${value ? "!ON!" : ".OFF."} >', markupRules);
