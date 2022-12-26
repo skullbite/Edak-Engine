@@ -1,6 +1,6 @@
 # Edak Engine (Alpha)
 
-A fork of Kade Engine v1.5 that makes characters, song events and stages h-scriptable.
+A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configure.
 
 (Not intended for use on web right now.)
 # Credits
