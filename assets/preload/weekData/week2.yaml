@@ -12,6 +12,10 @@ icons:
   - spooky
   - spooky
   - monster
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: spooky
 storyBf: bf
 storyGf: gf

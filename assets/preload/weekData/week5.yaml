@@ -12,6 +12,10 @@ icons:
   - parents-christmas
   - parents-christmas
   - monster
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: parents-christmas
 storyBf: bf
 storyGf: gf

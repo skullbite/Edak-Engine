@@ -12,6 +12,10 @@ icons:
   - senpai
   - senpai
   - spirit
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: senpai
 storyBf: bf
 storyGf: gf

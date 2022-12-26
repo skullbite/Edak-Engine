@@ -1,5 +1,7 @@
 package;
 
+import yaml.util.ObjectMap.AnyObjectMap;
+import yaml.Yaml;
 import EdakDialogueBox.EdakeDialogueBox;
 import hstuff.FunkScript;
 import openfl.Assets as OpenFLAssets;
@@ -83,7 +85,8 @@ class PlayState extends MusicBeatState
 	public var forceCutscene:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
-	public static var storyDifficulty:Int = 1;
+	public static var storyDifficulty:String = "Normal";
+	public static var difficultyData:AnyObjectMap;
 	public static var weekSong:Int = 0;
 	public static var shits:Int = 0;
 	public static var bads:Int = 0;
@@ -243,6 +246,7 @@ class PlayState extends MusicBeatState
 		repPresses = 0;
 		repReleases = 0;
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
+		difficultyData = Yaml.parse(File.getContent(Paths.difficulty(storyDifficulty.toLowerCase())));
 
 		#if windows
 		executeModchart = FileSystem.exists(Paths.lua(PlayState.SONG.song.toLowerCase()  + "/modchart"));
@@ -255,7 +259,7 @@ class PlayState extends MusicBeatState
 
 		#if desktop
 		// Making difficulty text for Discord Rich Presence.
-		switch (storyDifficulty)
+		/*switch (storyDifficulty)
 		{
 			case 0:
 				storyDifficultyText = "Easy";
@@ -263,7 +267,7 @@ class PlayState extends MusicBeatState
 				storyDifficultyText = "Normal";
 			case 2:
 				storyDifficultyText = "Hard";
-		}
+		}*/
 
 		// iconRPC = SONG.player2;
 
@@ -296,10 +300,10 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
+		var diff = difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : "";
 
-		OpenFLAssets.getSound(Paths.inst(SONG.song));
-		// me and my homies hate tutorial
-		if (SONG.needsVoices && SONG.song.toLowerCase() != "tutorial") OpenFLAssets.getSound(Paths.voices(SONG.song));
+		OpenFLAssets.getSound(Paths.inst(SONG.song, diff));
+		if (SONG.needsVoices) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = Paths.songDataDir(SONG.song.toLowerCase()).filter(d -> d.endsWith(".hx"));
@@ -485,12 +489,14 @@ class PlayState extends MusicBeatState
 		songInfoTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songInfoTxt.borderSize = 3;
 		var difficultyColor = 0;
-		switch (storyDifficulty) {
+		/*switch (storyDifficulty) {
 			case 0: difficultyColor = FlxColor.LIME;
 			case 1: difficultyColor = FlxColor.YELLOW;
 			case 2: difficultyColor = FlxColor.RED;
-		}
-		songInfoTxt.applyMarkup(SONG.song.replace("-", " ").toUpperCase() + ' - ~~${CoolUtil.difficultyString().toUpperCase()}~~', [
+		}*/
+		difficultyColor = difficultyData.get("color");
+
+		songInfoTxt.applyMarkup(SONG.song.replace("-", " ").toUpperCase() + ' - ~~${storyDifficulty.toUpperCase()}~~', [
 			new FlxTextFormatMarkerPair(new FlxTextFormat(difficultyColor), "~~")
 		]);
 		songInfoTxt.screenCenter(X);
@@ -691,7 +697,7 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 		{
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
+			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : ""), 1, false);
 		}
 
 		FlxG.sound.music.onComplete = HFunk.anyExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
@@ -725,7 +731,7 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : ""));
 		else
 			vocals = new FlxSound();
 
@@ -1667,6 +1673,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
+		FlxG.sound.music.onComplete = null;
 		#if !switch
 		Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
 		#end
@@ -1707,11 +1714,14 @@ class PlayState extends MusicBeatState
 				{
 					var difficulty:String = "";
 
-					if (storyDifficulty == 0)
+					/*if (storyDifficulty == 0)
 						difficulty = '-easy';
 
 					if (storyDifficulty == 2)
-						difficulty = '-hard';
+						difficulty = '-hard';*/
+
+					trace(storyDifficulty);
+					difficulty = storyDifficulty.toLowerCase() != "normal" ? '-${storyDifficulty}' : "";
 
 					trace('LOADING NEXT SONG');
 					trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
@@ -1729,6 +1739,7 @@ class PlayState extends MusicBeatState
 			else
 			{
 				trace('WENT BACK TO FREEPLAY??');
+				FlxG.sound.music.kill();
 				FlxG.switchState(new FreeplayState());
 			}
 		}
@@ -2510,6 +2521,17 @@ class PlayState extends MusicBeatState
 				boyfriend.playAnim('hey', true);
 				dad.playAnim('cheer', true);
 			}
+	}
+	override function onFocusLost() {
+		if (health > 0 && !paused) {
+			persistentUpdate = false;
+		    persistentDraw = true;
+		    paused = true;
+
+		    openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+		}
+		
+		super.onFocusLost();
 	}
 
 	function openDialogueBox(boxType:String, dialogue:Array<String>, callback:Void -> Void) {

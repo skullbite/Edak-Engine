@@ -48,6 +48,8 @@
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
 	<section if="PRELOAD_ALL">
+		<!-- difficulties won't move out of preload gotta fix-->
+		<library name="difficulties" preload="true"/>
 		<library name="dialogue"    preload="true" />
 		<library name="stages"      preload="true" />
 		<library name="scripts"     preload="true" />
@@ -64,6 +66,7 @@
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
+		<library name="difficulties" preload="false"/>
 		<library name="dialogue"    preload="false" />
 		<library name="stages"      preload="false" />
 		<library name="scripts"     preload="false" />
@@ -80,6 +83,7 @@
 	</section>
 
 
+	<assets name="assets/difficulties" library="difficulties"/>
 	<assets path="assets/dialogue" library="dialogue"/>
 	<assets path="assets/stages"   library="stages"/>
 	<assets path="assets/characters" library="characters"/>

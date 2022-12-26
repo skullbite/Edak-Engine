@@ -8,6 +8,10 @@ colors:
   - 0x8978cc 
 icons:
   - pico
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: pico
 storyBf: bf
 storyGf: gf

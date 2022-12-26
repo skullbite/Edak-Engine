@@ -63,6 +63,10 @@ class Paths
 	inline static public function scriptDir() {
 		return File.applicationDirectory.resolvePath('assets/scripts').getDirectoryListing().map(d -> d.name);
 	}
+	
+	inline static public function difficulty(key:String) {
+		return getPath('difficulties/$key.yaml', TEXT, null);
+	}
 
 	inline static public function weekData(key:String) {
 		return getPath('weekData/$key.yaml', TEXT, null);
@@ -109,14 +113,20 @@ class Paths
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
 	}
 
-	inline static public function voices(song:String)
+	inline static public function voices(song:String, ?altSong:String="")
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+		var coolPath = 'songs:assets/songs/${song.toLowerCase()}/Voices';
+		if (altSong != "") coolPath += '-$altSong';
+		coolPath += '.$SOUND_EXT';
+		return coolPath;
 	}
 
-	inline static public function inst(song:String)
+	inline static public function inst(song:String, ?altSong:String="")
 	{
-		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
+		var coolPath = 'songs:assets/songs/${song.toLowerCase()}/Inst';
+		if (altSong != "") coolPath += '-$altSong';
+		coolPath += '.$SOUND_EXT';
+		return coolPath;
 	}
 
 	inline static public function image(key:String, ?library:String)

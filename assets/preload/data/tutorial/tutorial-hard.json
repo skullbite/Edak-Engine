@@ -110,4 +110,4 @@
 [47750.0,3,0],
 [47875.0,2,0]]},
 {"mustHitSection":false,"typeOfSection":0,"lengthInSteps":16,"bpm":120,"changeBPM":true,"altAnim":false,"sectionNotes":[]}
-],"bpm":120,"sections":0,"needsVoices":true,"player1":"bf","player2":"gf","sectionLengths":[],"speed":2.2}}
+],"bpm":120,"sections":0,"needsVoices":false,"player1":"bf","player2":"gf","sectionLengths":[],"speed":2.2}}

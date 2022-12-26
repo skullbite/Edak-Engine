@@ -80,6 +80,8 @@ class ChartingState extends MusicBeatState
 	var _song:SwagSong;
 
 	var typingShit:FlxInputText;
+	var diffStuff:FlxInputText;
+	var currentDiff:String;
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
@@ -125,6 +127,7 @@ class ChartingState extends MusicBeatState
 				speed: 1
 			};
 		}
+		currentDiff = PlayState.storyDifficulty;
 
 		bg = new FlxSprite(-100).loadGraphic(Paths.image('menuBlack'));
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
@@ -220,12 +223,16 @@ class ChartingState extends MusicBeatState
 		super.create();
 	}
 
+
+
 	function addSongUI():Void
 	{
 		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
 		typingShit = UI_songTitle;
+		var UI_difficultyTitle = new FlxUIInputText(10, 25, 70, PlayState.storyDifficulty);
+		diffStuff = UI_difficultyTitle;
 
-		var check_voices = new FlxUICheckBox(10, 25, null, null, "Has voice track", 100);
+		var check_voices = new FlxUICheckBox(10, 40, null, null, "Has voice track", 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
 		check_voices.callback = function()
@@ -375,6 +382,7 @@ class ChartingState extends MusicBeatState
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
+		tab_group_song.add(UI_difficultyTitle);
 		tab_group_song.add(restart);
 		tab_group_song.add(check_voices);
 		tab_group_song.add(check_mute_inst);
@@ -531,10 +539,10 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
+		FlxG.sound.playMusic(Paths.inst(daSong, PlayState.difficultyData.get("loadsDifferentSong") ? PlayState.storyDifficulty.toLowerCase() : ""), 0.6);
 
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, PlayState.difficultyData.get("loadsDifferentSong") ? PlayState.storyDifficulty.toLowerCase() : ""));
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
@@ -650,7 +658,6 @@ class ChartingState extends MusicBeatState
 					else if (curSelectedNote.length == 4) curSelectedNote.pop();
 
 					updateGrid();
-					
 			}
 		}
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
@@ -712,6 +719,8 @@ class ChartingState extends MusicBeatState
 
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = typingShit.text;
+		currentDiff = diffStuff.text;
+		
 
 		var left = FlxG.keys.justPressed.ONE;
 		var down = FlxG.keys.justPressed.TWO;
@@ -1504,7 +1513,9 @@ class ChartingState extends MusicBeatState
 
 	function loadJson(song:String):Void
 	{
-		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
+		var diff = currentDiff.toLowerCase() != "normal" ? "-" + currentDiff.toLowerCase() : "";
+		PlayState.SONG = Song.loadFromJson(song.toLowerCase() + diff, song.toLowerCase());
+		PlayState.storyDifficulty = currentDiff.toLowerCase();
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 

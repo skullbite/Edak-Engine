@@ -8,6 +8,10 @@ colors:
   - 0xf191ba
 icons:
   - mom
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: mom
 storyBf: bf
 storyGf: gf

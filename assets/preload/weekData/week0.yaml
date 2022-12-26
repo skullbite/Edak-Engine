@@ -6,6 +6,11 @@ colors:
   - 0x6800a5
 icons:
   - gf
+defaultDifficulty: 1
+difficulties:
+  - Easy
+  - Normal
+  - Hard
 storyDad: null
 storyBf: bf
 storyGf: gf
