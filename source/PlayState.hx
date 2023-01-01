@@ -1,5 +1,6 @@
 package;
 
+import hstuff.HVars;
 import yaml.util.ObjectMap.AnyObjectMap;
 import yaml.Yaml;
 import EdakDialogueBox.EdakeDialogueBox;
@@ -76,7 +77,7 @@ using StringTools;
 class PlayState extends MusicBeatState
 {
 	public static var instance:PlayState = null;
-	public var HFunk:FunkScript = new FunkScript();
+	public static var HFunk:FunkScript;
 
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
@@ -102,17 +103,10 @@ class PlayState extends MusicBeatState
 	public static var rep:Replay;
 	public static var loadRep:Bool = false;
 
+	public var disableInput:Bool = false;
 	public static var noteBools:Array<Bool> = [false, false, false, false];
 
 	var songLength:Float = 0;
-	
-	/*#if windows
-	// Discord RPC variables
-	var storyDifficultyText:String = "";
-	var iconRPC:String = "";
-	var detailsText:String = "";
-	var detailsPausedText:String = "";
-	#end*/
 
 	private var vocals:FlxSound;
 
@@ -215,6 +209,10 @@ class PlayState extends MusicBeatState
 	var detailsText:String;
 	#end
 
+	// kooky wacky hscript variables
+	var moveHealthIcons = true;
+	var moveCamera = true;
+
 	// API stuff
 	
 
@@ -226,6 +224,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		instance = this;
+		HFunk = new FunkScript();
 		dadGroup = new FlxTypedGroup();
 		gfGroup = new FlxTypedGroup();
 		boyfriendGroup = new FlxTypedGroup();
@@ -279,7 +278,7 @@ class PlayState extends MusicBeatState
 		var detailsPausedText = "Paused - " + detailsText;
 
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ")", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
+		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficulty + ")", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
 		#end
 
 
@@ -582,6 +581,9 @@ class PlayState extends MusicBeatState
 
 		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
 		{
+			var countTick = HFunk.doDaCallback("onCountdownTick", [swagCounter]);
+			if (countTick.contains(HVars.STOP)) return;
+
 			if (swagCounter % dad.bopSpeed == 0) dad.dance();
 			if (swagCounter % dad.bopSpeed == 0) gf.dance();
 			if (swagCounter % dad.bopSpeed == 0) boyfriend.dance();
@@ -610,7 +612,7 @@ class PlayState extends MusicBeatState
 					altSuffix = '-pixel';
 				}
 			}
-			HFunk.doDaCallback("onCountdownTick", [swagCounter]);
+			
 
 			switch (swagCounter)
 
@@ -715,7 +717,7 @@ class PlayState extends MusicBeatState
 		
 		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ")", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
+		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficulty + ")", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
 		#end
 	}
 
@@ -1007,7 +1009,7 @@ class PlayState extends MusicBeatState
 			}
 
 			#if desktop
-			DiscordClient.changePresence("PAUSED on " + SONG.song + " (" + storyDifficultyText + ") ", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
+			DiscordClient.changePresence("PAUSED on " + SONG.song + " (" + storyDifficulty + ") ", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy));
 			#end
 			if (!startTimer.finished)
 				startTimer.active = false;
@@ -1032,11 +1034,11 @@ class PlayState extends MusicBeatState
 			#if desktop
 			if (startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ")", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficulty + ")", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", null);
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficulty + ")", null);
 			}
 			#end
 		}
@@ -1055,7 +1057,7 @@ class PlayState extends MusicBeatState
 		vocals.play();
 
 		#if desktop
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") ", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null);
+		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficulty + ") ", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null);
 		#end
 	}
 
@@ -1130,6 +1132,9 @@ class PlayState extends MusicBeatState
 			persistentDraw = true;
 			paused = true;
 
+			var pauseRets = HFunk.doDaCallback("onPause", []);
+			if (pauseRets.contains(HVars.STOP)) return;
+
 			// 1 / 1000 chance for Gitaroo Man easter egg
 			if (FlxG.random.bool(0.1))
 			{
@@ -1159,8 +1164,10 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		if (moveHealthIcons) {
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		    iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		}
 
 		if (health > 2)
 			health = 2;
@@ -1324,11 +1331,11 @@ class PlayState extends MusicBeatState
 
 			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
+				var camCall = HFunk.doDaCallback("onCamMove", ["dad"]);
+				if (camCall.contains(HVars.STOP)) return;
 				var offsetX = dad.displaceData.camX;
 				var offsetY = dad.displaceData.camY;
-				camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
-
-				HFunk.doDaCallback("onCamMove", ["dad"]);
+				if (moveCamera) camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
 
 				if (dad.curCharacter == 'mom')
 					vocals.volume = 1;
@@ -1336,10 +1343,11 @@ class PlayState extends MusicBeatState
 
 			if (PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100)
 			{
-
+				var camCall = HFunk.doDaCallback("onCamMove", ["bf"]);
+				if (camCall.contains(HVars.STOP)) return;
 				var offsetX = boyfriend.displaceData.camX;
 				var offsetY = boyfriend.displaceData.camY;
-				camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
+				if (moveCamera) camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
 
 				switch (curStage)
 				{
@@ -1354,7 +1362,6 @@ class PlayState extends MusicBeatState
 						camFollow.x = boyfriend.getMidpoint().x - 200;
 						camFollow.y = boyfriend.getMidpoint().y - 200;
 				}
-				HFunk.doDaCallback("onCamMove", ["bf"]);
 			}
 		}
 
@@ -1389,12 +1396,15 @@ class PlayState extends MusicBeatState
 			vocals.stop();
 			FlxG.sound.music.stop();
 
-			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-
 			#if desktop
 			// Game Over doesn't get his own variable because it's only used here
-			DiscordClient.changePresence("GAME OVER -- " + SONG.song + " (" + storyDifficultyText + ")",Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null);
+			DiscordClient.changePresence("GAME OVER -- " + SONG.song + " (" + storyDifficulty + ")", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null);
 			#end
+
+			var gameOverCall = HFunk.doDaCallback("onGameOver", []);
+			if (gameOverCall.contains(HVars.STOP)) return;
+
+			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
 			// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
@@ -1410,13 +1420,17 @@ class PlayState extends MusicBeatState
 		
 					vocals.stop();
 					FlxG.sound.music.stop();
-		
-					openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-		
+
 					#if desktop
 					// Game Over doesn't get his own variable because it's only used here
 					DiscordClient.changePresence("GAME OVER -- " + SONG.song + " (" + storyDifficultyText + ")",Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null);
 					#end
+
+					var gameOverCall = HFunk.doDaCallback("onGameOver", []);
+			        if (gameOverCall.contains(HVars.STOP)) return;
+		
+					openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+					
 		
 					// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				}
@@ -1648,10 +1662,10 @@ class PlayState extends MusicBeatState
 			keyShit();
 
 
-		#if debug
+		/*#if debug
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
-		#end
+		#end*/
 
 		HFunk.doDaCallback("onUpdatePost", []);
 	}
@@ -1815,6 +1829,11 @@ class PlayState extends MusicBeatState
 	
 			songScore += Math.round(score);
 			songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
+
+			var msTiming = HelperFunctions.truncateFloat(noteDiff, 3);
+
+			var comboPopCall = HFunk.doDaCallback("onComboPop", [daRating, combo, msTiming]);
+			if (comboPopCall.contains(HVars.STOP)) return;
 	
 			/* if (combo > 60)
 					daRating = 'sick';
@@ -2019,7 +2038,9 @@ class PlayState extends MusicBeatState
 			});
 	
 			curSection += 1;
+			return;
 			}
+			HFunk.doDaCallback("onComboPop", [daRating, combo]);
 		}
 
 	public function NearlyEquals(value1:Float, value2:Float, unimportantDifference:Float = 10):Bool
@@ -2050,7 +2071,7 @@ class PlayState extends MusicBeatState
 				];
 		 
 				// Prevent player input if botplay is on
-				if(FlxG.save.data.botplay)
+				if(FlxG.save.data.botplay || disableInput)
 				{
 					holdArray = [false, false, false, false];
 					pressArray = [false, false, false, false];
@@ -2216,17 +2237,26 @@ class PlayState extends MusicBeatState
 				});
 			}
 
-	function noteMiss(direction:Int = 1, daNote:Note):Void
+	function noteMiss(direction:Int = 1, daNote:Null<Note>):Void
 	{
 		if (!boyfriend.stunned)
 		{
 			health -= 0.04;
+			combo = 0;
+			misses++;
+			if (daNote != null) {
+				var missCall = HFunk.doDaCallback("noteMiss", [direction, daNote.ID, daNote.rating, daNote.isSustainNote, daNote.noteType]);
+				if (missCall.contains(HVars.STOP)) return;
+			}
+			else {
+				var missCall = HFunk.doDaCallback("noteMiss", [direction, null, null, null, null]);
+				if (missCall.contains(HVars.STOP)) return;
+			}
+			
 			if (combo > 5 && gf.animOffsets.exists('sad'))
 			{
 				gf.playAnim('sad');
 			}
-			combo = 0;
-			misses++;
 
 			//var noteDiff:Float = Math.abs(daNote.strumTime - Conductor.songPosition);
 			//var wife:Float = EtternaFunctions.wife3(noteDiff, FlxG.save.data.etternaMode ? 1 : 1.7);
@@ -2248,8 +2278,6 @@ class PlayState extends MusicBeatState
 				case 3:
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
- 
-			if (Settings.get("ghost")) HFunk.doDaCallback("noteMiss", [daNote.ID, direction]);
 
 			updateAccuracy();
 		}
@@ -2368,8 +2396,6 @@ class PlayState extends MusicBeatState
 					return;
 				}
 
-				HFunk.doDaCallback("goodNoteHit", [note.ID, note.noteData, note.isSustainNote, note.noteType]);
-
 				if (mashing != 0)
 					mashing = 0;
 
@@ -2397,6 +2423,18 @@ class PlayState extends MusicBeatState
 					}
 					else
 						totalNotesHit += 1;
+
+					note.wasGoodHit = true;
+					vocals.volume = 1;
+		
+					note.kill();
+					notes.remove(note, true);
+					note.destroy();
+					
+					updateAccuracy();
+
+					var noteCall = HFunk.doDaCallback("goodNoteHit", [note.noteData, note.ID, note.rating, note.isSustainNote, note.noteType]);
+					if (noteCall.contains(HVars.STOP)) return;
 	
 
 					switch (note.noteData)
@@ -2412,8 +2450,8 @@ class PlayState extends MusicBeatState
 					}
 
 
-					if(!loadRep && note.mustPress)
-						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));
+					/*if(!loadRep && note.mustPress)
+						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));*/
 					
 					
 					playerStrums.forEach(function(spr:FlxSprite)
@@ -2424,14 +2462,6 @@ class PlayState extends MusicBeatState
 						}
 					});
 					
-					note.wasGoodHit = true;
-					vocals.volume = 1;
-		
-					note.kill();
-					notes.remove(note, true);
-					note.destroy();
-					
-					updateAccuracy();
 				}
 			}
 		
@@ -2455,7 +2485,7 @@ class PlayState extends MusicBeatState
 		songLength = FlxG.sound.music.length;
 
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ")", Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null,true,  songLength - Conductor.songPosition);
+		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficulty + ")", Settings.get("botplay") ? "BOTPLAY" : Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy), null,true,  songLength - Conductor.songPosition);
 		#end
 
 	}
@@ -2527,11 +2557,18 @@ class PlayState extends MusicBeatState
 			persistentUpdate = false;
 		    persistentDraw = true;
 		    paused = true;
+			
+			var pauseRets = HFunk.doDaCallback("onPause", []);
+			if (pauseRets.contains(HVars.STOP)) return;
 
 		    openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
 		
 		super.onFocusLost();
+	}
+
+	function openCustomSubState(targetSub:String) {
+		openSubState(new CustomSubState(targetSub));
 	}
 
 	function openDialogueBox(boxType:String, dialogue:Array<String>, callback:Void -> Void) {

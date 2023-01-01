@@ -21,6 +21,7 @@ class FunkScript extends HBase {
             script.interp.variables.set("FlxTween", FlxTween);
             script.interp.variables.set("FlxTimer", FlxTimer);
             script.interp.variables.set("Paths", Paths);
+            script.interp.variables.set("STOP", HVars.STOP);
             scripts.push(script);
             trace('loaded script $name');
         }
@@ -36,8 +37,10 @@ class FunkScript extends HBase {
         
     }
     public function doDaCallback(name:String, args:Array<Dynamic>) { 
+        var scriptReturns:Array<Dynamic> = [];
         for (script in scripts) {
-            if (script.funcExists(name)) script.exec(name, args);
+            if (script.funcExists(name)) scriptReturns.push(script.exec(name, args));
         }
+        return scriptReturns;
     }
 }

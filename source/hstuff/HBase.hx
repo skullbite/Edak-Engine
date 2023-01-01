@@ -4,6 +4,8 @@ import hscript.Parser;
 import hscript.Interp;
 import flixel.FlxG;
 
+// @:enum abstract FlxColor(String) to String {}
+
 class HBase {
     public var parser:Parser;
     public var interp:Interp;
@@ -12,10 +14,12 @@ class HBase {
         parser = new Parser();
         interp = new Interp();
         interp.variables.set("PlayState", PlayState);
+        // interp.variables.set("GameOverSubstate", GameOverSubstate);
         interp.variables.set("FlxG", FlxG);
         interp.variables.set("importLib", importLib);
         interp.variables.set("Std", Std);
         interp.variables.set("Reflect", Reflect);
+        interp.variables.set("Type", Type);
         interp.variables.set("Conductor", Conductor);
         parser.line = 1;
         parser.allowTypes = true;

@@ -150,6 +150,26 @@ class Paths
 	}
 }
 
+/*class CustomPaths {
+	var dir:String = "";
+	var lib:String = "";
+	public function new(dir:String, lib:String) {
+		this.dir = dir;
+		this.lib = lib;
+	}
+	public function image(key:String) {
+		return Paths.getPath('$dir/$key.png', IMAGE, lib);
+	}
+
+    public function getSparrowAtlas(key:String) {
+		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$dir/$key.xml', lib));
+	}
+	
+	public function getPackerAtlas(key:String) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$dir/$key.txt', 'characters'));
+	}
+}*/
+
 class CharacterPaths {
 	var curChar:String = "";
 	public function new(curChar) {

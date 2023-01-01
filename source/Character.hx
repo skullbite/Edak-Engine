@@ -21,6 +21,9 @@ class Character extends FlxSprite
 
 	public var holdTimer:Float = 0;
 	public var bopSpeed:Int = 2;
+	public var stopAnims = false;
+	public var stopSinging = false;
+	public var stopDancing = false;
 	var CharScript:Null<HCharacter> = null;
 	public var displaceData = {
 		x: 0.0,
@@ -237,6 +240,9 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
+		if (stopAnims) return;
+		if (stopDancing && (AnimName.contains("dance") || AnimName == "idle")) return;
+		if (stopSinging && AnimName.contains("sing")) return;
 	
 		animation.play(AnimName, Force, Reversed, Frame);
 
