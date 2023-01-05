@@ -1,24 +1,32 @@
+package;
+
+import flixel.util.FlxTimer;
+import flixel.FlxSprite;
+import flixel.FlxG;
+
+var fastCarCanDrive = true;
+var dancersDanced = false;
+var fastCar:Dynamic;
+var grpLimoDancers:Dynamic;
+var bgLimo:Dynamic;
+
 function create() {
 	stage.defaultCamZoom = 0.9;
     importLib("flixel.group.FlxTypedGroup");
-    importLib("flixel.util.FlxTimer");
     // importLib("BackgroundDancer");
-	importLib("openfl.filters.ShaderFilter");
-    vars["fastCarCanDrive"] = true;
-	vars["dancersDanced"] = false;
+    fastCarCanDrive = true;
     var skyBG = new FlxSprite(-120, -50).loadGraphic(Paths.image('limoSunset'));
 	skyBG.scrollFactor.set(0.1, 0.1);
 	stage.add(skyBG);
 
-	var bgLimo = new FlxSprite(-200, 480);
+	bgLimo = new FlxSprite(-200, 480);
 	bgLimo.frames = Paths.getSparrowAtlas('bgLimo');
 	bgLimo.animation.addByPrefix('drive', "background limo pink", 24);
 	bgLimo.animation.play('drive');
 	bgLimo.scrollFactor.set(0.4, 0.4);
 	stage.add(bgLimo);
-    vars["bgLimo"] = bgLimo;
 
-	var grpLimoDancers = new FlxTypedGroup();
+	grpLimoDancers = new FlxTypedGroup();
     if (FlxG.save.data.distractions) {
 		stage.add(grpLimoDancers);
 	
@@ -35,7 +43,6 @@ function create() {
 			grpLimoDancers.add(dancer);
 		}
 	}
-    vars["grpLimoDancers"] = grpLimoDancers;
 
 	/* wanted to add this back but the shader is busted
     var overlayShit = new FlxSprite(-500, -600).loadGraphic(Paths.image('limoOverlay'));
@@ -51,25 +58,24 @@ function create() {
 
 	var limoTex = Paths.getSparrowAtlas('limoDrive');
 
-	limo = new FlxSprite(-120, 550);
+	var limo = new FlxSprite(-120, 550);
 	limo.frames = limoTex;
 	limo.animation.addByPrefix('drive', "Limo stage", 24);
 	limo.animation.play('drive');
 	limo.antialiasing = true;
     stage.infrontOfGf.add(limo);
 
-	var fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('fastCarLol'));
+	fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('fastCarLol'));
 	fastCar.visible = false;
-    if (FlxG.save.data.distractions) stage.add(fastCar);
-    vars["fastCar"] = fastCar;
+    if (Settings.get("distractions")) stage.add(fastCar);
 }
 
 function beatHit(beat) {
-    if (FlxG.save.data.distractions) {
-        vars["grpLimoDancers"].forEach(d -> d.animation.play(vars["dancersDanced"] ? "danceLeft" : "danceRight"));
-		vars["dancersDanced"] = !vars["dancersDanced"];
+    if (Settings.get("distractions")) {
+        grpLimoDancers.forEach(d -> d.animation.play(dancersDanced ? "danceLeft" : "danceRight"));
+		dancersDanced = !dancersDanced;
 
-        if (FlxG.random.bool(10) && vars["fastCarCanDrive"]) fastCarDrive();
+        if (FlxG.random.bool(10) && fastCarCanDrive) fastCarDrive();
     }
 }
 
@@ -81,20 +87,17 @@ function reposCharacters() {
 function fastCarDrive() {
     FlxG.sound.play(_Paths.soundRandom('carPass', 0, 1), 0.7);
 
-    vars["fastCar"].visible = true;
-	vars["fastCar"].velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
-	vars["fastCarCanDrive"] = false;
+    fastCar.visible = true;
+	fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
+	fastCarCanDrive = false;
 	
-	new FlxTimer().start(2, function(tmr:FlxTimer) {
-		    
-			resetFastCar();
-	});
+	new FlxTimer().start(2, t -> resetFastCar());
 }
 
 function resetFastCar() {
-	vars["fastCar"].visible = false;
-	vars["fastCar"].x = -12600;
-	vars["fastCar"].y = FlxG.random.int(140, 250);
-	vars["fastCar"].velocity.x = 0;
-	vars["fastCarCanDrive"] = true;
+	fastCar.visible = false;
+	fastCar.x = -12600;
+	fastCar.y = FlxG.random.int(140, 250);
+	fastCar.velocity.x = 0;
+	fastCarCanDrive = true;
 }

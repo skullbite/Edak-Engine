@@ -62,15 +62,15 @@ class MenuCharacter extends FlxSprite
 		}
 		else visible = true;
 		
-		if (FileSystem.exists(Sys.getCwd() + Paths.weekData('characters/$char'))) charData = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('characters/$char')));
+		if (FileSystem.exists(Paths.weekData('characters/$char'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$char')));
 		flipped = charData.get("flipped");
 
 		
 
-		frames = Paths.getSparrowAtlas(charData.get("storyAssets") != null ? charData.get("storyAssets") : "campaign_menu_UI_characters");
+		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "campaign_menu_UI_characters");
 
 		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
-		if (charData.get("anims").get("confirm") != null) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
+		if (charData.get("anims").exists("confirm")) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
 		
 		// offset.set(charData.get("x"), charData.get("y"));
 		setGraphicSize(Std.int(width * charData.get("scale")));
@@ -89,7 +89,7 @@ class MenuCharacter extends FlxSprite
 			visible = true;
 		}
 
-		if (FileSystem.exists(Sys.getCwd() + Paths.weekData('characters/$character'))) charData = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('characters/$character')));
+		if (FileSystem.exists(Paths.weekData('characters/$character'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$character')));
 		frames = Paths.getSparrowAtlas(charData.get("storyAssets") != null ? charData.get("storyAssets") : "campaign_menu_UI_characters");
 
 		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));

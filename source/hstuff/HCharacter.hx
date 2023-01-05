@@ -1,11 +1,12 @@
 package hstuff;
 
 class HCharacter extends CallbackScript {
-    override public function new(charClass:Character, code:String) {
-        super(code);
+    override public function new(charClass:Character, path:String) {
+        super(path);
         name = "Character:" + charClass.curCharacter;
-        interp.variables.set("char", charClass);
-        interp.variables.set("Paths", new CharacterPaths(charClass.curCharacter));
-        interp.variables.set("_Paths", Paths);
+        set("this", charClass);
+        set("char", charClass);
+        set("Paths", new CustomPaths(charClass.curCharacter, "characters"));
+        set("_Paths", Paths);
     }
 }

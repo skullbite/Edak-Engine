@@ -1,5 +1,8 @@
 package;
 
+import sys.io.File;
+import yaml.Yaml;
+import sys.FileSystem;
 import flixel.addons.effects.FlxSkewedSprite;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -9,6 +12,19 @@ import flixel.util.FlxColor;
 import PlayState;
 
 using StringTools;
+
+typedef CustomNoteData = {
+	dadShouldHit:Bool,
+	bfShouldHit:Bool
+}
+
+// yeah it's literally just a class with a map in it, shut up
+class CustomNoteDataCache {
+	static public var data:Map<String, CustomNoteData> = [];
+
+	static public function get(key:String) return data.get(key);
+	static public function set(key:String, value:CustomNoteData) data.set(key, value);
+}
 
 class Note extends FlxSprite
 {
@@ -50,14 +66,27 @@ class Note extends FlxSprite
 
 		this.prevNote = prevNote;
 		
-		// hardcoding this at first but when it's done i'll get it on hscript or whatever.
 		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
+		var isCustomNote = false;
+		var customNoteData:CustomNoteData = null;
 		switch (this.noteType) {
 			case "Normal": 
 				if (PlayState.SONG.noteStyle == "pixel") noteAssetPath = "arrows-pixels";
-			case "Blammed Note":
-				noteAssetPath = "blammed_notes_idk";
+			default:
+				isCustomNote = true;
+				noteAssetPath = '$noteType/assets';
+				if (CustomNoteDataCache.get(noteType) != null) customNoteData = CustomNoteDataCache.get(noteType);
+				else if (FileSystem.exists('assets/custom-notes/$noteType')) {
+					var noteStuff = Yaml.parse(File.getContent('assets/custom-notes/$noteType/info.yaml'));
+					customNoteData = {
+						dadShouldHit: noteStuff.exists("dadShouldHit") ? noteStuff.get("dadShouldHit") : dadShouldHit,
+						bfShouldHit: noteStuff.exists("bfShouldHit") ? noteStuff.get("bfShouldHit") : bfShouldHit
+					};
+					CustomNoteDataCache.set(noteType, customNoteData);
+				}
+				dadShouldHit = customNoteData.dadShouldHit;
+				bfShouldHit = customNoteData.bfShouldHit;
 		}
 		isSustainNote = sustainNote;
 
@@ -76,7 +105,8 @@ class Note extends FlxSprite
 		switch (PlayState.SONG.noteStyle)
 		{
 			case 'pixel':
-				loadGraphic(Paths.image('weeb/pixelUI/$noteAssetPath','week6'), true, 17, 17);
+				var imgPath = isCustomNote ? 'custom-notes:assets/custom-notes/$noteAssetPath.png' : Paths.image('weeb/pixelUI/$noteAssetPath','week6');
+				loadGraphic(imgPath, true, 17, 17);
 
 				animation.add('greenScroll', [6]);
 				animation.add('redScroll', [7]);
@@ -85,7 +115,8 @@ class Note extends FlxSprite
 
 				if (isSustainNote)
 				{
-					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds','week6'), true, 7, 6);
+					var endImgPath = isCustomNote ? 'custom-notes:assets/custom-notes/${noteAssetPath}Ends.png' : Paths.image('weeb/pixelUI/arrowEnds','week6');
+					loadGraphic(endImgPath, true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
 					animation.add('greenholdend', [6]);
@@ -101,7 +132,7 @@ class Note extends FlxSprite
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
 			default:
-				frames = Paths.getSparrowAtlas(noteAssetPath);
+				frames = Paths.getSparrowAtlas(noteAssetPath, isCustomNote ? "custom-notes" : null, isCustomNote);
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');

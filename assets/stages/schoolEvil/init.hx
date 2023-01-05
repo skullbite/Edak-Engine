@@ -1,5 +1,9 @@
+package;
+
+import flixel.addons.effects.FlxTrail;
+import flixel.FlxSprite;
+
 function create() {
-	importLib("flixel.addons.effects.FlxTrail");
 	stage.cameraDisplace.x = 400;
 	stage.cameraDisplace.y = 200;
     var bg:FlxSprite = new FlxSprite(400, 200);

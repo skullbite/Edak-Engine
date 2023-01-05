@@ -1,3 +1,7 @@
+package;
+
+import flixel.FlxSprite;
+
 function create() {
 	stage.cameraDisplace.x = 300;
     var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('evilBG'));

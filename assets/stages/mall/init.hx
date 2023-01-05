@@ -1,3 +1,7 @@
+package;
+
+import flixel.FlxSprite;
+
 function create() {
     stage.defaultCamZoom = 0.8;
     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('bgWalls'));
@@ -15,7 +19,7 @@ function create() {
 	upperBoppers.scrollFactor.set(0.33, 0.33);
 	upperBoppers.setGraphicSize(Std.int(upperBoppers.width * 0.85));
 	upperBoppers.updateHitbox();
-	if(FlxG.save.data.distractions) stage.add(upperBoppers);
+	if (Settings.get("distractions")) stage.add(upperBoppers);
     stage.publicSprites["upperBoppers"] = upperBoppers;
 
 	var bgEscalator = new FlxSprite(-1100, -600).loadGraphic(Paths.image('bgEscalator'));
@@ -40,7 +44,7 @@ function create() {
 	bottomBoppers.scrollFactor.set(0.9, 0.9);
 	bottomBoppers.scale.set(1, 1);
 	bottomBoppers.updateHitbox();
-	if(FlxG.save.data.distractions) stage.add(bottomBoppers);
+	if (Settings.get("distractions")) stage.add(bottomBoppers);
     stage.publicSprites["bottomBoppers"] = bottomBoppers;
 
 
@@ -53,7 +57,7 @@ function create() {
 	santa.frames = Paths.getSparrowAtlas('santa');
 	santa.animation.addByPrefix('idle', 'santa idle in fear', 12, false);
 	santa.antialiasing = true;
-	if (FlxG.save.data.distractions) stage.add(santa);
+	if (Settings.get("distractions")) stage.add(santa);
     stage.publicSprites["santa"] = santa;
 }
 
@@ -63,7 +67,7 @@ function reposCharacters() {
 }
 
 function beatHit() {
-    if (FlxG.save.data.distractions) {
+    if (Settings.get("distractions")) {
         stage.publicSprites["upperBoppers"].animation.play('bop', true);
         stage.publicSprites["bottomBoppers"].animation.play('bop', true);
         stage.publicSprites["santa"].animation.play('idle', true);

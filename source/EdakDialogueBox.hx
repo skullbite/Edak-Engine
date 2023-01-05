@@ -52,11 +52,13 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
         if (box == null) {
             trace("No box set, that's half the point of dialogue lol. Skipping dialogue...");
             if (finishCallback != null) doEnd();
+            else kill();
             return;
         }
         else if (dialogueText.length == 0) {
             trace("No dialogue?? :( skipping...");
             if (finishCallback != null) doEnd();
+            else kill();
         }
         for (_ => v in portraits) {
             v.visible = false;
@@ -70,15 +72,15 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
         if (box.animation.exists("open")) {
             box.animation.play("open");
             box.animation.finishCallback = (n) -> {
-                box.animation.play("idle");
+                if (box.animation.exists("idle")) box.animation.play("idle");
                 textStarted = true;
             }
         }     
         else {
-            box.animation.play("idle");
+            if (box.animation.exists("idle")) box.animation.play("idle");
             textStarted = true;
         }
-        if (DialogueScript.funcExists("createPost")) DialogueScript.exec("createPost", []);
+        if (DialogueScript.exists("createPost")) DialogueScript.exec("createPost", []);
         
         // new FlxTimer().start(10, (t) -> finishCallback());
     }
@@ -118,7 +120,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
     function doEnd() {
         if (!alreadyEnding) {
             alreadyEnding = true;
-            if (DialogueScript.funcExists("finish")) new FlxTimer().start(.5, t -> DialogueScript.exec("finish", []));
+            if (DialogueScript.exists("finish")) new FlxTimer().start(.5, t -> DialogueScript.exec("finish", []));
             else {
                 for (x in 0...length) members[x].visible = false;
                 new FlxTimer().start(.5, t -> finishCallback());
@@ -129,7 +131,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if (DialogueScript != null && DialogueScript.funcExists("update")) DialogueScript.exec("update", [elapsed]);
+        if (DialogueScript != null && DialogueScript.exists("update")) DialogueScript.exec("update", [elapsed]);
         var targetPortrait = portraits[curPortrait];
         if (targetPortrait != null && targetPortrait.animation.exists("talk") && currentlyTyping) targetPortrait.animation.play("talk");
         if (FlxG.keys.justPressed.ESCAPE) doEnd();

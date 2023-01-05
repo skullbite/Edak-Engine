@@ -87,7 +87,7 @@ class ChartingState extends MusicBeatState
 	**/
 	var curSelectedNote:Array<Dynamic>;
 	var curNoteType:String = "Normal";
-	var noteTypes:Array<String> = ["Normal", "Blammed Note"];
+	var noteTypes:Array<String> = ["Normal"];
 	var curNote:Null<Note> = null;
 	// var selectedNoteTween:FlxTween;
 
@@ -220,6 +220,7 @@ class ChartingState extends MusicBeatState
 
 
 
+		updateHeads();
 		super.create();
 	}
 
@@ -505,6 +506,8 @@ class ChartingState extends MusicBeatState
 		var stepperSusLengthLabel = new FlxText(74,10,'Note Sustain Length');
 
 		var stepperNoteTypeLabel = new FlxText(10, 50, "Note Type");
+		
+		noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/custom-notes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
 
 		stepperNoteType = new FlxUIDropDownMenu(10, 70, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(noteType:String):Void {
 			curNoteType = noteTypes[Std.parseInt(noteType)];
@@ -1522,11 +1525,14 @@ class ChartingState extends MusicBeatState
 	function loadAutosave():Void
 	{
 		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
+		PlayState.storyDifficulty = PlayState.SONG.diff.toLowerCase();
+		Reflect.deleteField(PlayState.SONG, "diff");
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 
 	function autosaveSong():Void
 	{
+		_song.diff = currentDiff;
 		FlxG.save.data.autosave = Json.stringify({
 			"song": _song
 		});

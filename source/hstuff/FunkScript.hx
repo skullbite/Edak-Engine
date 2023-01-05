@@ -14,14 +14,12 @@ class FunkScript extends HBase {
         // dry run to make sure the code actually works
         try {
             var toRun = pre + code;
-            interp.execute(parser.parseString(toRun));
-            var script = new CallbackScript(toRun);
-            script.interp.variables.set("vars", new Map<String, Dynamic>());
-            script.interp.variables.set("FlxSprite", FlxSprite);
-            script.interp.variables.set("FlxTween", FlxTween);
-            script.interp.variables.set("FlxTimer", FlxTimer);
-            script.interp.variables.set("Paths", Paths);
-            script.interp.variables.set("STOP", HVars.STOP);
+            // interp.execute(parser.parseString(toRun));
+
+            var script = cast (new CallbackScript().doString(toRun), CallbackScript);
+            script.set("vars", new Map<String, Dynamic>());
+            script.set("Paths", Paths);
+            script.set("STOP", HVars.STOP);
             scripts.push(script);
             trace('loaded script $name');
         }
@@ -30,16 +28,15 @@ class FunkScript extends HBase {
         }
     }
 
-    public function anyExists(target:String) {
+    public function funcExists(target:String) {
         var allScriptOutputs = [];
-        for (_ => v in scripts) allScriptOutputs.push(v.funcExists(target));
+        for (_ => v in scripts) allScriptOutputs.push(v.exists(target));
         return allScriptOutputs.contains(true);
-        
     }
     public function doDaCallback(name:String, args:Array<Dynamic>) { 
         var scriptReturns:Array<Dynamic> = [];
         for (script in scripts) {
-            if (script.funcExists(name)) scriptReturns.push(script.exec(name, args));
+            if (script.exists(name)) scriptReturns.push(script.exec(name, args));
         }
         return scriptReturns;
     }

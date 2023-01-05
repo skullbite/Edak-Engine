@@ -1,5 +1,8 @@
+package;
+
+import flixel.FlxSprite;
+
 function create() {
-    PlayState.defaultCamZoom = 0.9;
     var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
     bg.antialiasing = true;
     bg.scrollFactor.set(0.9, 0.9);
@@ -29,5 +32,4 @@ function reposCharacters() {
         PlayState.dad.y = PlayState.gf.y;
         PlayState.gf.visible = false;
     }
-    
 }

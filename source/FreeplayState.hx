@@ -60,8 +60,8 @@ class FreeplayState extends MusicBeatState
 	{
 		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
-		for (week in 0...FileSystem.readDirectory(Sys.getCwd() + "assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$week')));
+		for (week in 0...FileSystem.readDirectory("assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Paths.weekData('week$week')));
 			var songList:Array<String> = coolWeekData.get("songs");
 			var colorList:Array<Int> = coolWeekData.get("colors");
 			var iconList:Array<String> = coolWeekData.get("icons");
@@ -74,13 +74,12 @@ class FreeplayState extends MusicBeatState
 		}
 
 		
-		for (diff in FileSystem.readDirectory(Sys.getCwd() + "/assets/difficulties")) {
-			var awesomeDifficulty:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.difficulty(diff.split(".").shift())));
+		for (diff in FileSystem.readDirectory("assets/difficulties")) {
+			var awesomeDifficulty:AnyObjectMap = Yaml.parse(File.getContent(Paths.difficulty(diff.split(".").shift())));
 			difficultyData.set(diff.split(".").shift().toLowerCase(), {
 				color: cast awesomeDifficulty.get("color"),
 				loadsDifferentSong: cast awesomeDifficulty.get("loadsDifferentSong")
 		    });
-			
 		}
 
 
@@ -279,7 +278,7 @@ class FreeplayState extends MusicBeatState
 			var songSuffix = difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase()).loadsDifferentSong ? curDifficultyArray[curDifficulty].toLowerCase() : "";
 
 		    jukeboxInst.loadEmbedded(Paths.inst(songs[curSelected].songName, songSuffix));
-			if (FileSystem.exists(Sys.getCwd() + 'assets/songs/' + songs[curSelected].songName + '/Voices$songSuffix.ogg')) {
+			if (FileSystem.exists('assets/songs/' + songs[curSelected].songName + '/Voices$songSuffix.ogg')) {
 				jukeboxVocals.loadEmbedded(Paths.voices(songs[curSelected].songName, songSuffix));
 				jukeboxInst.play(true);
 			    jukeboxVocals.play(true);

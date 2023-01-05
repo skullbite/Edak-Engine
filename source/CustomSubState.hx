@@ -9,10 +9,12 @@ import flixel.FlxG;
 class CustomSubState extends MusicBeatSubstate {
     public var subScript:Null<HSub> = null;
     var customCam:FlxCamera = new FlxCamera();
+    public var subName:String;
     public function new(target:String) {
         super();
         customCam.bgColor.alpha = 0;
 		FlxG.cameras.add(customCam);
+        subName = target;
         if (FileSystem.exists('assets/substates/$target/init.hx')) {
             var code = File.getContent('assets/substates/$target/init.hx');
             subScript = new HSub(code, this);
@@ -21,6 +23,7 @@ class CustomSubState extends MusicBeatSubstate {
         else close();
         cameras = [customCam];
     }
+    
 
     override function close() {
         FlxG.cameras.remove(customCam);

@@ -1,13 +1,14 @@
-function onCreate() {
-    // if (PlayState.isStoryMode) game.camHUD.visible = false;
-}
+package;
+
+import flixel.util.FlxTimer;
+import CoolUtil;
+import flixel.FlxG;
+import flixel.FlxSprite;
+
 function onCutscene() {
-    importLib("CoolUtil");
     var lunchboxScary = FlxG.sound.play(Paths.music('LunchboxScary'), 0, true);
 	lunchboxScary.fadeIn(1, 0, 0.8);
     var blue = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
-	blue.height = Std.int(FlxG.height * 2);
-	blue.width = Std.int(FlxG.width * 2);
 	blue.color = 0x0077ff;
     blue.screenCenter();
     game.add(blue);

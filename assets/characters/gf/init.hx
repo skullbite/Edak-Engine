@@ -1,3 +1,5 @@
+package;
+
 function create() {
    char.barColor = "0x6800a5";
    char.frames = Paths.getSparrowAtlas('GF_assets');

@@ -1,11 +1,13 @@
-function onCreate() {
-	importLib("flixel.tweens.FlxEase");
-}
+package;
+
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.FlxSprite;
+import flixel.util.FlxTimer;
+import flixel.FlxG;
 
 function onCutscene() {
-    var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
-	blackScreen.height = Std.int(FlxG.height * 2);
-	blackScreen.width = Std.int(FlxG.width * 2);
+    var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
 	blackScreen.color = 0x000000;
 	/*while (game.inCutscene) {
 		PlayState.boyfriend.playAnim("scared");
@@ -38,6 +40,7 @@ function onCutscene() {
 					blackScreen.destroy();
 				}
 			});
+			
 			FlxTween.tween(FlxG.camera, {zoom: game.defaultCamZoom}, 2.5, {
 				ease: FlxEase.quadInOut,
 				onComplete: function(twn:FlxTween)

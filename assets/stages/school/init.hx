@@ -1,6 +1,10 @@
+package;
+
+import BackgroundGirls;
+import CoolUtil;
+import flixel.FlxSprite;
+
 function create() {
-    importLib("BackgroundGirls");
-    importLib("CoolUtil");
 	stage.cameraDisplace.x = 200;
     var bgSky = new FlxSprite().loadGraphic(Paths.image('weebSky'));
 	bgSky.scrollFactor.set(0.1, 0.1);
@@ -64,7 +68,7 @@ function create() {
 	bgGirls.animation.addByIndices('danceRight', 'BG girls group', CoolUtil.numberArray(30, 15), "", 12, false);
 	bgGirls.scrollFactor.set(0.9, 0.9);
 
-	if (PlayState.SONG.song.toLowerCase() == 'roses' && FlxG.save.data.distractions) { 
+	if (PlayState.SONG.song.toLowerCase() == 'roses' && Settings.get("distractions")) { 
         bgGirls.getScared();
         bgGirls.animation.addByIndices('danceLeft', 'BG fangirls dissuaded', CoolUtil.numberArray(14), "", 12, false);
 	    bgGirls.animation.addByIndices('danceRight', 'BG fangirls dissuaded', CoolUtil.numberArray(30, 15), "", 12, false);
@@ -72,7 +76,7 @@ function create() {
 
 	bgGirls.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
 	bgGirls.updateHitbox();
-	if (FlxG.save.data.distractions) stage.add(bgGirls);
+	if (Settings.get("distractions")) stage.add(bgGirls);
     stage.publicSprites["bgGirls"] = bgGirls;
 }
 
@@ -84,5 +88,5 @@ function reposCharacters() {
 }
 
 function beatHit(beat) {
-    if (FlxG.save.data.distractions) stage.publicSprites["bgGirls"].dance();
+    if (Settings.get("distractions")) stage.publicSprites["bgGirls"].dance();
 }

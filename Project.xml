@@ -48,6 +48,7 @@
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
 	<section if="PRELOAD_ALL">
+		<library name="custom-notes" preload="true"/>
 		<library name="difficulties" preload="true"/>
 		<library name="substates"   preload="true" />
 		<library name="dialogue"    preload="true" />
@@ -66,6 +67,7 @@
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
+		<library name="custom-notes" preload="false"/>
 		<library name="substates"   preload="false" />
 		<library name="difficulties" preload="false"/>
 		<library name="dialogue"    preload="false" />
@@ -84,6 +86,7 @@
 	</section>
 
 
+	<assets path="assets/custom-notes" library="custom-notes" />
 	<assets path="assets/substates" library="substates"/>
 	<assets path="assets/difficulties" library="difficulties"/>
 	<assets path="assets/dialogue" library="dialogue"/>
@@ -131,7 +134,7 @@
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 	<haxelib name="hscript" />
-	<!-- <haxelib name="sscript" /> -->
+	<haxelib name="sscript" />
 
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />

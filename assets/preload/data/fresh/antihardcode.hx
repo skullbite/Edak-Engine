@@ -1,3 +1,5 @@
+package;
+
 function onBeatHit(beat:Int) {
     switch (beat) {
         case 16, 80: PlayState.gf.bopSpeed = 2;

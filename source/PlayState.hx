@@ -184,7 +184,7 @@ class PlayState extends MusicBeatState
 
 	public static var theFunne:Bool = true;
 	var funneEffect:FlxSprite;
-	var inCutscene:Bool = false;
+	var inCutscene:Bool = true;
 	public static var repPresses:Int = 0;
 	public static var repReleases:Int = 0;
 
@@ -211,6 +211,7 @@ class PlayState extends MusicBeatState
 
 	// kooky wacky hscript variables
 	var moveHealthIcons = true;
+	var bopHealthIcons = true;
 	var moveCamera = true;
 
 	// API stuff
@@ -543,7 +544,7 @@ class PlayState extends MusicBeatState
 			{
 				/* hard coded cutscenes here i guess */
 				default:
-					if (HFunk.anyExists("onCutscene")) HFunk.doDaCallback("onCutscene", []);
+					if (HFunk.funcExists("onCutscene")) HFunk.doDaCallback("onCutscene", []);
 					else startCountdown();
 			}
 		}
@@ -702,7 +703,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : ""), 1, false);
 		}
 
-		FlxG.sound.music.onComplete = HFunk.anyExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
+		FlxG.sound.music.onComplete = HFunk.funcExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
 		vocals.play();
 
 		// Song duration in a float, useful for the time left feature
@@ -1107,13 +1108,13 @@ class PlayState extends MusicBeatState
 				maxNPS = nps;
 		}
 
-		if (FlxG.keys.justPressed.NINE)
+		/*if (FlxG.keys.justPressed.NINE)
 		{
 			if (iconP1.animation.curAnim.name == 'bf-old')
 				iconP1.animation.play(SONG.player1);
 			else
 				iconP1.animation.play('bf-old');
-		}
+		}*/
 
 		super.update(elapsed);
 
@@ -1156,11 +1157,13 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.75)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.75)));
+		if (bopHealthIcons) {
+			iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.75)));
+		    iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.75)));
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+			iconP1.updateHitbox();
+		    iconP2.updateHitbox();
+		}
 
 		var iconOffset:Int = 26;
 
@@ -2241,6 +2244,7 @@ class PlayState extends MusicBeatState
 	{
 		if (!boyfriend.stunned)
 		{
+			// if (daNote != null && !daNote.bfShouldHit && Settings.get("botplay")) return;
 			health -= 0.04;
 			combo = 0;
 			misses++;
@@ -2383,16 +2387,14 @@ class PlayState extends MusicBeatState
 		function goodNoteHit(note:Note, resetMashViolation = true):Void
 			{
 				if (!note.bfShouldHit) {
-					playerStrums.forEach(function(spr:FlxSprite){
-							if (Math.abs(note.noteData) == spr.ID)
-							{
-								spr.animation.play('confirm', true);
-							}
-					});
-					noteMiss(note.noteData, note);
+					// if (!Settings.get("botplay")) {
+					playerStrums.members[note.noteData].animation.play('confirm', true); 
 					note.kill();
 					notes.remove(note, true);
 					note.destroy();
+					// }
+					
+					noteMiss(note.noteData, note);
 					return;
 				}
 
@@ -2536,11 +2538,13 @@ class PlayState extends MusicBeatState
 			camHUD.zoom += hudBumpZoom;
 		}
 
-		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+		if (bopHealthIcons) {
+		    iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+		    iconP2.setGraphicSize(Std.int(iconP2.width + 30));
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		    iconP1.updateHitbox();
+		    iconP2.updateHitbox();
+		}
 
 		if (curBeat % gf.bopSpeed == 0) gf.dance();
 		if (curBeat % boyfriend.bopSpeed == 0 && !boyfriend.animation.curAnim.name.startsWith("sing")) boyfriend.dance();
@@ -2553,7 +2557,7 @@ class PlayState extends MusicBeatState
 			}
 	}
 	override function onFocusLost() {
-		if (health > 0 && !paused) {
+		if (health > 0 && !paused && canPause && !inCutscene) {
 			persistentUpdate = false;
 		    persistentDraw = true;
 		    paused = true;

@@ -1,3 +1,8 @@
+package;
+
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+
 function onCreatePost() {
     PlayState.gf.bopSpeed = 2;
 }
@@ -6,7 +11,6 @@ function onCountdownTick(tick) {
     if (tick == 3) { 
         PlayState.boyfriend.playAnim("hey");
         FlxTween.tween(game.camHUD, { alpha: 0 }, 0.5);
-        importLib("flixel.tweens.FlxEase");
     }
 } 
 

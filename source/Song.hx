@@ -20,6 +20,7 @@ typedef SwagSong =
 	var gfVersion:String;
 	var noteStyle:String;
 	var stage:String;
+	var ?diff:String; // just for the autosave
 }
 
 class Song

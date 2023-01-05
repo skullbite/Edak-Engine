@@ -27,10 +27,9 @@ class Stage extends FlxTypedGroup<FlxBasic> {
         switch (curStage) {
             // case "xyz": hardcoding auuuugh
             default:
-                if (FileSystem.exists('assets/stages/$curStage')) {
-                    var stageCode = File.getContent('assets/stages/$curStage/init.hx');
+                if (FileSystem.exists('assets/stages/$curStage/init.hx')) {
                     try {
-                        ScriptStage = new HStage(this, stageCode);
+                        ScriptStage = new HStage(this, 'assets/stages/$curStage/init.hx');
                         ScriptStage.exec("create", []);
                     }
                     catch (e) {
@@ -44,21 +43,21 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     }
 
     public function reposCharacters() {
-        if (ScriptStage != null && ScriptStage.funcExists("reposCharacters")) {
+        if (ScriptStage != null && ScriptStage.exists("reposCharacters")) {
             ScriptStage.exec("reposCharacters", []);
             return;
         }
     }
 
     public function stepHit(curStep:Int) {
-        if (ScriptStage != null && ScriptStage.funcExists("stepHit")) { 
+        if (ScriptStage != null && ScriptStage.exists("stepHit")) { 
             ScriptStage.exec("stepHit", [curStep]); 
             return;
         }
     } 
 
     public function beatHit(curBeat:Int) {
-        if (ScriptStage != null && ScriptStage.funcExists("beatHit")) {
+        if (ScriptStage != null && ScriptStage.exists("beatHit")) {
             ScriptStage.exec("beatHit", [curBeat]);
             return;
         }
@@ -66,7 +65,7 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 
     public function stageUpdate(elapsed:Float) {
         super.update(elapsed);
-        if (ScriptStage != null && ScriptStage.funcExists("update")) { 
+        if (ScriptStage != null && ScriptStage.exists("update")) { 
             ScriptStage.exec("update", [elapsed]);
             return;
         }

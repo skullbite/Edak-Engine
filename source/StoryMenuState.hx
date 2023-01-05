@@ -78,14 +78,14 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		for (x in 0...FileSystem.readDirectory(Sys.getCwd() + "/assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Sys.getCwd() + Paths.weekData('week$x')));
+		for (x in 0...FileSystem.readDirectory("assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Paths.weekData('week$x')));
 			if (coolWeekData.exists("hiddenInStory") && coolWeekData.get("hiddenInStory")) continue;
 			weekData.push(coolWeekData);
 		}
 
-		for (x in FileSystem.readDirectory(Sys.getCwd() + "/assets/difficulties").filter(d -> d.endsWith(".yaml"))) {
-			var awesomeDifficultyStuff = Yaml.parse(File.getContent(Sys.getCwd() + Paths.difficulty(x.split(".").shift())));
+		for (x in FileSystem.readDirectory("assets/difficulties").filter(d -> d.endsWith(".yaml"))) {
+			var awesomeDifficultyStuff = Yaml.parse(File.getContent(Paths.difficulty(x.split(".").shift())));
 			difficultyData.set(x.split(".").shift(), {
 				animName: awesomeDifficultyStuff.get("animName"),
 				color: cast awesomeDifficultyStuff.get("color"),

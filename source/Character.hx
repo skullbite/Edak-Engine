@@ -46,9 +46,9 @@ class Character extends FlxSprite
 		{
 			default:
 				if (FileSystem.exists('assets/characters/$curCharacter/init.hx')) {
-					var charCode = File.getContent('assets/characters/$curCharacter/init.hx');
+					// var charCode = File.getContent('assets/characters/$curCharacter/init.hx');
 					try {
-						CharScript = new HCharacter(this, charCode);
+						CharScript = new HCharacter(this, 'assets/characters/$curCharacter/init.hx');
 						CharScript.exec("create", []);
 					}
 					catch (e) {
@@ -110,7 +110,7 @@ class Character extends FlxSprite
 
 		super.update(elapsed);
 
-		if (CharScript != null && CharScript.funcExists("update")) {
+		if (CharScript != null && CharScript.exists("update")) {
 			CharScript.exec("update", [elapsed]);
 			return;
 		}
@@ -132,47 +132,22 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (CharScript != null && CharScript.funcExists("dance")) {
+		if (CharScript != null && CharScript.exists("dance")) {
 			CharScript.exec("dance", []);
 			return;
 		}
 		if (!debugMode)
 		{
-			switch (curCharacter)
+			if (!animation.curAnim.name.startsWith('hair')) {
+				if (animation.exists('danceLeft') && animation.exists('danceRight')) {
+					danced = !danced;
+					playAnim(danced ? "danceRight" : "danceLeft");
+				}
+				else playAnim("idle", true);
+			}
+			/*switch (curCharacter)
 			{
-				case 'gf':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'gf-christmas':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'gf-car':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-				case 'gf-pixel':
+				case 'gf' | 'gf-christmas' | 'gf-car' | 'gf-pixel':
 					if (!animation.curAnim.name.startsWith('hair'))
 					{
 						danced = !danced;
@@ -192,7 +167,8 @@ class Character extends FlxSprite
 						playAnim('danceLeft');
 				default:
 					playAnim('idle', true);
-			}
+
+			}*/
 		}
 	}
 

@@ -1,6 +1,8 @@
-function onCreatePost() {
-    importLib("flixel.tweens.FlxEase");
-}
+package;
+
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+
 function onBeatHit(beat) {
     switch (beat) {
         case 8, 136, 360: game.bopSpeed = 2;

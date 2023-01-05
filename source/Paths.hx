@@ -139,9 +139,9 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
-	inline static public function getSparrowAtlas(key:String, ?library:String)
+	inline static public function getSparrowAtlas(key:String, ?library:String, customNoteAsset:Bool=false)
 	{
-		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+		return FlxAtlasFrames.fromSparrow(customNoteAsset ? file('$key.png', IMAGE, library) : image(key, library), file('${customNoteAsset ? "" : "images/"}$key.xml', library));
 	}
 
 	inline static public function getPackerAtlas(key:String, ?library:String)
@@ -150,13 +150,30 @@ class Paths
 	}
 }
 
-/*class CustomPaths {
+class CustomPaths {
 	var dir:String = "";
 	var lib:String = "";
 	public function new(dir:String, lib:String) {
 		this.dir = dir;
 		this.lib = lib;
 	}
+
+	public function music(key:String) {
+		return Paths.getPath('$dir/$key.${Paths.SOUND_EXT}', MUSIC, lib);
+	}
+	
+	public function sound(key:String) {
+		return Paths.getPath('$dir/$key.${Paths.SOUND_EXT}', SOUND, lib);
+	}
+
+	public function txt(key:String) {
+		return Paths.getPath('$dir/$key.txt', TEXT, lib);
+	}
+
+	public function json(key:String) {
+		return Paths.getPath('$dir/$key.json', TEXT, lib);
+	}
+
 	public function image(key:String) {
 		return Paths.getPath('$dir/$key.png', IMAGE, lib);
 	}
@@ -166,63 +183,6 @@ class Paths
 	}
 	
 	public function getPackerAtlas(key:String) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$dir/$key.txt', 'characters'));
-	}
-}*/
-
-class CharacterPaths {
-	var curChar:String = "";
-	public function new(curChar) {
-		this.curChar = curChar;
-	}
-
-	public function image(key:String) {
-		return Paths.getPath('$curChar/$key.png', IMAGE, 'characters');
-	}
-
-    public function getSparrowAtlas(key:String) {
-		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curChar/$key.xml', 'characters'));
-	}
-	
-	public function getPackerAtlas(key:String) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curChar/$key.txt', 'characters'));
-	}
-}
-
-class StagePaths {
-	var curStage:String = "";
-	public function new(curStage:String) {
-		this.curStage = curStage;
-	}
-
-	public function image(key:String) {
-		return Paths.getPath('$curStage/$key.png', IMAGE, 'stages');
-	}
-
-	public function getSparrowAtlas(key:String) {
-		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curStage/$key.xml', 'stages'));
-	}
-	
-	public function getPackerAtlas(key:String) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curStage/$key.txt', 'stages'));
-	}
-}
-
-class DialoguePaths {
-	var curDialogue:String = "";
-	public function new(curDialogue:String) {
-		this.curDialogue = curDialogue;
-	}
-	
-	public function image(key:String) {
-		return Paths.getPath('$curDialogue/$key.png', IMAGE, 'dialogue');
-	}
-
-	public function getSparrowAtlas(key:String) {
-		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$curDialogue/$key.xml', 'dialogue'));
-	}
-	
-	public function getPackerAtlas(key:String) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$curDialogue/$key.txt', 'dialogue'));
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$dir/$key.txt', lib));
 	}
 }
