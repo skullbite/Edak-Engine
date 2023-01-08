@@ -911,6 +911,8 @@ class ChartingState extends MusicBeatState
 			lastSection = curSection;
 
 			PlayState.SONG = _song;
+			PlayState.saveScore = false;
+			
 			FlxG.sound.music.stop();
 			vocals.stop();
 			LoadingState.loadAndSwitchState(new PlayState());

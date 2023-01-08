@@ -65,7 +65,6 @@ class GameOverSubstate extends MusicBeatSubstate
 				FlxG.switchState(new StoryMenuState());
 			else
 				FlxG.switchState(new FreeplayState());
-			PlayState.loadRep = false;
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)

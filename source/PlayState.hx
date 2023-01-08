@@ -85,6 +85,7 @@ class PlayState extends MusicBeatState
 	// cutscenes in freeplay without having to go through the whole week
 	public var forceCutscene:Bool = false;
 	public static var storyWeek:Int = 0;
+	public static var saveScore:Bool = true;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:String = "Normal";
 	public static var difficultyData:AnyObjectMap;
@@ -99,9 +100,6 @@ class PlayState extends MusicBeatState
 	public var bopSpeed:Int = 4;
 	public var camBumpZoom:Float = 0.015;
 	public var hudBumpZoom:Float = 0.03;
-
-	public static var rep:Replay;
-	public static var loadRep:Bool = false;
 
 	public var disableInput:Bool = false;
 	public static var noteBools:Array<Bool> = [false, false, false, false];
@@ -229,6 +227,7 @@ class PlayState extends MusicBeatState
 		dadGroup = new FlxTypedGroup();
 		gfGroup = new FlxTypedGroup();
 		boyfriendGroup = new FlxTypedGroup();
+		if (Settings.get("botplay")) saveScore = false;
 		
 		if (FlxG.save.data.fpsCap > 290)
 			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(800);
@@ -402,16 +401,6 @@ class PlayState extends MusicBeatState
 		camPos.x += stage.cameraDisplace.x;
 		camPos.y += stage.cameraDisplace.y;
 
-		if (loadRep)
-		{
-			FlxG.watch.addQuick('rep rpesses',repPresses);
-			FlxG.watch.addQuick('rep releases',repReleases);
-			
-			FlxG.save.data.botplay = true;
-			FlxG.save.data.scrollSpeed = rep.replay.noteSpeed;
-			FlxG.save.data.downscroll = rep.replay.isDownscroll;
-			// FlxG.watch.addQuick('Queued',inputsQueued);
-		}
 
 		Conductor.songPosition = -5000;
 		
@@ -468,14 +457,6 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		replayTxt = new FlxText(healthBarBG.x + healthBarBG.width / 2 - 75, healthBarBG.y + (FlxG.save.data.downscroll ? 100 : -100), 0, "REPLAY", 20);
-		replayTxt.setFormat(Paths.font("vcr.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-		replayTxt.scrollFactor.set();
-		if (loadRep)
-		{
-			add(replayTxt);
-		}
-
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
@@ -528,8 +509,6 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-		if (loadRep)
-			replayTxt.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -550,9 +529,6 @@ class PlayState extends MusicBeatState
 		}
 		else startCountdown();
 
-		if (!loadRep)
-			rep = new Replay("na");
-
 		super.create();
 
 		HFunk.doDaCallback("onCreatePost", []);
@@ -560,8 +536,6 @@ class PlayState extends MusicBeatState
 
 	var startTimer:FlxTimer;
 	var perfectMode:Bool = false;
-
-	var luaWiggles:Array<WiggleEffect> = [];
 
 	function startCountdown():Void
 	{
@@ -984,8 +958,6 @@ class PlayState extends MusicBeatState
 				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: Settings.get("middlescroll") && player == 0 ? .5 : 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 			}
 
-			
-
 			babyArrow.ID = i;
 
 			switch (player)
@@ -1139,6 +1111,7 @@ class PlayState extends MusicBeatState
 			scoreTxt.size = 20;
 		}
 		else {
+			saveScore = false;
 			scoreTxt.size = 30;
 			scoreTxt.text = "BOTPLAY";
 		}
@@ -1593,14 +1566,6 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
-		if (!loadRep)
-			rep.SaveReplay(saveNotes);
-		else
-		{
-			FlxG.save.data.botplay = false;
-			FlxG.save.data.scrollSpeed = 1;
-			FlxG.save.data.downscroll = false;
-		}
 
 		if (FlxG.save.data.fpsCap > 290)
 			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
@@ -1610,7 +1575,7 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;
 		FlxG.sound.music.onComplete = null;
 		#if !switch
-		Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
+		if (saveScore) Highscore.saveScore(SONG.song, Math.round(songScore), HelperFunctions.truncateFloat(accuracy, 2), Ratings.getRatingType(), storyDifficulty);
 		#end
 
 		if (offsetTesting)
@@ -1634,13 +1599,14 @@ class PlayState extends MusicBeatState
 
 					transIn = FlxTransitionableState.defaultTransIn;
 					transOut = FlxTransitionableState.defaultTransOut;
+					saveScore = false;
 
 					FlxG.switchState(new StoryMenuState());
 
 					// if ()
 					StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 
-					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+					if (saveScore) Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 
 					FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
 					FlxG.save.flush();
@@ -1665,6 +1631,7 @@ class PlayState extends MusicBeatState
 			{
 				trace('WENT BACK TO FREEPLAY??');
 				FlxG.sound.music.kill();
+				saveScore = true;
 				FlxG.switchState(new FreeplayState());
 			}
 		}
@@ -2108,18 +2075,8 @@ class PlayState extends MusicBeatState
 						if(FlxG.save.data.botplay && daNote.canBeHit && daNote.mustPress ||
 						FlxG.save.data.botplay && daNote.tooLate && daNote.mustPress)
 						{
-							if(loadRep)
-							{
-								//trace('ReplayNote ' + tmpRepNote.strumtime + ' | ' + tmpRepNote.direction);
-								if(rep.replay.songNotes.contains(HelperFunctions.truncateFloat(daNote.strumTime, 2)))
-								{
-									goodNoteHit(daNote);
-									boyfriend.holdTimer = daNote.sustainLength;
-								}
-							}else {
 								goodNoteHit(daNote);
 								boyfriend.holdTimer = daNote.sustainLength;
-							}
 						}
 					}
 				});
