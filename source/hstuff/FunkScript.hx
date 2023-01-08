@@ -17,7 +17,6 @@ class FunkScript extends HBase {
             // interp.execute(parser.parseString(toRun));
 
             var script = cast (new CallbackScript().doString(toRun), CallbackScript);
-            script.set("vars", new Map<String, Dynamic>());
             script.set("Paths", Paths);
             script.set("STOP", HVars.STOP);
             scripts.push(script);
