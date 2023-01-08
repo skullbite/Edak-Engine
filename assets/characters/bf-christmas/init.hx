@@ -1,4 +1,6 @@
 function create() {
+    char.iconName = "bf";
+    char.deadChar = "bf";
     char.frames = Paths.getSparrowAtlas('bfChristmas');
     char.animation.addByPrefix('idle', 'BF idle dance', 24, false);
     char.animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);

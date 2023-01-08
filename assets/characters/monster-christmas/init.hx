@@ -1,4 +1,5 @@
 function create() {
+    char.iconName = "monster";
     char.barColor = "0x78ff71";
     char.frames = Paths.getSparrowAtlas('monsterChristmas');
     char.animation.addByPrefix('idle', 'monster idle', 24, false);

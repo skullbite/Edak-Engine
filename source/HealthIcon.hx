@@ -21,13 +21,6 @@ class HealthIcon extends FlxSprite
 	}
 
 	public function swapIcon(target:String) {
-		switch (target) {
-			case 'bf-car' | 'bf-christmas': target = 'bf';
-			case 'mom-car': target = 'mom';
-			case 'monster-christmas': target = 'monster';
-			case 'senpai-angry': target = 'senpai';
-		}
-
 		if (FileSystem.exists(Paths.image('icons/$target'))) loadGraphic(Paths.image('icons/$target'), true, 150, 150);
 		else loadGraphic(Paths.image('icons/face'), true, 150, 150);
 

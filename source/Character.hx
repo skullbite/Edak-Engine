@@ -18,6 +18,8 @@ class Character extends FlxSprite
 
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
+	public var iconName:String = 'bf';
+	public var deadChar:String = 'bf';
 
 	public var holdTimer:Float = 0;
 	public var bopSpeed:Int = 2;
@@ -26,10 +28,10 @@ class Character extends FlxSprite
 	public var stopDancing = false;
 	var CharScript:Null<HCharacter> = null;
 	public var displaceData = {
-		x: 0.0,
-		y: 0.0,
-		camX: 0.0,
-		camY: 0.0
+		x: 0,
+		y: 0,
+		camX: 0,
+		camY: 0
 	};
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
@@ -38,6 +40,8 @@ class Character extends FlxSprite
 
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
+		iconName = character;
+		deadChar = character;
 		this.isPlayer = isPlayer;
 		
 		antialiasing = true;
@@ -86,6 +90,8 @@ class Character extends FlxSprite
 				}
 			}
 		}
+
+		if (CharScript != null && CharScript.exists("createPost")) CharScript.exec("createPost", []);
 	}
 
 	override function update(elapsed:Float)

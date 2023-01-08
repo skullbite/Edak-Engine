@@ -3,7 +3,7 @@ package;
 import CoolUtil;
 
 function create() {
-    importLib("CoolUtil");
+    char.iconName = "mom";
     char.barColor = "0xf191ba";
     char.frames = Paths.getSparrowAtlas('momCar');
 

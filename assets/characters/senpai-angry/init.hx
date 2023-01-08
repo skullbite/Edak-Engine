@@ -1,4 +1,5 @@
 function create() {
+    char.iconName = "senpai";
     char.barColor = "0xd5d5d3";
     char.frames = _Paths.getSparrowAtlas('reused/senpai', 'characters');
     char.animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);

@@ -82,8 +82,6 @@ class PlayState extends MusicBeatState
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
-	// cutscenes in freeplay without having to go through the whole week
-	public var forceCutscene:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var saveScore:Bool = true;
 	public static var storyPlaylist:Array<String> = [];
@@ -211,7 +209,7 @@ class PlayState extends MusicBeatState
 	var moveHealthIcons = true;
 	var bopHealthIcons = true;
 	var moveCamera = true;
-
+	var forceCutscene = false;
 	// API stuff
 	
 
@@ -457,11 +455,11 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		iconP1 = new HealthIcon(SONG.player1, true);
+		iconP1 = new HealthIcon(boyfriend.iconName, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false);
+		iconP2 = new HealthIcon(dad.iconName, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
@@ -1431,7 +1429,7 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
-						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData, daNote.isSustainNote, daNote.dadShouldHit]);
+						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData, daNote.isSustainNote, daNote.dadShouldHit, daNote.noteType]);
 						if (SONG.song != 'Tutorial')
 							camZooming = true;
 
@@ -1869,7 +1867,7 @@ class PlayState extends MusicBeatState
 				numScore.velocity.y -= FlxG.random.int(140, 160);
 				numScore.velocity.x = FlxG.random.float(-5, 5);
 	
-				if (combo >= 10 || combo == 0)
+				if (combo >= 10)
 					add(numScore);
 	
 				FlxTween.tween(numScore, {alpha: 0}, 0.2, {
@@ -1918,7 +1916,7 @@ class PlayState extends MusicBeatState
 			curSection += 1;
 			return;
 			}
-			HFunk.doDaCallback("onComboPop", [daRating, combo]);
+			HFunk.doDaCallback("onComboPop", [daRating, combo, null]);
 		}
 
 	public function NearlyEquals(value1:Float, value2:Float, unimportantDifference:Float = 10):Bool

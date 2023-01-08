@@ -87,6 +87,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
 
     function startDialogue() {
         cleanDialog();
+        if (DialogueScript.exists("preLine")) DialogueScript.exec("preLine", [curPortrait, dialogueText[0]]);
         for (k => v in portraits) {
             if (k == curPortrait) {
                 v.visible = true;
@@ -100,6 +101,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
             targetPortrait.animation.play("pre");
             targetPortrait.animation.finishCallback = t -> {
                 currentlyTyping = true;
+                if (DialogueScript.exists("nextLine")) DialogueScript.exec("nextLine", [curPortrait, dialogueText[0]]);
                 speakTxt.start(0.04, true, false, [SPACE], () -> currentlyTyping = false);
             }
         } 
