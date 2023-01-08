@@ -8,7 +8,8 @@ import flixel.FlxSprite;
 function onCutscene() {
     var lunchbox = FlxG.sound.play(Paths.music('Lunchbox'), 0);
 	lunchbox.fadeIn(1, 0, 0.8);
-    var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), 0x000000);
+    var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
+    blackScreen.color = 0x000000;
 	blackScreen.scrollFactor.set();
 	game.add(blackScreen);
     new FlxTimer().start(0.3, t -> {

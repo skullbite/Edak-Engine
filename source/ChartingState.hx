@@ -1516,8 +1516,7 @@ class ChartingState extends MusicBeatState
 
 	function loadJson(song:String):Void
 	{
-		var diff = currentDiff.toLowerCase() != "normal" ? "-" + currentDiff.toLowerCase() : "";
-		PlayState.SONG = Song.loadFromJson(song.toLowerCase() + diff, song.toLowerCase());
+		PlayState.SONG = Song.loadFromJson(currentDiff, song.toLowerCase());
 		PlayState.storyDifficulty = currentDiff.toLowerCase();
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
@@ -1545,6 +1544,9 @@ class ChartingState extends MusicBeatState
 		var mainBpm = Conductor.bpm;
 		for (x in 0..._song.notes.length) {
 			var section = copyThing.notes[x];
+			Reflect.deleteField(copyThing.notes[x], "typeOfSection");
+			Reflect.deleteField(copyThing.notes[x], "lengthInSteps");
+			
 			if (section.bpm != null) {
 				if (section.bpm == mainBpm) Reflect.deleteField(copyThing.notes[x], "bpm");
 				else mainBpm = section.bpm;
@@ -1563,8 +1565,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			var target = _song.song.toLowerCase();
-			_file.save(data.trim(), Sys.getCwd() + 'assets/data/$target/$target.json');
+			_file.save(data.trim(), 'assets/data/${_song.song.toLowerCase()}/${currentDiff.toLowerCase()}.json');
 		}
 	}
 

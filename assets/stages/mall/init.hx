@@ -2,6 +2,10 @@ package;
 
 import flixel.FlxSprite;
 
+var upperBoppers:FlxSprite;
+var bottomBoppers:FlxSprite;
+var santa:FlxSprite;
+
 function create() {
     stage.defaultCamZoom = 0.8;
     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('bgWalls'));
@@ -12,7 +16,7 @@ function create() {
 	bg.updateHitbox();
 	stage.add(bg);
 
-	var upperBoppers = new FlxSprite(-240, -90);
+	upperBoppers = new FlxSprite(-240, -90);
 	upperBoppers.frames = Paths.getSparrowAtlas('upperBop');
 	upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 12, false);
 	upperBoppers.antialiasing = true;
@@ -20,7 +24,7 @@ function create() {
 	upperBoppers.setGraphicSize(Std.int(upperBoppers.width * 0.85));
 	upperBoppers.updateHitbox();
 	if (Settings.get("distractions")) stage.add(upperBoppers);
-    stage.publicSprites["upperBoppers"] = upperBoppers;
+    // stage.publicSprites["upperBoppers"] = upperBoppers;
 
 	var bgEscalator = new FlxSprite(-1100, -600).loadGraphic(Paths.image('bgEscalator'));
 	bgEscalator.antialiasing = true;
@@ -37,7 +41,7 @@ function create() {
 	tree.scrollFactor.set(0.40, 0.40);
 	stage.add(tree);
 
-	var bottomBoppers = new FlxSprite(-300, 140);
+	bottomBoppers = new FlxSprite(-300, 140);
 	bottomBoppers.frames = Paths.getSparrowAtlas('bottomBop');
 	bottomBoppers.animation.addByPrefix('bop', 'Bottom Level Boppers', 12, false);
 	bottomBoppers.antialiasing = true;
@@ -45,7 +49,7 @@ function create() {
 	bottomBoppers.scale.set(1, 1);
 	bottomBoppers.updateHitbox();
 	if (Settings.get("distractions")) stage.add(bottomBoppers);
-    stage.publicSprites["bottomBoppers"] = bottomBoppers;
+    // stage.publicSprites["bottomBoppers"] = bottomBoppers;
 
 
 	var fgSnow = new FlxSprite(-600, 700).loadGraphic(Paths.image('fgSnow'));
@@ -53,12 +57,12 @@ function create() {
 	fgSnow.antialiasing = true;
 	stage.add(fgSnow);
 
-	var santa = new FlxSprite(-840, 150);
+	santa = new FlxSprite(-840, 150);
 	santa.frames = Paths.getSparrowAtlas('santa');
 	santa.animation.addByPrefix('idle', 'santa idle in fear', 12, false);
 	santa.antialiasing = true;
 	if (Settings.get("distractions")) stage.add(santa);
-    stage.publicSprites["santa"] = santa;
+    // stage.publicSprites["santa"] = santa;
 }
 
 function reposCharacters() {
@@ -68,8 +72,8 @@ function reposCharacters() {
 
 function beatHit() {
     if (Settings.get("distractions")) {
-        stage.publicSprites["upperBoppers"].animation.play('bop', true);
-        stage.publicSprites["bottomBoppers"].animation.play('bop', true);
-        stage.publicSprites["santa"].animation.play('idle', true);
+        upperBoppers.animation.play('bop', true);
+        bottomBoppers.animation.play('bop', true);
+        santa.animation.play('idle', true);
     }
 }

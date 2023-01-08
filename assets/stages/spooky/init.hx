@@ -5,16 +5,17 @@ import flixel.FlxG;
 
 var lightningStrikeBeat = 0;
 var lightingOffset = 8;
+var halloweenBG:FlxSprite;
 
 function create() {
 	var hallowTex = Paths.getSparrowAtlas('halloween_bg');
-	var halloweenBG = new FlxSprite(-200, -100);
+	halloweenBG = new FlxSprite(-200, -100);
 	halloweenBG.frames = hallowTex;
 	halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
 	halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
 	halloweenBG.animation.play('idle');
 	halloweenBG.antialiasing = true;
-    stage.publicSprites["halloweenBG"] = halloweenBG;
+    // stage.publicSprites["halloweenBG"] = halloweenBG;
 	stage.add(halloweenBG);
 }
 
@@ -28,26 +29,11 @@ function beatHit(beat) {
 
 function lightningStrikeShit(beat) {
 	FlxG.sound.play(_Paths.soundRandom('thunder_', 1, 2));
-	stage.publicSprites["halloweenBG"].animation.play('lightning');
+	halloweenBG.animation.play('lightning');
 
 	lightningStrikeBeat = beat;
 	lightingOffset = FlxG.random.int(8, 24);
 
-	PlayState.boyfriend.animation.finishCallback = n -> {
-		if (n == 'scared') { 
-			PlayState.boyfriend.stopDancing = false;
-			PlayState.boyfriend.animation.finishCallback = null;
-		}
-	};
-	PlayState.boyfriend.stopDancing = true;
 	PlayState.boyfriend.animation.play('scared', true);
-
-	PlayState.gf.animation.finishCallback = n -> {
-		if (n == 'scared') { 
-			PlayState.gf.stopDancing = false;
-			PlayState.gf.animation.finishCallback = null;
-		}
-	};
-	PlayState.gf.stopDancing = true;
 	PlayState.gf.playAnim('scared', true);
 }

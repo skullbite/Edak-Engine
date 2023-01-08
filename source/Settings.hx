@@ -19,6 +19,11 @@ class Settings {
                 type: "bool",
                 value: false
             },
+            "middlescroll" => {
+                displayName: "Middlescroll",
+                type: "bool",
+                value: false
+            },
             "scrollSpeed" => {
                 displayName: "Scroll Speed",
                 type: "float",

@@ -24,7 +24,7 @@ class PauseSubState extends MusicBeatSubstate
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
-	var perSongOffset:FlxText;
+	// var perSongOffset:FlxText;
 	
 	var offsetChanged:Bool = false;
 	var pauseCam:FlxCamera = new FlxCamera();
@@ -72,13 +72,13 @@ class PauseSubState extends MusicBeatSubstate
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
-		perSongOffset = new FlxText(5, FlxG.height - 18, 0, "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.', 12);
+		/*perSongOffset = new FlxText(5, FlxG.height - 18, 0, "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.', 12);
 		perSongOffset.scrollFactor.set();
 		perSongOffset.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		
 		#if cpp
 			add(perSongOffset);
-		#end
+		#end*/
 
 		for (i in 0...menuItems.length)
 		{
@@ -117,7 +117,7 @@ class PauseSubState extends MusicBeatSubstate
 			changeSelection(1);
 		}
 		
-		#if cpp
+		/*#if cpp
 			else if (leftP)
 			{
 				oldOffset = PlayState.songOffset;
@@ -171,7 +171,7 @@ class PauseSubState extends MusicBeatSubstate
 					offsetChanged = true;
 				}
 			}
-		#end
+		#end*/
 
 		if (accepted)
 		{

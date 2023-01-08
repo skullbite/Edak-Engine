@@ -260,7 +260,7 @@ class AlphaCharacter extends FlxSprite
 
 	public function createBold(letter:String)
 	{
-		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 24);
+		animation.addByPrefix(letter, letter.toLowerCase() + " bold", 24);
 		animation.play(letter);
 		updateHitbox();
 	}
@@ -270,10 +270,10 @@ class AlphaCharacter extends FlxSprite
 		var letterCase:String = "lowercase";
 		if (letter.toLowerCase() != letter)
 		{
-			letterCase = 'capital';
+			letterCase = 'uppercase';
 		}
 
-		animation.addByPrefix(letter, letter + " " + letterCase, 24);
+		animation.addByPrefix(letter, letter.toLowerCase() + " " + letterCase, 24);
 		if (animation.exists(letter)) animation.play(letter);
 		updateHitbox();
 

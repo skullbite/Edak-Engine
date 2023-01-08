@@ -176,7 +176,7 @@ class Character extends FlxSprite
 	// (in case there's an issue with hscript)
 	function loadBfInstead() {
 		curCharacter = "bf";
-		frames = Paths.getSparrowAtlas('characters/BOYFRIEND');
+		frames = FlxAtlasFrames.fromSparrow(Paths.file('bf/BOYFRIEND.png', IMAGE, 'characters'), Paths.file('bf/BOYFRIEND.xml', TEXT, 'characters'));
 		animation.addByPrefix('idle', 'BF idle dance', 24, false);
 		animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 		animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);

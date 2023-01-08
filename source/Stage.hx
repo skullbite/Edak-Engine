@@ -73,13 +73,13 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 
     function loadStageInstead() {
         // PlayState.defaultCamZoom = 0.9;
-		var bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
+		var bg = new FlxSprite(-600, -200).loadGraphic(Paths.file('stage/stageback.png', IMAGE, 'stages'));
 		bg.antialiasing = true;
 		bg.scrollFactor.set(0.9, 0.9);
 		bg.active = false;
 		add(bg);
 
-		var stageFront = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
+		var stageFront = new FlxSprite(-650, 600).loadGraphic(Paths.file('stage/stagefront.png', IMAGE, 'stages'));
 		stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
 		stageFront.updateHitbox();
 		stageFront.antialiasing = true;
@@ -87,7 +87,7 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 		stageFront.active = false;
 		add(stageFront);
 
-		var stageCurtains = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
+		var stageCurtains = new FlxSprite(-500, -300).loadGraphic(Paths.file('stage/stagecurtains.png', IMAGE, 'stages'));
 		stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
 		stageCurtains.updateHitbox();
 		stageCurtains.antialiasing = true;
