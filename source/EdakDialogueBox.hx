@@ -101,7 +101,6 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
             targetPortrait.animation.play("pre");
             targetPortrait.animation.finishCallback = t -> {
                 currentlyTyping = true;
-                if (DialogueScript.exists("nextLine")) DialogueScript.exec("nextLine", [curPortrait, dialogueText[0]]);
                 speakTxt.start(0.04, true, false, [SPACE], () -> currentlyTyping = false);
             }
         } 
