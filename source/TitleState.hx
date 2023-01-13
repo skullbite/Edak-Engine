@@ -44,6 +44,7 @@ class TitleState extends MusicBeatState
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
+	var spritesReady = false;
 
 	var curWacky:Array<String> = [];
 
@@ -217,6 +218,8 @@ class TitleState extends MusicBeatState
 		ngSpr.screenCenter(X);
 		ngSpr.antialiasing = true;
 
+		spritesReady = true;
+
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
 		FlxG.mouse.visible = false;
@@ -378,6 +381,7 @@ class TitleState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+		if (!spritesReady) return;
 
 		logoBl.animation.play('bump', true);
 		danceLeft = !danceLeft;
