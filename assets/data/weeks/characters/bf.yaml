@@ -1,0 +1,10 @@
+---
+storyAssets: storyMenu/characters/campaign_menu_UI_characters
+anims:
+  idle: BF idle dance white
+  confirm: BF HEY!!
+x: 0
+y: -30
+scale: .9
+flipped: false
+framerate: 24

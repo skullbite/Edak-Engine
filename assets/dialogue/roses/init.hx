@@ -41,7 +41,7 @@ function createPost() {
     dia.speakTxt.x -= 350;
     dia.speakTxt.y += 100;
     dia.speakTxt.color = 0xFF3F2021;
-    dia.speakTxt.sounds = [FlxG.sound.load(_Paths.sound('pixelText'), 0.6)];
+    dia.speakTxt.sounds = [FlxG.sound.load(_Paths.sound('dialogue/pixelText'), 0.6)];
     dropTxt = new FlxText(dia.speakTxt.x + 2, dia.speakTxt.y + 2, Std.int(FlxG.width * 0.6));
     dia.groupTxt.insert(0, dropTxt);
     dropTxt.size = 32;
@@ -51,5 +51,5 @@ function createPost() {
 
 function update(elapsed) {
     dropTxt.text = dia.speakTxt.text;
-    if (FlxG.keys.justPressed.ENTER) FlxG.sound.play(_Paths.sound('clickText'), 0.8);
+    if (FlxG.keys.justPressed.ENTER) FlxG.sound.play(_Paths.sound('dialogue/clickText'), 0.8);
 }

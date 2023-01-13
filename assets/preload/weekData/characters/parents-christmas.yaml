@@ -1,9 +1,0 @@
----
-storyAssets: campaign_menu_UI_characters
-anims:
-  idle: Parent Christmas Idle
-x: 100
-y: 130
-scale: 1
-flipped: false
-framerate: 24

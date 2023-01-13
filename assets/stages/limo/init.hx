@@ -85,7 +85,7 @@ function reposCharacters() {
 }
 
 function fastCarDrive() {
-    FlxG.sound.play(_Paths.soundRandom('carPass', 0, 1), 0.7);
+    FlxG.sound.play(Paths.soundRandom('carPass', 0, 1, true), 0.7);
 
     fastCar.visible = true;
 	fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;

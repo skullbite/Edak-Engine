@@ -10,28 +10,10 @@ class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
-	static var currentLevel:String;
-
-	static public function setCurrentLevel(name:String)
-	{
-		currentLevel = name.toLowerCase();
-	}
-
 	static public function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
-
-		if (currentLevel != null)
-		{
-			var levelPath = getLibraryPathForce(file, currentLevel);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-
-			levelPath = getLibraryPathForce(file, "shared");
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-		}
 
 		return getPreloadPath(file);
 	}
@@ -57,7 +39,7 @@ class Paths
 	}
 
 	inline static public function songDataDir(key:String) {
-		return File.applicationDirectory.resolvePath('assets/data/$key').getDirectoryListing().map(d -> d.name);
+		return File.applicationDirectory.resolvePath('assets/songs/$key').getDirectoryListing().map(d -> d.name);
 	}
 	
 	inline static public function scriptDir() {
@@ -65,11 +47,11 @@ class Paths
 	}
 	
 	inline static public function difficulty(key:String) {
-		return getPath('difficulties/$key.yaml', TEXT, null);
+		return getPath('data/difficulties/$key.yaml', TEXT, null);
 	}
 
 	inline static public function weekData(key:String) {
-		return getPath('weekData/$key.yaml', TEXT, null);
+		return getPath('data/weeks/$key.yaml', TEXT, null);
 	}
 
 	inline static public function lua(key:String,?library:String)
@@ -92,9 +74,9 @@ class Paths
 		return getPath('data/$key.xml', TEXT, library);
 	}
 
-	inline static public function json(key:String, ?library:String)
+	inline static public function json(key:String, isSong=false, ?library:String)
 	{
-		return getPath('data/$key.json', TEXT, library);
+		return getPath('${isSong ? "songs" : "data"}/$key.json', TEXT, library);
 	}
 
 
@@ -115,7 +97,7 @@ class Paths
 
 	inline static public function voices(song:String, ?altSong:String="")
 	{
-		var coolPath = 'songs:assets/songs/${song.toLowerCase()}/Voices';
+		var coolPath = 'assets/songs/${song.toLowerCase()}/Voices';
 		if (altSong != "") coolPath += '-$altSong';
 		coolPath += '.$SOUND_EXT';
 		return coolPath;
@@ -123,7 +105,7 @@ class Paths
 
 	inline static public function inst(song:String, ?altSong:String="")
 	{
-		var coolPath = 'songs:assets/songs/${song.toLowerCase()}/Inst';
+		var coolPath = 'assets/songs/${song.toLowerCase()}/Inst';
 		if (altSong != "") coolPath += '-$altSong';
 		coolPath += '.$SOUND_EXT';
 		return coolPath;
@@ -158,31 +140,35 @@ class CustomPaths {
 		this.lib = lib;
 	}
 
-	public function music(key:String) {
-		return Paths.getPath('$dir/$key.${Paths.SOUND_EXT}', MUSIC, lib);
+	public function music(key:String,useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'music/' : '' }$key.${Paths.SOUND_EXT}', MUSIC, lib);
 	}
 	
-	public function sound(key:String) {
-		return Paths.getPath('$dir/$key.${Paths.SOUND_EXT}', SOUND, lib);
+	public function sound(key:String, useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'sounds/' : '' }$key.${Paths.SOUND_EXT}', SOUND, lib);
 	}
 
-	public function txt(key:String) {
-		return Paths.getPath('$dir/$key.txt', TEXT, lib);
-	}
-
-	public function json(key:String) {
-		return Paths.getPath('$dir/$key.json', TEXT, lib);
-	}
-
-	public function image(key:String) {
-		return Paths.getPath('$dir/$key.png', IMAGE, lib);
-	}
-
-    public function getSparrowAtlas(key:String) {
-		return FlxAtlasFrames.fromSparrow(image(key), Paths.file('$dir/$key.xml', lib));
+	public function soundRandom(key:String, min:Int, max:Int, useFullDir=false) {
+		return sound(key + FlxG.random.int(min, max), useFullDir);
 	}
 	
-	public function getPackerAtlas(key:String) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), Paths.file('$dir/$key.txt', lib));
+	public function txt(key:String, useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'data/' : '' }$key.txt', TEXT, lib);
+	}
+
+	public function json(key:String, useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'data/' : '' }$key.json', TEXT, lib);
+	}
+
+	public function image(key:String, useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'images/' : '' }$key.png', IMAGE, lib);
+	}
+
+    public function getSparrowAtlas(key:String, useFullDir=false) {
+		return FlxAtlasFrames.fromSparrow(image(key, useFullDir), Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.xml', lib));
+	}
+	
+	public function getPackerAtlas(key:String, useFullDir=false) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, useFullDir), Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.txt', lib));
 	}
 }

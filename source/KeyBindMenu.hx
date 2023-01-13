@@ -105,18 +105,18 @@ class KeyBindMenu extends FlxSubState
             case "select":
                 if (FlxG.keys.justPressed.UP)
 				{
-					FlxG.sound.play(Paths.sound('scrollMenu'));
+					FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 					changeItem(-1);
 				}
 
 				if (FlxG.keys.justPressed.DOWN)
 				{
-					FlxG.sound.play(Paths.sound('scrollMenu'));
+					FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 					changeItem(1);
 				}
 
                 if (FlxG.keys.justPressed.ENTER){
-                    FlxG.sound.play(Paths.sound('scrollMenu'));
+                    FlxG.sound.play(Paths.sound('menu/scrollMenu'));
                     state = "input";
                 }
                 else if(FlxG.keys.justPressed.ESCAPE){
@@ -136,7 +136,7 @@ class KeyBindMenu extends FlxSubState
                 if(FlxG.keys.justPressed.ESCAPE){
                     keys[curSelected] = tempKey;
                     state = "select";
-                    FlxG.sound.play(Paths.sound('confirmMenu'));
+                    FlxG.sound.play(Paths.sound('menu/confirmMenu'));
                 }
                 else if(FlxG.keys.justPressed.ENTER){
                     addKey(defaultKeys[curSelected]);

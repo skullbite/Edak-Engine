@@ -41,9 +41,9 @@ function createPost() {
     dia.speakTxt.font = 'Pixel Arial 11 Bold';
     dia.speakTxt.x -= 350;
     dia.speakTxt.y += 100;
-    dia.speakTxt.sounds = [FlxG.sound.load(_Paths.sound('pixelText'), 0.6)];
+    dia.speakTxt.sounds = [FlxG.sound.load(_Paths.sound('dialogue/pixelText'), 0.6)];
 }
 
 function update(elapsed) {
-    if (FlxG.keys.justPressed.ENTER) FlxG.sound.play(_Paths.sound('clickText'), 0.8);
+    if (FlxG.keys.justPressed.ENTER) FlxG.sound.play(_Paths.sound('dialogue/clickText'), 0.8);
 }

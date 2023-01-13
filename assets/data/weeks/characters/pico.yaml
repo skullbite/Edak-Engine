@@ -1,0 +1,9 @@
+---
+storyAssets: storyMenu/characters/campaign_menu_UI_characters
+anims:
+  idle: Pico Idle Dance
+x: 0
+y: 50
+scale: .8
+flipped: true
+framerate: 24

@@ -28,7 +28,7 @@ function beatHit(beat) {
 }
 
 function lightningStrikeShit(beat) {
-	FlxG.sound.play(_Paths.soundRandom('thunder_', 1, 2));
+	FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2, true));
 	halloweenBG.animation.play('lightning');
 
 	lightningStrikeBeat = beat;

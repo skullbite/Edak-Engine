@@ -5,7 +5,6 @@ import yaml.Yaml;
 import sys.FileSystem;
 import sys.io.File;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
 typedef CharacterJsonData = {
 	?storyAssets:String,
@@ -37,16 +36,6 @@ class CharacterSetting
 
 class MenuCharacter extends FlxSprite
 {
-	private static var settings:Map<String, CharacterSetting> = [
-		'bf' => new CharacterSetting(0, -20, 1.0, true),
-		'gf' => new CharacterSetting(50, 80, 1.5, true),
-		'dad' => new CharacterSetting(-15, 130),
-		'spooky' => new CharacterSetting(20, 30),
-		'pico' => new CharacterSetting(0, 0, 1.0, true),
-		'mom' => new CharacterSetting(-30, 140, 0.85),
-		'parents-christmas' => new CharacterSetting(100, 130, 1.8),
-		'senpai' => new CharacterSetting(-40, -45, 1.4)
-	];
 
 	private var flipped:Bool = false;
 	private var charData:AnyObjectMap;
@@ -63,11 +52,18 @@ class MenuCharacter extends FlxSprite
 		else visible = true;
 		
 		if (FileSystem.exists(Paths.weekData('characters/$char'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$char')));
+		else {
+			if (char == null) {
+				animation.add("idle", [0]);
+				visible = false;
+				return;
+			}
+		}
 		flipped = charData.get("flipped");
 
 		
 
-		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "campaign_menu_UI_characters");
+		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "storyMenu/characters/campaign_menu_UI_characters");
 
 		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
 		if (charData.get("anims").exists("confirm")) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
@@ -90,7 +86,7 @@ class MenuCharacter extends FlxSprite
 		}
 
 		if (FileSystem.exists(Paths.weekData('characters/$character'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$character')));
-		frames = Paths.getSparrowAtlas(charData.get("storyAssets") != null ? charData.get("storyAssets") : "campaign_menu_UI_characters");
+		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "storyMenu/characters/campaign_menu_UI_characters");
 
 		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
 		if (charData.get("anims").get("confirm") != null) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);

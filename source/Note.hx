@@ -40,7 +40,7 @@ class Note extends FlxSprite
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var noteType:String;
-	public var noteAssetPath:String = "NOTE_assets";
+	public var noteAssetPath:String = "strums/normal/NOTE_assets";
 	public var dadShouldHit:Bool = true;
 	public var bfShouldHit:Bool = true;
 
@@ -77,8 +77,8 @@ class Note extends FlxSprite
 				isCustomNote = true;
 				noteAssetPath = '$noteType/assets';
 				if (CustomNoteDataCache.get(noteType) != null) customNoteData = CustomNoteDataCache.get(noteType);
-				else if (FileSystem.exists('assets/custom-notes/$noteType')) {
-					var noteStuff = Yaml.parse(File.getContent('assets/custom-notes/$noteType/info.yaml'));
+				else if (FileSystem.exists('assets/customNotes/$noteType')) {
+					var noteStuff = Yaml.parse(File.getContent('assets/customNotes/$noteType/info.yaml'));
 					customNoteData = {
 						dadShouldHit: noteStuff.exists("dadShouldHit") ? noteStuff.get("dadShouldHit") : dadShouldHit,
 						bfShouldHit: noteStuff.exists("bfShouldHit") ? noteStuff.get("bfShouldHit") : bfShouldHit
@@ -105,7 +105,7 @@ class Note extends FlxSprite
 		switch (PlayState.SONG.noteStyle)
 		{
 			case 'pixel':
-				var imgPath = isCustomNote ? 'custom-notes:assets/custom-notes/$noteAssetPath.png' : Paths.image('weeb/pixelUI/$noteAssetPath','week6');
+				var imgPath = isCustomNote ? 'customNotes:assets/customNotes/$noteAssetPath.png' : Paths.image('strums/pixel/$noteAssetPath');
 				loadGraphic(imgPath, true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -115,7 +115,7 @@ class Note extends FlxSprite
 
 				if (isSustainNote)
 				{
-					var endImgPath = isCustomNote ? 'custom-notes:assets/custom-notes/${noteAssetPath}Ends.png' : Paths.image('weeb/pixelUI/arrowEnds','week6');
+					var endImgPath = isCustomNote ? 'customNotes:assets/customNotes/${noteAssetPath}Ends.png' : Paths.image('strums/pixel/arrowEnds');
 					loadGraphic(endImgPath, true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
@@ -132,7 +132,7 @@ class Note extends FlxSprite
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
 			default:
-				frames = Paths.getSparrowAtlas(noteAssetPath, isCustomNote ? "custom-notes" : null, isCustomNote);
+				frames = Paths.getSparrowAtlas(noteAssetPath, isCustomNote ? "customNotes" : null, isCustomNote);
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');

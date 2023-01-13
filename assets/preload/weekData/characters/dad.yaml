@@ -1,9 +1,0 @@
----
-storyAssets: campaign_menu_UI_characters
-anims:
-  idle: Dad idle dance BLACK LINE
-x: -15
-y: 130
-scale: 0.5
-flipped: false
-framerate: 24

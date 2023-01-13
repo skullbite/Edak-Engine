@@ -78,7 +78,7 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		for (x in 0...FileSystem.readDirectory("assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+		for (x in 0...FileSystem.readDirectory("assets/data/weeks").filter(d -> d.endsWith(".yaml")).length) {
 			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Paths.weekData('week$x')));
 			if (coolWeekData.exists("hiddenInStory") && coolWeekData.get("hiddenInStory")) continue;
 			weekData.push(coolWeekData);
@@ -97,7 +97,7 @@ class StoryMenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music('menu/freakyMenu'));
 		}
 
 		persistentUpdate = persistentDraw = true;
@@ -115,7 +115,7 @@ class StoryMenuState extends MusicBeatState
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
 
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
+		var ui_tex = Paths.getSparrowAtlas('storyMenu/campaign_menu_UI_assets');
 		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
@@ -269,7 +269,7 @@ class StoryMenuState extends MusicBeatState
 
 		if (controls.BACK && !movedBack && !selectedWeek)
 		{
-			FlxG.sound.play(Paths.sound('cancelMenu'));
+			FlxG.sound.play(Paths.sound('menu/cancelMenu'));
 			movedBack = true;
 			FlxG.switchState(new MainMenuState());
 		}
@@ -287,7 +287,7 @@ class StoryMenuState extends MusicBeatState
 		{
 			if (stopspamming == false)
 			{
-				FlxG.sound.play(Paths.sound('confirmMenu'));
+				FlxG.sound.play(Paths.sound('menu/confirmMenu'));
 
 				grpWeekText.members[curWeek].startFlashing();
 				// grpWeekCharacters.members[1].animation.play('bfConfirm');
@@ -386,7 +386,7 @@ class StoryMenuState extends MusicBeatState
 			bullShit++;
 		}
 
-		FlxG.sound.play(Paths.sound('scrollMenu'));
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 
 		updateText();
 	}

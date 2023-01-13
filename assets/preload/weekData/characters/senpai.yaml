@@ -1,9 +1,0 @@
----
-storyAssets: campaign_menu_UI_characters
-anims:
-  idle: SENPAI idle Black Line
-x: -40
-y: -45
-scale: .9
-flipped: false
-framerate: 24

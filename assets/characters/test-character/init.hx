@@ -2,7 +2,7 @@ function create() {
 	// this is from a mod i worked on
     char.barColor = "0xa1a1a1";
 
-    char.loadGraphic(_Paths.image("week54prototype", "shared"));
+    char.loadGraphic(Paths.image("week54prototype"));
     char.displaceData.y = 300;
 				
     char.animation.add("singLEFT", [0], 0);

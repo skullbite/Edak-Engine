@@ -8,7 +8,7 @@ import flixel.tweens.FlxTween;
 // Better name than HGame
 class FunkScript extends HBase {
     public var scripts:Array<CallbackScript> = [];
-    var pre:String = "var game = PlayState.instance;\n";
+    public var pre:String = "var game = PlayState.instance;\nvar gameover = GameOverSubstate.instance;\n";
 
     public function loadScript(name:String, code:String) {
         // dry run to make sure the code actually works

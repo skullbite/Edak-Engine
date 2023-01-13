@@ -129,7 +129,7 @@ class ChartingState extends MusicBeatState
 		}
 		currentDiff = PlayState.storyDifficulty;
 
-		bg = new FlxSprite(-100).loadGraphic(Paths.image('menuBlack'));
+		bg = new FlxSprite(-100).loadGraphic(Paths.image('menuBGs/menuBlack'));
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
 		bg.alpha = .8;
 		bg.scrollFactor.set();
@@ -507,7 +507,7 @@ class ChartingState extends MusicBeatState
 
 		var stepperNoteTypeLabel = new FlxText(10, 50, "Note Type");
 		
-		noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/custom-notes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
+		noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/customNotes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
 
 		stepperNoteType = new FlxUIDropDownMenu(10, 70, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(noteType:String):Void {
 			curNoteType = noteTypes[Std.parseInt(noteType)];
@@ -769,7 +769,7 @@ class ChartingState extends MusicBeatState
 						if(!claps.contains(note))
 						{
 							claps.push(note);
-							FlxG.sound.play(Paths.sound('SNAP'));
+							FlxG.sound.play(Paths.sound('charting/SNAP'));
 						}
 					});
 				}
@@ -1567,7 +1567,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), 'assets/data/${_song.song.toLowerCase()}/${currentDiff.toLowerCase()}.json');
+			_file.save(data.trim(), 'assets/songs/${_song.song.toLowerCase()}/${currentDiff.toLowerCase()}.json');
 		}
 	}
 

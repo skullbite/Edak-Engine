@@ -60,7 +60,7 @@ class FreeplayState extends MusicBeatState
 	{
 		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
-		for (week in 0...FileSystem.readDirectory("assets/weekData").filter(d -> d.endsWith(".yaml")).length) {
+		for (week in 0...FileSystem.readDirectory("assets/data/weeks").filter(d -> d.endsWith(".yaml")).length) {
 			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Paths.weekData('week$week')));
 			var songList:Array<String> = coolWeekData.get("songs");
 			var colorList:Array<Int> = coolWeekData.get("colors");
@@ -87,7 +87,7 @@ class FreeplayState extends MusicBeatState
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music('menu/freakyMenu'));
 		}
 		 
 
@@ -106,7 +106,7 @@ class FreeplayState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg = new FlxSprite().loadGraphic(Paths.image('menuBGs/menuDesat'));
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -357,7 +357,7 @@ class FreeplayState extends MusicBeatState
 	}
 	function changeSelection(change:Int = 0)
 	{
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.4);
 
 		curSelected += change;
 

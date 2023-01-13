@@ -1,0 +1,9 @@
+---
+storyAssets: storyMenu/characters/campaign_menu_UI_characters
+anims:
+  idle: Mom Idle BLACK LINES
+x: -30
+y: 150
+scale: 0.45
+flipped: false
+framerate: 24

@@ -1,9 +1,0 @@
----
-storyAssets: campaign_menu_UI_characters
-anims:
-  idle: GF Dancing Beat WHITE
-x: 50
-y: 80
-scale: .85
-flipped: false
-framerate: 24

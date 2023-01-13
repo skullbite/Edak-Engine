@@ -18,11 +18,11 @@ class GameplayCustomizeState extends MusicBeatState
     var defaultX:Float = FlxG.width * 0.55 - 135;
     var defaultY:Float = FlxG.height / 2 - 50;
 
-    var background:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback','shared'));
-    var curt:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains','shared'));
-    var front:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront','shared'));
+    var background:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.file('stage/stageback.png', IMAGE, 'stages'));
+    var curt:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.file('stage/stagecurtains.png', IMAGE, 'stages'));
+    var front:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.file('stage/stagefront.png', IMAGE, 'stages'));
 
-    var sick:FlxSprite = new FlxSprite().loadGraphic(Paths.image('sick','shared'));
+    var sick:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/normal/ratings/sick'));
 
     var bf:Boyfriend = new Boyfriend(770, 450, 'bf');
     var dad:Character;
@@ -134,7 +134,7 @@ class GameplayCustomizeState extends MusicBeatState
         if (controls.BACK)
         {
             FlxG.mouse.visible = false;
-            FlxG.sound.play(Paths.sound('cancelMenu'));
+            FlxG.sound.play(Paths.sound('menu/cancelMenu'));
 			FlxG.switchState(new OptionsState());
         }
 
@@ -163,7 +163,7 @@ class GameplayCustomizeState extends MusicBeatState
             {
                 // FlxG.log.add(i);
                 var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
-                babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets', 'shared');
+                babyArrow.frames = Paths.getSparrowAtlas('strums/normal/NOTE_assets');
                 babyArrow.animation.addByPrefix('green', 'arrowUP');
                 babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
                 babyArrow.animation.addByPrefix('purple', 'arrowLEFT');

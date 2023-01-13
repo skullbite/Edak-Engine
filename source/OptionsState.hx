@@ -173,7 +173,7 @@ class OptionsState extends MusicBeatState {
         subCam.bgColor.alpha = 0;
         FlxG.cameras.add(subCam);*/
 
-        var bg = new FlxSprite(Paths.image('menuDesat'));
+        var bg = new FlxSprite(Paths.image('menuBGs/menuDesat'));
         bg.color = 0xFFea71fd;
         add(bg);
 
@@ -241,7 +241,7 @@ class OptionsState extends MusicBeatState {
             }
         }
         if (controls.LEFT_P) {
-            FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
+            FlxG.sound.play(Paths.sound("menu/scrollMenu"), 0.6);
             if (!categorySelected) switchCategory(-1);
             else {
                 if (!StringTools.contains(optionTicks.members[curSetting].type, "state")) changeSetting(-1);
@@ -249,7 +249,7 @@ class OptionsState extends MusicBeatState {
             }
         }
         if (controls.RIGHT_P) {
-            FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
+            FlxG.sound.play(Paths.sound("menu/scrollMenu"), 0.6);
             if (!categorySelected) switchCategory(1);
             else {
                 if (!StringTools.contains(optionTicks.members[curSetting].type, "state")) changeSetting(1);
@@ -259,16 +259,16 @@ class OptionsState extends MusicBeatState {
             }
         }
         if (controls.UP_P && categorySelected) {
-            FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
+            FlxG.sound.play(Paths.sound("menu/scrollMenu"), 0.6);
             switchSetting(-1);
         }
         if (controls.DOWN_P && categorySelected) {
-            FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
+            FlxG.sound.play(Paths.sound("menu/scrollMenu"), 0.6);
             switchSetting(1);
         }
         if (FlxG.keys.justPressed.ENTER) {
             if (!categorySelected) {
-                FlxG.sound.play(Paths.sound("scrollMenu"), 0.6);
+                FlxG.sound.play(Paths.sound("menu/scrollMenu"), 0.6);
                 categorySelected = true;
             }
             else {
