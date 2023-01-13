@@ -1548,6 +1548,7 @@ class ChartingState extends MusicBeatState
 			var section = copyThing.notes[x];
 			Reflect.deleteField(copyThing.notes[x], "typeOfSection");
 			Reflect.deleteField(copyThing.notes[x], "lengthInSteps");
+			Reflect.deleteField(copyThing.notes[x], "changeBPM");
 			
 			if (section.bpm != null) {
 				if (section.bpm == mainBpm) Reflect.deleteField(copyThing.notes[x], "bpm");

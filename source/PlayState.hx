@@ -2225,12 +2225,20 @@ class PlayState extends MusicBeatState
 		function goodNoteHit(note:Note, resetMashViolation = true):Void
 			{
 				if (!note.bfShouldHit) {
-					// if (!Settings.get("botplay")) {
-					playerStrums.members[note.noteData].animation.play('confirm', true); 
-					note.kill();
-					notes.remove(note, true);
-					note.destroy();
-					// }
+					if (!Settings.get("botplay")) {
+					    playerStrums.members[note.noteData].animation.play('confirm', true); 
+					    note.kill();
+					    notes.remove(note, true);
+					    note.destroy();
+					}
+					else {
+						new FlxTimer().start(4, t -> {
+						    note.kill();
+					        notes.remove(note, true);
+					        note.destroy();
+					    });
+						return;
+				    }
 					
 					noteMiss(note.noteData, note);
 					return;
@@ -2293,14 +2301,9 @@ class PlayState extends MusicBeatState
 					/*if(!loadRep && note.mustPress)
 						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));*/
 					
-					
-					playerStrums.forEach(function(spr:FlxSprite)
-					{
-						if (Math.abs(note.noteData) == spr.ID)
-						{
-							spr.animation.play('confirm', true);
-						}
-					});
+					// todo: botplay will not light strum
+					// idk why it won't
+					playerStrums.members[note.noteData].animation.play("confirm", true);
 					
 				}
 			}
@@ -2329,9 +2332,6 @@ class PlayState extends MusicBeatState
 		#end
 
 	}
-
-	var lightningStrikeBeat:Int = 0;
-	var lightningOffset:Int = 8;
 
 	override function beatHit()
 	{
