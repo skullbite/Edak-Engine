@@ -75,7 +75,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('edak', 'skullbite');
 		
 		#if FORCERESET
 		    // this flag causes random lag so be careful

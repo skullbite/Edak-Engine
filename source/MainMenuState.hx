@@ -25,10 +25,9 @@ class MainMenuState extends MusicBeatState
 	var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
-	public static var menuTweenDone:Bool = false;
 
 	#if !switch
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'donate', 'options'];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
 	#else
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
@@ -102,14 +101,8 @@ class MainMenuState extends MusicBeatState
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
-			if (firstStart)
-				FlxTween.tween(menuItem,{y: 60 + (i * 160)},1 + (i * 0.25) ,{ease: FlxEase.expoInOut, onUpdate: t -> if (menuItem.ID == optionShit.length - 1 && t.percent >= .7 && !menuTweenDone) menuTweenDone = true, onComplete: function(flxTween:FlxTween) 
-					{ 
-						finishedFunnyMove = true; 
-						changeItem();
-					}});
-			else
-				menuItem.y = 60 + (i * 160);
+			menuItem.y = 60 + (i * 160);
+			finishedFunnyMove = true;
 		}
 
 		firstStart = false;
@@ -149,7 +142,7 @@ class MainMenuState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
-		if (!selectedSomethin && menuTweenDone)
+		if (!selectedSomethin)
 		{
 			if (controls.UP_P)
 			{
@@ -232,11 +225,8 @@ class MainMenuState extends MusicBeatState
 		{
 			case 'story mode':
 				FlxG.switchState(new StoryMenuState());
-				trace("Story Menu Selected");
 			case 'freeplay':
 				FlxG.switchState(new FreeplayState());
-
-				trace("Freeplay Menu Selected");	
 
 			case 'options':
 				FlxG.switchState(new OptionsState());
@@ -248,8 +238,6 @@ class MainMenuState extends MusicBeatState
 		var last = curSelected;
 		if (finishedFunnyMove)
 		{
-			
-
 			if (curSelected+huh >= menuItems.length) curSelected = 0;
 			else if (curSelected+huh < 0) curSelected = menuItems.length - 1;
 			else curSelected += huh;

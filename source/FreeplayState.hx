@@ -74,7 +74,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		
-		for (diff in FileSystem.readDirectory("assets/difficulties")) {
+		for (diff in FileSystem.readDirectory("assets/data/difficulties")) {
 			var awesomeDifficulty:AnyObjectMap = Yaml.parse(File.getContent(Paths.difficulty(diff.split(".").shift())));
 			difficultyData.set(diff.split(".").shift().toLowerCase(), {
 				color: cast awesomeDifficulty.get("color"),

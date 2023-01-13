@@ -84,7 +84,7 @@ class StoryMenuState extends MusicBeatState
 			weekData.push(coolWeekData);
 		}
 
-		for (x in FileSystem.readDirectory("assets/difficulties").filter(d -> d.endsWith(".yaml"))) {
+		for (x in FileSystem.readDirectory("assets/data/difficulties").filter(d -> d.endsWith(".yaml"))) {
 			var awesomeDifficultyStuff = Yaml.parse(File.getContent(Paths.difficulty(x.split(".").shift())));
 			difficultyData.set(x.split(".").shift(), {
 				animName: awesomeDifficultyStuff.get("animName"),
