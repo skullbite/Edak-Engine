@@ -1,8 +1,14 @@
 # Edak Engine (Beta)
 
-A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configure.
+A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configure. 
 
 (Not intended for use on web right now.)
+
+# Features
+- Configurable weeks, custom notes and difficulties 
+- Softcodable characters, stages, substates and dialogue
+- A cleaner filesystem
+
 # Credits
 [KadeDev](https://github.com/KadeDev) - Made the engine I forked
 
