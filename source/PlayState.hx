@@ -307,7 +307,7 @@ class PlayState extends MusicBeatState
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
-				scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('songs/${SONG.song.toLowerCase()}/$x')));
+				scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('songs/${SONG.song.toLowerCase()}/scripts/$x')));
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
