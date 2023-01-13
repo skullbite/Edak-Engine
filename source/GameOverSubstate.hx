@@ -1,5 +1,6 @@
 package;
 
+import hstuff.HVars;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSubState;
@@ -33,6 +34,9 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		Conductor.songPosition = 0;
 
+		var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverStart", []);
+		if (gameOverRets.contains(HVars.STOP)) return;
+
 		// PlayState.HFunk.doDaCallback("onGameOver", []);
 
 		bf = new Boyfriend(x, y, daBf);
@@ -55,6 +59,9 @@ class GameOverSubstate extends MusicBeatSubstate
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverUpdate", [elapsed]);
+		if (gameOverRets.contains(HVars.STOP)) return;
 
 		if (controls.ACCEPT)
 		{
@@ -100,6 +107,8 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		if (!isEnding)
 		{
+			var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverEnd", []);
+		    if (gameOverRets.contains(HVars.STOP)) return;
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
