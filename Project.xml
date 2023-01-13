@@ -91,7 +91,6 @@
 	<assets path="assets/songs" exclude="*.ogg" if="web"/>
 	<assets path="assets/songs" exclude="*.mp3" unless="web"/>
 	
-	<assets path='example_mods' rename='mods' embed='false'/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<assets path='LICENSE' rename='LICENSE.txt' />
 	<!-- <template path='mods' /> -->

@@ -7,7 +7,7 @@ import flixel.FlxSprite;
 var lightSound:FlxSound;
 
 function onStepHit(step) {
-    if (step == 938) {
+    if (step == 938 && PlayState.isStoryMode) {
         lightSound = FlxG.sound.play(Paths.sound("xmas/Lights_Shut_off"));
         var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));
         blackScreen.color = 0x000000;

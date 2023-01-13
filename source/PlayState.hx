@@ -302,7 +302,8 @@ class PlayState extends MusicBeatState
 		if (SONG.needsVoices) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
-		var songScripts = Paths.songDataDir(SONG.song.toLowerCase()).filter(d -> d.endsWith(".hx"));
+		var songScripts = [];
+		if (FileSystem.exists('assets/songs/${SONG.song.toLowerCase()}/scripts')) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hx") || d.endsWith(".hxs"));
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
@@ -310,7 +311,7 @@ class PlayState extends MusicBeatState
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
-		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx"));
+		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx") || d.endsWith(".hxs"));
 		for (x in globalScripts) {
 			try { 
 				scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));

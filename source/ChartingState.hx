@@ -1567,7 +1567,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), 'assets/songs/${_song.song.toLowerCase()}/${currentDiff.toLowerCase()}.json');
+			_file.save(data.trim(), 'assets/songs/${_song.song.toLowerCase()}/charts/${currentDiff.toLowerCase()}.json');
 		}
 	}
 
