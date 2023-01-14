@@ -127,7 +127,6 @@ class PlayState extends MusicBeatState
 	public static var playerStrums:FlxTypedGroup<FlxSprite> = null;
 	public static var cpuStrums:FlxTypedGroup<FlxSprite> = null;
 
-	private var camZooming:Bool = false;
 	private var curSong:String = "";
 
 	public var health:Float = 1; //making public because sethealth doesnt work without it
@@ -1218,11 +1217,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (camZooming)
-		{
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
-		}
+		FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
+		camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
 
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
@@ -1391,8 +1387,6 @@ class PlayState extends MusicBeatState
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
 						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData, daNote.isSustainNote, daNote.dadShouldHit, daNote.noteType]);
-						if (SONG.song != 'Tutorial')
-							camZooming = true;
 
 						var altAnim:String = "";
 	
@@ -2363,7 +2357,7 @@ class PlayState extends MusicBeatState
 		wiggleShit.update(Conductor.crochet);
 
 
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % bopSpeed == 0)
+		if (FlxG.camera.zoom < 1.35 && curBeat % bopSpeed == 0)
 		{
 			FlxG.camera.zoom += camBumpZoom;
 			camHUD.zoom += hudBumpZoom;
