@@ -101,7 +101,7 @@ class MainMenuState extends MusicBeatState
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
-			menuItem.y = 60 + (i * 160);
+			menuItem.y = 120 + (i * 160);
 			finishedFunnyMove = true;
 		}
 
