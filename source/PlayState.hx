@@ -244,13 +244,6 @@ class PlayState extends MusicBeatState
 		repReleases = 0;
 		difficultyData = Yaml.parse(File.getContent(Paths.difficulty(storyDifficulty.toLowerCase())));
 
-		#if windows
-		executeModchart = FileSystem.exists(Paths.lua(PlayState.SONG.song.toLowerCase()  + "/modchart"));
-		#end
-		#if !cpp
-		executeModchart = false; // FORCE disable for non cpp targets
-		#end
-
 		// trace('Mod chart: ' + executeModchart + " - " + Paths.lua(PlayState.SONG.song.toLowerCase() + "/modchart"));
 
 		#if desktop
