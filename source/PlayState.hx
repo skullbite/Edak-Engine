@@ -127,6 +127,7 @@ class PlayState extends MusicBeatState
 	public static var playerStrums:FlxTypedGroup<FlxSprite> = null;
 	public static var cpuStrums:FlxTypedGroup<FlxSprite> = null;
 
+	private var camZooming:Bool = true;
 	private var curSong:String = "";
 
 	public var health:Float = 1; //making public because sethealth doesnt work without it
@@ -1217,8 +1218,11 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
-		camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+		if (camZooming)
+		{
+			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
+			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
@@ -2357,7 +2361,7 @@ class PlayState extends MusicBeatState
 		wiggleShit.update(Conductor.crochet);
 
 
-		if (FlxG.camera.zoom < 1.35 && curBeat % bopSpeed == 0)
+		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % bopSpeed == 0)
 		{
 			FlxG.camera.zoom += camBumpZoom;
 			camHUD.zoom += hudBumpZoom;
