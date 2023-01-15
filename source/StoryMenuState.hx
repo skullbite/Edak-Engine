@@ -180,7 +180,6 @@ class StoryMenuState extends MusicBeatState
 		sprDifficulty.animation.addByPrefix('hard', 'HARD');
 		sprDifficulty.animation.play('easy');*/
 		for (k => v in difficultyData) sprDifficulty.animation.addByPrefix(k.toLowerCase(), v.animName);
-		changeDifficulty();
 
 		difficultySelectors.add(sprDifficulty);
 
@@ -190,6 +189,8 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
+		
+		changeDifficulty();
 
 		trace("Line 150");
 
@@ -322,6 +323,15 @@ class StoryMenuState extends MusicBeatState
 			curDifficulty = 0;
 
 		sprDifficulty.offset.x = 0;
+
+		if (weekData[curWeek].get("difficulties") != curDifficultyArray) {
+			curDifficultyArray = weekData[curWeek].get("difficulties");
+			if (curDifficultyArray.length <= 2) curDifficulty = 0;
+		}
+		
+
+		leftArrow.visible = curDifficultyArray.length != 1;
+		rightArrow.visible = curDifficultyArray.length != 1;
 
 		var fuck = difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase());
 		sprDifficulty.animation.play(fuck.animName.toLowerCase());
