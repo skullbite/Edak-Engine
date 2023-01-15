@@ -1106,8 +1106,8 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
 		if (bopHealthIcons) {
-			iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.75)));
-		    iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.75)));
+			iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.85)));
+		    iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.85)));
 
 			iconP1.updateHitbox();
 		    iconP2.updateHitbox();

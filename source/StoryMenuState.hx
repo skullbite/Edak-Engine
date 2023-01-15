@@ -189,7 +189,7 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
-		
+
 		changeDifficulty();
 
 		trace("Line 150");
@@ -337,6 +337,8 @@ class StoryMenuState extends MusicBeatState
 		sprDifficulty.animation.play(fuck.animName.toLowerCase());
 		sprDifficulty.offset.x = fuck.offsets[0];
 		sprDifficulty.offset.y = fuck.offsets[1];
+
+		if (curDifficultyArray.length == 1) return;
 
 		/*switch (curDifficulty)
 		{

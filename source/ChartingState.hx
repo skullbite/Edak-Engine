@@ -507,7 +507,11 @@ class ChartingState extends MusicBeatState
 
 		var stepperNoteTypeLabel = new FlxText(10, 50, "Note Type");
 		
-		noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/customNotes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
+		try {
+			noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/customNotes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
+		}
+		catch (e) {}
+		
 
 		stepperNoteType = new FlxUIDropDownMenu(10, 70, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(noteType:String):Void {
 			curNoteType = noteTypes[Std.parseInt(noteType)];
