@@ -14,6 +14,7 @@ class HBase extends SScript {
         set("Type", Type);
         set("Conductor", Conductor);
         set("Settings", Settings);
+        set("HelperFunctions", HelperFunctions);
         parser.line = 1;
         parser.allowTypes = true;
         parser.allowJSON = true;
