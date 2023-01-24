@@ -45,8 +45,6 @@ class Note extends FlxSprite
 	public var bfShouldHit:Bool = true;
 
 	public var noteScore:Float = 1;
-	// v1.8 stuff
-	public var yOFF:Int = 0;
 	
 	public static var colors:Array<String> = ["purple", "blue", "green", "red"];
 	public static var swagWidth:Float = 160 * 0.7;
@@ -185,7 +183,7 @@ class Note extends FlxSprite
 				case 0:
 					animation.play('purpleholdend');
 			}
-			yOFF = 20;
+			if (!Settings.get("downscroll")) scale.y += .29;
 
 			updateHitbox();
 
@@ -243,8 +241,8 @@ class Note extends FlxSprite
 					canBeHit = false;
 			}
 
-			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset * Conductor.timeScale && !wasGoodHit)
-				tooLate = true;
+			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset * Conductor.timeScale && !wasGoodHit) tooLate = true;
+			// if (!isOnScreen(PlayState.instance.camHUD) && Settings.get("downscroll") ? y > FlxG.height : y < -60) tooLate = true;
 		}
 		else
 		{

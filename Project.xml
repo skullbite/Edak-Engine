@@ -39,47 +39,10 @@
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
 
 	<classpath name="source" />
-
-	<!-- <assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/> 
-	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/> -->
 	
-	<!-- <define name="PRELOAD_ALL" /> -->
-	<define name="PRELOAD_ALL" unless="web" />
-	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
-	
-	<section if="PRELOAD_ALL">
-		<library name="customNotes" preload="true"/>
-		<library name="substates"   preload="true" />
-		<library name="dialogue"    preload="true" />
-		<library name="stages"      preload="true" />
-		<library name="scripts"     preload="true" />
-		<library name="characters"  preload="true" />
-	</section>
-	
-	<section if="NO_PRELOAD_ALL">
-		<library name="customNotes" preload="false"/>
-		<library name="substates"   preload="false" />
-		<library name="dialogue"    preload="false" />
-		<library name="stages"      preload="false" />
-		<library name="scripts"     preload="false" />
-		<library name="characters"  preload="false" />
-	</section>
 
-
-	<assets path="assets/data"/>
-	<assets path="assets/music" exclude="*.ogg" if="web" />
-	<assets path="assets/music" exclude="*.mp3" unless="web" />
-	<assets path="assets/sounds" exclude="*.ogg" if="web" />
-	<assets path="assets/sounds" exclude="*.mp3" unless="web" />
-	<assets path="assets/images" />
-	<assets path="assets/customNotes" library="customNotes" />
-	<assets path="assets/substates" library="substates"/>
-	<assets path="assets/dialogue" library="dialogue"/>
-	<assets path="assets/stages"   library="stages"/>
-	<assets path="assets/characters" library="characters"/>
-	<assets path="assets/scripts" library="scripts"/>
-	<assets path="assets/songs" exclude="*.ogg" if="web"/>
-	<assets path="assets/songs" exclude="*.mp3" unless="web"/>
+	<assets path="assets" embed="false" exclude="*.ogg" if="web"/> 
+	<assets path="assets" embed="false" exclude="*.mp3" unless="web"/> 
 	
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<assets path='LICENSE' rename='LICENSE.txt' />
