@@ -103,7 +103,7 @@ class Note extends FlxSprite
 		switch (PlayState.SONG.noteStyle)
 		{
 			case 'pixel':
-				var imgPath = isCustomNote ? 'customNotes:assets/customNotes/$noteAssetPath.png' : Paths.image('strums/pixel/$noteAssetPath');
+				var imgPath = isCustomNote ? 'assets/customNotes/$noteAssetPath.png' : Paths.image('strums/pixel/$noteAssetPath');
 				loadGraphic(imgPath, true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -113,7 +113,7 @@ class Note extends FlxSprite
 
 				if (isSustainNote)
 				{
-					var endImgPath = isCustomNote ? 'customNotes:assets/customNotes/${noteAssetPath}Ends.png' : Paths.image('strums/pixel/arrowEnds');
+					var endImgPath = isCustomNote ? 'assets/customNotes/${noteAssetPath}Ends.png' : Paths.image('strums/pixel/arrowEnds');
 					loadGraphic(endImgPath, true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
