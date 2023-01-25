@@ -183,7 +183,7 @@ class Note extends FlxSprite
 				case 0:
 					animation.play('purpleholdend');
 			}
-			if (!Settings.get("downscroll")) scale.y += .29;
+			if (!Settings.get("downscroll") && animation.curAnim.name.contains("holdend")) scale.y += .29;
 
 			updateHitbox();
 
