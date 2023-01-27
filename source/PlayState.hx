@@ -61,6 +61,7 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
+import hxcodec.VideoHandler;
 /*import OverlayShader;
 import BlendModeEffect;*/
 
@@ -1270,7 +1271,7 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
-						HFunk.doDaCallback("opponentNoteHit", [daNote.ID, daNote.noteData, daNote.isSustainNote, daNote.dadShouldHit, daNote.noteType]);
+						HFunk.doDaCallback("opponentNoteHit", [daNote.noteData, daNote]);
 
 						var altAnim:String = "";
 	
@@ -1311,7 +1312,7 @@ class PlayState extends MusicBeatState
 	
 						daNote.active = false;
 
-
+						
 						daNote.kill();
 						notes.remove(daNote, true);
 						daNote.destroy();
@@ -1945,11 +1946,11 @@ class PlayState extends MusicBeatState
 			combo = 0;
 			misses++;
 			if (daNote != null) {
-				var missCall = HFunk.doDaCallback("noteMiss", [direction, daNote.ID, daNote.rating, daNote.isSustainNote, daNote.noteType]);
+				var missCall = HFunk.doDaCallback("noteMiss", [direction, daNote]);
 				if (missCall.contains(HVars.STOP)) return;
 			}
 			else {
-				var missCall = HFunk.doDaCallback("noteMiss", [direction, null, null, null, null]);
+				var missCall = HFunk.doDaCallback("noteMiss", [direction, null]);
 				if (missCall.contains(HVars.STOP)) return;
 			}
 			
@@ -2139,7 +2140,7 @@ class PlayState extends MusicBeatState
 					
 					updateAccuracy();
 
-					var noteCall = HFunk.doDaCallback("goodNoteHit", [note.noteData, note.ID, note.rating, note.isSustainNote, note.noteType]);
+					var noteCall = HFunk.doDaCallback("goodNoteHit", [note.noteData, note]);
 					if (noteCall.contains(HVars.STOP)) return;
 	
 
@@ -2264,6 +2265,12 @@ class PlayState extends MusicBeatState
 		}
 		
 		super.onFocusLost();
+	}
+
+	function playVideo(videoPath:String, endCallBack:Void -> Void) {
+		var videoHandler = new VideoHandler();
+		videoHandler.finishCallback = endCallBack;
+		videoHandler.playVideo(Paths.video(videoPath));
 	}
 
 	function openCustomSubState(targetSub:String) {

@@ -75,6 +75,10 @@ class Paths
 		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
 	}
 
+	static public function video(key:String, ?library:String) {
+		return getPath('videos/$key', MOVIE_CLIP, library);
+	}
+
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
 	{
 		return sound(key + FlxG.random.int(min, max), library);
@@ -128,6 +132,10 @@ class CustomPaths {
 	public function new(dir:String, lib:String) {
 		this.dir = dir;
 		this.lib = lib;
+	}
+
+	public function video(key:String, useFullDir=false) {
+		return Paths.getPath('$dir/${useFullDir ? 'videos/' : ''}$key', MOVIE_CLIP, lib);
 	}
 
 	public function music(key:String,useFullDir=false) {
