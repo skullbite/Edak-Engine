@@ -156,7 +156,7 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
-		checkers = new FlxBackdrop(Paths.image("title/checkers"), 1, 1, true, true, 1, 1);
+		checkers = new FlxBackdrop(Paths.image("title/checkers"));
 		checkers.alpha = .07;
 		add(checkers);
 
