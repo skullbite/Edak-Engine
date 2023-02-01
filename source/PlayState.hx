@@ -62,6 +62,7 @@ import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
 import hxcodec.VideoHandler;
+import flixel.addons.display.FlxRuntimeShader;
 /*import OverlayShader;
 import BlendModeEffect;*/
 
@@ -1322,7 +1323,7 @@ class PlayState extends MusicBeatState
 					{
 						daNote.visible = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].visible;
 						daNote.x = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].x;
-						if (!daNote.isSustainNote)
+						if (!daNote.isSustainNote) 
 							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
 						daNote.alpha = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					}
@@ -1330,8 +1331,8 @@ class PlayState extends MusicBeatState
 					{
 						daNote.visible = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].visible;
 						daNote.x = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].x;
-						if (!daNote.isSustainNote)
-							daNote.angle = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].angle;
+						if (!daNote.isSustainNote) 
+							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
 						daNote.alpha = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					}
 					
@@ -2265,6 +2266,12 @@ class PlayState extends MusicBeatState
 		}
 		
 		super.onFocusLost();
+	}
+
+	static public function makeShader(path:String) {
+		var shaderStuff = CoolUtil.getShaderStuffs(Paths.shader(path));
+
+		return new FlxRuntimeShader(shaderStuff[0], shaderStuff[1]);
 	}
 
 	function playVideo(videoPath:String, endCallBack:Void -> Void) {

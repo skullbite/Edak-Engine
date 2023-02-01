@@ -1,6 +1,8 @@
 package;
 
 import lime.utils.Assets;
+import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 
@@ -13,6 +15,17 @@ class CoolUtil
 		return difficultyArray[PlayState.storyDifficulty];
 	}*/
 
+	public static function getShaderStuffs(shaderPaths:Array<String>) {
+		var rets = [];
+		if (FileSystem.exists(shaderPaths[0])) rets.push(File.getContent(shaderPaths[0]));
+		else rets.push(null);
+
+		if (FileSystem.exists(shaderPaths[1])) rets.push(File.getContent(shaderPaths[1]));
+		else rets.push(null);
+		
+		return rets;
+	}
+	
 	public static function coolTextFile(path:String):Array<String>
 	{
 		var daList:Array<String> = Assets.getText(path).trim().split('\n');

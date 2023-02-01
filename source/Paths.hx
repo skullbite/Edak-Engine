@@ -38,6 +38,10 @@ class Paths
 		return getPath(file, type, library);
 	}
 
+	inline static public function shader(key:String):Array<String> {
+		return ['assets/shaders/$key.frag', 'assets/shaders/$key.vert'];
+	}
+
 	inline static public function songDataDir(key:String) {
 		return File.applicationDirectory.resolvePath('assets/songs/$key').getDirectoryListing().map(d -> d.name);
 	}
@@ -68,7 +72,6 @@ class Paths
 	{
 		return getPath('${isSong ? "songs" : "data"}/$key.json', TEXT, library);
 	}
-
 
 	static public function sound(key:String, ?library:String)
 	{
