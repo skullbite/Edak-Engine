@@ -1,5 +1,7 @@
 package;
 
+import yaml.Parser.ParserOptions;
+import yaml.Yaml;
 import hstuff.HCharacter;
 import sys.io.File;
 import sys.FileSystem;
@@ -9,6 +11,18 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
+
+typedef SwagConfig = {
+	?barColor:Int,
+	?iconName:String,
+	?deadData: {
+		?character:String,
+		?sound:String,
+		?music:String,
+		?end:String,
+		?bpm:Int
+	}
+}
 
 class Character extends FlxSprite
 {
@@ -20,6 +34,14 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 	public var iconName:String = 'bf';
 	public var deadChar:String = 'bf';
+	// thx gabi
+	public var deadData:{char:String, sound:String, music:String, end:String, bpm:Int} = {
+		char: "bf",
+		sound: "gameover/normal/fnf_loss_sfx",
+		music: "ingame/normal/gameOver",
+		end: "ingame/normal/gameOverEnd",
+		bpm: 100
+	};
 
 	public var holdTimer:Float = 0;
 	public var bopSpeed:Int = 2;
@@ -46,6 +68,18 @@ class Character extends FlxSprite
 		
 		antialiasing = true;
 
+		// we config loading here
+		if (FileSystem.exists('assets/characters/$curCharacter/config.yaml')) {
+			var daConf:SwagConfig = Yaml.read('assets/characters/$curCharacter/config.yaml', new ParserOptions().useObjects());
+			if (daConf.barColor != null) barColor = Std.string(daConf.barColor);
+			if (daConf.iconName != null) iconName = daConf.iconName;
+			if (daConf.deadData != null) {
+				for (x in Reflect.fields(daConf.deadData)) {
+					if (Reflect.hasField(daConf, x)) Reflect.setField(this.deadData, x, Reflect.getProperty(daConf.deadData, x));
+				}
+			}
+		}
+		
 		switch (curCharacter)
 		{
 			default:

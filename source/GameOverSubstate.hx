@@ -14,21 +14,18 @@ class GameOverSubstate extends MusicBeatSubstate
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
 
-	var deathSound:String = 'gameover/normal/fnf_loss_sfx';
-	var deathMusic:String = 'ingame/normal/gameOver';
-	var endSound:String = 'ingame/normal/gameOverEnd';
+	var deathSound:String;
+	var deathMusic:String;
+	var endSound:String;
 
 	public function new(x:Float, y:Float)
 	{
 		instance = this;
-		var daStage = PlayState.curStage;
-		var daBf:String = PlayState.boyfriend.deadChar;
-
-		if (StringTools.contains(daStage, "school")) {
-			deathSound = 'gameover/weeb/fnf_loss_sfx-pixel';
-			deathMusic = 'ingame/weeb/gameOver-pixel';
-			endSound = 'ingame/weeb/gameOverEnd-pixel';
-		}
+		var daBf:String = PlayState.boyfriend.deadData.char;
+		var daBpm:Int = PlayState.boyfriend.deadData.bpm;
+		deathSound = PlayState.boyfriend.deadData.sound;
+		deathMusic = PlayState.boyfriend.deadData.music;
+		endSound = PlayState.boyfriend.deadData.end;
 
 		super();
 
@@ -46,7 +43,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		add(camFollow);
 
 		FlxG.sound.play(Paths.sound(deathSound));
-		Conductor.changeBPM(100);
+		Conductor.changeBPM(daBpm);
 
 		// FlxG.camera.followLerp = 1;
 		// FlxG.camera.focusOn(FlxPoint.get(FlxG.width / 2, FlxG.height / 2));
@@ -92,13 +89,6 @@ class GameOverSubstate extends MusicBeatSubstate
 		{
 			Conductor.songPosition = FlxG.sound.music.time;
 		}
-	}
-
-	override function beatHit()
-	{
-		super.beatHit();
-
-		FlxG.log.add('beat');
 	}
 
 	var isEnding:Bool = false;

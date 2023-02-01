@@ -1,5 +1,9 @@
 package;
 
+import Character.SwagConfig;
+import yaml.Parser.ParserOptions;
+import yaml.Yaml;
+import sys.FileSystem;
 import openfl.filesystem.File;
 import flixel.FlxCamera;
 import flixel.addons.ui.FlxUIText;
@@ -169,8 +173,22 @@ class ChartingState extends MusicBeatState
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		leftIcon = new HealthIcon(_song.player1);
-		rightIcon = new HealthIcon(_song.player2);
+		var realP1 = _song.player1;
+		var realP2 = _song.player2;
+
+		/* janky way of making sure the correct character icons get fetched. */
+		if (FileSystem.exists('assets/characters/${_song.player1}/config.yaml')) {
+			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player1}/config.yaml', new ParserOptions().useObjects());
+			if (theSwag.iconName != null) realP1 = theSwag.iconName;
+		}
+
+		if (FileSystem.exists('assets/characters/${_song.player2}/config.yaml')) {
+			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player2}/config.yaml', new ParserOptions().useObjects());
+			if (theSwag.iconName != null) realP2 = theSwag.iconName;
+		}
+
+		leftIcon = new HealthIcon(realP1);
+		rightIcon = new HealthIcon(realP2);
 
 		leftIcon.setGraphicSize(0, 70);
 		rightIcon.setGraphicSize(0, 70);
@@ -1211,15 +1229,27 @@ class ChartingState extends MusicBeatState
 
 	function updateHeads():Void
 	{
+		var realP1 = _song.player1;
+		var realP2 = _song.player2;
+		if (FileSystem.exists('assets/characters/${_song.player1}/config.yaml')) {
+			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player1}/config.yaml', new ParserOptions().useObjects());
+			if (theSwag.iconName != null) realP1 = theSwag.iconName;
+		}
+
+		if (FileSystem.exists('assets/characters/${_song.player2}/config.yaml')) {
+			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player2}/config.yaml', new ParserOptions().useObjects());
+			if (theSwag.iconName != null) realP2 = theSwag.iconName;
+		}
+
 		if (check_mustHitSection.checked)
 		{
-			leftIcon.swapIcon(_song.player1);
-			rightIcon.swapIcon(_song.player2);
+			leftIcon.swapIcon(realP1);
+			rightIcon.swapIcon(realP2);
 		}
 		else
 		{
-			leftIcon.swapIcon(_song.player2);
-			rightIcon.swapIcon(_song.player1);
+			leftIcon.swapIcon(realP2);
+			rightIcon.swapIcon(realP1);
 		}
 	}
 

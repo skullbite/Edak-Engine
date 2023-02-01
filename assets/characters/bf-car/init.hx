@@ -1,6 +1,4 @@
 function create() {
-    char.iconName = "bf";
-    char.deadChar = "bf";
     char.frames = Paths.getSparrowAtlas("bfCar");
     char.animation.addByPrefix('idle', 'BF idle dance', 24, false);
     char.animation.addByIndices('idleLoop', 'BF idle dance', [8, 9, 10, 11, 12, 13], "", 24, true);

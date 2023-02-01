@@ -1,6 +1,5 @@
 function create() {
     char.barColor = "0xf368f0";
-    char.deadChar = "bf-pixel-dead";
     char.frames = Paths.getSparrowAtlas('bfPixel');
     char.animation.addByPrefix('idle', 'BF IDLE', 24, false);
     char.animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);

@@ -1,0 +1,5 @@
+deadData:
+  character: bf-pixel-dead
+  sound: gameover/weeb/fnf_loss_sfx-pixel
+  music: ingame/weeb/gameOver-pixel
+  end: ingame/weeb/gameOverEnd-pixel
