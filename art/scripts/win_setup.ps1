@@ -21,13 +21,13 @@ try {
         }
         foreach ($i in $gitLibs) {
             Invoke-Expression $i
-        } Write-Host "You're now all set up for using edak engine."
-
-        -ForegroundColor Green
+        } 
+        Write-Host "You're now all set up for using edak engine." -ForegroundColor Green
     }
 }
 catch { 
     Write-Host "No haxe? :(" -ForegroundColor Red
     Write-Host "https://haxe.org/download/" -ForegroundColor Blue
+    Write-Host $_
 
 }
