@@ -61,17 +61,17 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
+#if (hxCodec >= "2.6.1")
 import hxcodec.VideoHandler;
+#else
+import vlc.MP4Handler;
+#end
 import flixel.addons.display.FlxRuntimeShader;
 /*import OverlayShader;
 import BlendModeEffect;*/
 
 #if desktop
 import Discord.DiscordClient;
-#end
-#if windows
-import Sys;
-import sys.FileSystem;
 #end
 
 using StringTools;
@@ -1188,6 +1188,9 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic)
 			{
+				/*
+				    BUG: Custom note sustains get held even if the note is supposed to miss
+				*/
 				notes.forEachAlive(function(daNote:Note)
 				{	
 
@@ -1319,9 +1322,6 @@ class PlayState extends MusicBeatState
 						daNote.destroy();
 					}
 
-					/*
-					    TODO: Fix custom notes that
-					*/
 					if (daNote.mustPress && !daNote.modifiedByLua)
 					{
 						daNote.visible = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].visible;
@@ -2277,7 +2277,11 @@ class PlayState extends MusicBeatState
 	}
 
 	function playVideo(videoPath:String, endCallBack:Void -> Void) {
+		#if (hxCodec >= "2.6.1")
 		var videoHandler = new VideoHandler();
+		#else
+		var videoHandler = new MP4Handler();
+		#end
 		videoHandler.finishCallback = endCallBack;
 		videoHandler.playVideo(Paths.video(videoPath));
 	}
