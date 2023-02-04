@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: edakMac
-          path: 'export/release/windows/bin'
+          path: 'export/release/macos/bin'
 
   edakLinux:
     runs-on: ubuntu-latest
@@ -101,7 +101,7 @@ jobs:
           haxelib install flixel
           haxelib install flixel-addons
           haxelib install flixel-ui
-          haxelib install hxcodec
+          haxelib install hxcodec 2.5.1
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib git sscript https://github.com/AltronMaxX/SScript
