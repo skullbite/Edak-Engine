@@ -1,0 +1,115 @@
+name: edakBuilder
+
+on: push
+
+jobs:
+  edakWin:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.2.5
+      
+      - name: Install Haxelib
+        run: |
+          haxelib setup C:/haxelib
+          haxelib install hxcpp > /dev/null --quiet
+
+      - name: Install Libraries
+        run: |
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install flixel-ui
+          haxelib install hxcodec
+          haxelib install yaml
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git SScript https://github.com/AltronMaxX/SScript
+
+      - name: Build Game
+        run: haxelib run lime build windows Project.xml --app-version="1.0.0-${{github.run_id}}"
+      
+      - name: Publish Build
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: edakWin
+          path: 'export/release/windows/bin'
+
+          
+
+  edakMac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.2.5
+      
+      - name: Install Haxelib
+        run: |
+          haxelib setup ~/haxelib
+          haxelib install hxcpp > /dev/null --quiet
+
+      - name: Install Libraries
+        run: |
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install flixel-ui
+          haxelib install hxcodec
+          haxelib install yaml
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git SScript https://github.com/AltronMaxX/SScript
+      
+      - name: Build Game
+        run: haxelib run lime build macos Project.xml --app-version="1.0.0-${{github.run_id}}"
+      
+      - name: Publish Build
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: edakMac
+          path: 'export/release/windows/bin'
+
+  edakLinux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.2.5
+        
+      - name: Install Haxelib
+        run: |
+          sudo apt-get install libvlc-dev
+          sudo apt-get install libvlccore-dev
+          haxelib setup ~/haxelib
+      
+      - name: Install Libraries
+        run: |
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install flixel-ui
+          haxelib install hxcodec
+          haxelib install yaml
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git SScript https://github.com/AltronMaxX/SScript
+      
+      - name: Build Game
+        run: haxelib run lime build linux Project.xml --app-version="1.0.0-${{github.run_id}}"
+      
+      - name: Publish Build
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: edakLinux
+          path: 'export/release/linux/bin'
+
+
+    
