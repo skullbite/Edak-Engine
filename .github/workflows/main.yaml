@@ -27,7 +27,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/AltronMaxX/SScript
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript
 
       - name: Build Game
         run: haxelib run lime build windows --app-version="1.0.0-${{github.run_id}}"
@@ -65,7 +65,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/AltronMaxX/SScript
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript
       
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
