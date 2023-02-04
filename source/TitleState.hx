@@ -1,5 +1,6 @@
 package;
 
+import shaders.ColorSwap;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -45,6 +46,7 @@ class TitleState extends MusicBeatState
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
 	var spritesReady = false;
+	var swagShader:ColorSwap;
 
 	var curWacky:Array<String> = [];
 
@@ -86,6 +88,16 @@ class TitleState extends MusicBeatState
 		Settings.init();
 
 		Highscore.load();
+
+		#if AUTOSAVE
+		    if (Settings.get("autosave") != null) {
+		        PlayState.SONG = Song.parseJSONshit(Settings.get("autosave"));
+				PlayState.storyDifficulty = "Hard";
+				FlxG.switchState(new PlayState());
+		    }
+		#end
+
+		swagShader = new ColorSwap();
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -154,6 +166,7 @@ class TitleState extends MusicBeatState
 		// bg.antialiasing = true;
 		// bg.setGraphicSize(Std.int(bg.width * 0.6));
 		// bg.updateHitbox();
+		bg.shader = swagShader.shader;
 		add(bg);
 
 		checkers = new FlxBackdrop(Paths.image("title/checkers"));
@@ -167,6 +180,7 @@ class TitleState extends MusicBeatState
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
+		logoBl.shader = swagShader.shader;
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
@@ -175,6 +189,7 @@ class TitleState extends MusicBeatState
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		gfDance.antialiasing = true;
+		gfDance.shader = swagShader.shader;
 		add(gfDance);
 		add(logoBl);
 
@@ -185,6 +200,7 @@ class TitleState extends MusicBeatState
 		titleText.antialiasing = true;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
+		titleText.shader = swagShader.shader;
 		// titleText.screenCenter(X);
 		add(titleText);
 
@@ -288,6 +304,9 @@ class TitleState extends MusicBeatState
 				pressedEnter = true;
 			#end
 		}
+
+		if (controls.LEFT) swagShader.update(-elapsed * 0.1);
+		if (controls.RIGHT) swagShader.update(elapsed * 0.1);
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{

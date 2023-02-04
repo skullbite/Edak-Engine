@@ -118,9 +118,9 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
-	inline static public function getSparrowAtlas(key:String, ?library:String, customNoteAsset:Bool=false)
+	inline static public function getSparrowAtlas(key:String, ?library:String)
 	{
-		return FlxAtlasFrames.fromSparrow(customNoteAsset ? file('$key.png', IMAGE, library) : image(key, library), file('${customNoteAsset ? "" : "images/"}$key.xml', library));
+		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
 	}
 
 	inline static public function getPackerAtlas(key:String, ?library:String)

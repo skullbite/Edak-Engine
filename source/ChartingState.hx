@@ -349,9 +349,9 @@ class ChartingState extends MusicBeatState
 			shiftNotes(Std.int(stepperShiftNoteDial.value),Std.int(stepperShiftNoteDialstep.value),Std.int(stepperShiftNoteDialms.value));
 		});
 
-		var characters:Array<String> = File.applicationDirectory.resolvePath('assets/characters').getDirectoryListing().filter(d -> d.resolvePath('init.hx').exists).map(d -> d.name);
+		var characters:Array<String> = FileSystem.readDirectory("assets/characters").filter(d -> FileSystem.exists('assets/characters/$d/init.hx'));
 		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
-		var stages:Array<String> = File.applicationDirectory.resolvePath('assets/stages').getDirectoryListing().filter(d -> d.resolvePath('init.hx').exists).map(d -> d.name);
+		var stages:Array<String> = FileSystem.readDirectory("assets/stages").filter(d -> FileSystem.exists('assets/stages/$d/init.hx'));
 		var noteStyles:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteStyleList'));
 		var extChars:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		var extStages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
@@ -526,7 +526,7 @@ class ChartingState extends MusicBeatState
 		var stepperNoteTypeLabel = new FlxText(10, 50, "Note Type");
 		
 		try {
-			noteTypes = noteTypes.concat(File.applicationDirectory.resolvePath('assets/customNotes').getDirectoryListing().filter(d -> d.resolvePath('info.yaml').exists).map(d -> d.name));
+			noteTypes = noteTypes.concat(FileSystem.readDirectory("assets/custom-notes").map(d -> d.replace(".hx", "")));
 		}
 		catch (e) {}
 		

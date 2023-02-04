@@ -1,10 +1,5 @@
 package hstuff;
 
-import flixel.FlxSprite;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxTween;
-
-
 // Better name than HGame
 class FunkScript extends HBase {
     public var scripts:Array<CallbackScript> = [];

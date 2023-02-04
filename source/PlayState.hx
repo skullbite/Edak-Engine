@@ -1319,6 +1319,9 @@ class PlayState extends MusicBeatState
 						daNote.destroy();
 					}
 
+					/*
+					    TODO: Fix custom notes that
+					*/
 					if (daNote.mustPress && !daNote.modifiedByLua)
 					{
 						daNote.visible = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].visible;
@@ -1335,8 +1338,8 @@ class PlayState extends MusicBeatState
 							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
 						daNote.alpha = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					}
-					
-					
+
+					if (daNote.noteScript != null) daNote.noteScript.exec("propertyOverride", []);
 
 					if (daNote.isSustainNote)
 						daNote.x += daNote.width / 2 + 17;
@@ -1364,8 +1367,7 @@ class PlayState extends MusicBeatState
 							daNote.visible = false;
 							daNote.kill();
 							notes.remove(daNote, true);
-						}
-					
+					}				
 				});
 			}
 

@@ -1,5 +1,9 @@
 package;
 
+import flixel.group.FlxGroup.FlxTypedGroup;
+import hstuff.HVars;
+import hstuff.HNote;
+import yaml.Parser.ParserOptions;
 import sys.io.File;
 import yaml.Yaml;
 import sys.FileSystem;
@@ -29,6 +33,7 @@ class CustomNoteDataCache {
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
+	public var noteScript:HNote;
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
@@ -40,7 +45,6 @@ class Note extends FlxSprite
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var noteType:String;
-	public var noteAssetPath:String = "strums/normal/NOTE_assets";
 	public var dadShouldHit:Bool = true;
 	public var bfShouldHit:Bool = true;
 
@@ -66,25 +70,21 @@ class Note extends FlxSprite
 		
 		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
-		var isCustomNote = false;
-		var customNoteData:CustomNoteData = null;
 		switch (this.noteType) {
-			case "Normal": 
-				if (PlayState.SONG.noteStyle == "pixel") noteAssetPath = "arrows-pixels";
+			case "Normal", "", null: 0;
 			default:
-				isCustomNote = true;
-				noteAssetPath = '$noteType/assets';
-				if (CustomNoteDataCache.get(noteType) != null) customNoteData = CustomNoteDataCache.get(noteType);
-				else if (FileSystem.exists('assets/customNotes/$noteType')) {
-					var noteStuff = Yaml.parse(File.getContent('assets/customNotes/$noteType/info.yaml'));
-					customNoteData = {
-						dadShouldHit: noteStuff.exists("dadShouldHit") ? noteStuff.get("dadShouldHit") : dadShouldHit,
-						bfShouldHit: noteStuff.exists("bfShouldHit") ? noteStuff.get("bfShouldHit") : bfShouldHit
-					};
-					CustomNoteDataCache.set(noteType, customNoteData);
+				// bug: custom notes with sustains spawn in front of the parent note
+				if (FileSystem.exists('assets/custom-notes/$noteType.hx')) {
+					try {
+						noteScript = new HNote(this, 'assets/custom-notes/$noteType.hx');
+						noteScript.execute();
+						noteScript.exec("create", []);
+					}
+					catch (e) {
+						// trace(e.message);
+						noteScript = null;
+					}
 				}
-				dadShouldHit = customNoteData.dadShouldHit;
-				bfShouldHit = customNoteData.bfShouldHit;
 		}
 		isSustainNote = sustainNote;
 
@@ -98,59 +98,8 @@ class Note extends FlxSprite
 
 		this.noteData = noteData;
 
-		var daStage:String = PlayState.curStage;
-
-		switch (PlayState.SONG.noteStyle)
-		{
-			case 'pixel':
-				var imgPath = isCustomNote ? 'assets/customNotes/$noteAssetPath.png' : Paths.image('strums/pixel/$noteAssetPath');
-				loadGraphic(imgPath, true, 17, 17);
-
-				animation.add('greenScroll', [6]);
-				animation.add('redScroll', [7]);
-				animation.add('blueScroll', [5]);
-				animation.add('purpleScroll', [4]);
-
-				if (isSustainNote)
-				{
-					var endImgPath = isCustomNote ? 'assets/customNotes/${noteAssetPath}Ends.png' : Paths.image('strums/pixel/arrowEnds');
-					loadGraphic(endImgPath, true, 7, 6);
-
-					animation.add('purpleholdend', [4]);
-					animation.add('greenholdend', [6]);
-					animation.add('redholdend', [7]);
-					animation.add('blueholdend', [5]);
-
-					animation.add('purplehold', [0]);
-					animation.add('greenhold', [2]);
-					animation.add('redhold', [3]);
-					animation.add('bluehold', [1]);
-				}
-
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-				updateHitbox();
-			default:
-				frames = Paths.getSparrowAtlas(noteAssetPath, isCustomNote ? "customNotes" : null, isCustomNote);
-
-				animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'pruple end hold');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');
-
-				setGraphicSize(Std.int(width * 0.7));
-				updateHitbox();
-				antialiasing = true;
-		}
+		setGraphicSize(Std.int(width * 0.7));
+		loadSprite();
 
 		x += swagWidth * noteData;
 		if (animation.exists('${colors[noteData]}Scroll')) animation.play('${colors[noteData]}Scroll');
@@ -217,9 +166,68 @@ class Note extends FlxSprite
 		}
 	}
 
+	function loadSprite() {
+		if (noteScript != null && noteScript.exists("loadSprite")) {
+			noteScript.exec("loadSprite", [PlayState.SONG.noteStyle, isSustainNote && prevNote != null]);
+			return;
+		}
+
+		switch (PlayState.SONG.noteStyle)
+		{
+			case 'pixel':
+				var imgPath = Paths.image('strums/pixel/arrows-pixels');
+				loadGraphic(imgPath, true, 17, 17);
+
+				animation.add('greenScroll', [6]);
+				animation.add('redScroll', [7]);
+				animation.add('blueScroll', [5]);
+				animation.add('purpleScroll', [4]);
+
+				if (isSustainNote)
+				{
+					var endImgPath = Paths.image('strums/pixel/arrowEnds');
+					loadGraphic(endImgPath, true, 7, 6);
+
+					animation.add('purpleholdend', [4]);
+					animation.add('greenholdend', [6]);
+					animation.add('redholdend', [7]);
+					animation.add('blueholdend', [5]);
+
+					animation.add('purplehold', [0]);
+					animation.add('greenhold', [2]);
+					animation.add('redhold', [3]);
+					animation.add('bluehold', [1]);
+				}
+
+				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+				updateHitbox();
+			default:
+				frames = Paths.getSparrowAtlas("strums/normal/NOTE_assets");
+				animation.addByPrefix('greenScroll', 'green0');
+				animation.addByPrefix('redScroll', 'red0');
+				animation.addByPrefix('blueScroll', 'blue0');
+				animation.addByPrefix('purpleScroll', 'purple0');
+
+				animation.addByPrefix('purpleholdend', 'pruple end hold');
+				animation.addByPrefix('greenholdend', 'green hold end');
+				animation.addByPrefix('redholdend', 'red hold end');
+				animation.addByPrefix('blueholdend', 'blue hold end');
+
+				animation.addByPrefix('purplehold', 'purple hold piece');
+				animation.addByPrefix('greenhold', 'green hold piece');
+				animation.addByPrefix('redhold', 'red hold piece');
+				animation.addByPrefix('bluehold', 'blue hold piece');
+
+				setGraphicSize(Std.int(width * 0.7));
+				updateHitbox();
+				antialiasing = true;
+		}
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (noteScript != null && noteScript.exists("update")) noteScript.exec("update", [elapsed]);
 
 		if (mustPress)
 		{
