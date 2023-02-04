@@ -30,15 +30,13 @@ jobs:
           haxelib git SScript https://github.com/AltronMaxX/SScript
 
       - name: Build Game
-        run: haxelib run lime build windows Project.xml --app-version="1.0.0-${{github.run_id}}"
+        run: haxelib run lime build windows --app-version="1.0.0-${{github.run_id}}"
       
       - name: Publish Build
         uses: actions/upload-artifact@v2.2.4
         with:
           name: edakWin
           path: 'export/release/windows/bin'
-
-          
 
   edakMac:
     runs-on: macos-latest
@@ -67,7 +65,7 @@ jobs:
           haxelib git SScript https://github.com/AltronMaxX/SScript
       
       - name: Build Game
-        run: haxelib run lime build macos Project.xml --app-version="1.0.0-${{github.run_id}}"
+        run: haxelib run lime build macos --app-version="1.0.0-${{github.run_id}}"
       
       - name: Publish Build
         uses: actions/upload-artifact@v2.2.4
@@ -103,7 +101,7 @@ jobs:
           haxelib git SScript https://github.com/AltronMaxX/SScript
       
       - name: Build Game
-        run: haxelib run lime build linux Project.xml --app-version="1.0.0-${{github.run_id}}"
+        run: haxelib run lime build linux --app-version="1.0.0-${{github.run_id}}"
       
       - name: Publish Build
         uses: actions/upload-artifact@v2.2.4
