@@ -36,7 +36,7 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       
       - name: Publish Build
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: edakWin
           path: 'export/release/windows/bin'
@@ -74,7 +74,7 @@ jobs:
         run: haxelib run lime build macos --app-version="1.0.0-${{github.run_id}}"
       
       - name: Publish Build
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: edakMac
           path: 'export/release/windows/bin'
@@ -113,7 +113,7 @@ jobs:
         run: haxelib run lime build linux --app-version="1.0.0-${{github.run_id}}"
       
       - name: Publish Build
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: edakLinux
           path: 'export/release/linux/bin'
