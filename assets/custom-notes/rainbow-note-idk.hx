@@ -11,8 +11,8 @@ function loadSprite(noteStyle:String, isSusEnd:Bool) {
     note.frames = Paths.getSparrowAtlas("strums/normal/RGB_NOTE");
     note.setGraphicSize(Std.int(note.width * 0.7));
     note.shader = colorThing.shader;
-    note.dadShouldHit = false;
-    note.bfShouldHit = false;
+    /*note.dadShouldHit = false;
+    note.bfShouldHit = false;*/
     for (x in 0...3) {
         note.animation.addByPrefix(holdNames[x] + "end", "blue hold end", 0, false);
         note.animation.addByPrefix(holdNames[x], "blue hold piece", 0, false);
