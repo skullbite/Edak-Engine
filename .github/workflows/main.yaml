@@ -71,7 +71,9 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       
       - name: Build Game
-        run: haxelib run lime build macos --app-version="1.0.0-${{github.run_id}}"
+        run: |
+          haxelib run lime build macos --app-version="1.0.0-${{github.run_id}}"
+          chmod +x "export/release/macos/bin/EdakEngine.app/Contents/MacOS/EdakEngine"
       
       - name: Publish Build
         uses: actions/upload-artifact@v3
