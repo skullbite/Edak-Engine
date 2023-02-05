@@ -5,7 +5,6 @@ import Note;
 var colorThing:ColorSwap = new ColorSwap();
 var holdNames = Note.colors.map(t -> t + "hold");
 
-function create() {}
 
 function loadSprite(noteStyle:String, isSusEnd:Bool) {
     note.frames = Paths.getSparrowAtlas("strums/normal/RGB_NOTE");

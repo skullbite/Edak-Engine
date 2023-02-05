@@ -73,14 +73,14 @@ class Note extends FlxSprite
 		switch (this.noteType) {
 			case "Normal", "", null: 0;
 			default:
-				// bug: custom notes with sustains spawn in front of the parent note
+				// bug: custom notes sustains spawn in front of the parent note
 				if (FileSystem.exists('assets/custom-notes/$noteType.hx')) {
 					try {
 						noteScript = new HNote(this, 'assets/custom-notes/$noteType.hx');
 						noteScript.execute();
-						noteScript.exec("create", []);
 					}
 					catch (e) {
+						// i do not want to spam the game into oblivion
 						// trace(e.message);
 						noteScript = null;
 					}
