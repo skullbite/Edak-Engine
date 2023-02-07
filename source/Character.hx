@@ -75,7 +75,7 @@ class Character extends FlxSprite
 			if (daConf.iconName != null) iconName = daConf.iconName;
 			if (daConf.deadData != null) {
 				for (x in Reflect.fields(daConf.deadData)) {
-					if (Reflect.hasField(daConf, x)) Reflect.setField(this.deadData, x, Reflect.getProperty(daConf.deadData, x));
+					if (Reflect.hasField(daConf.deadData, x)) Reflect.setField(this.deadData, x, Reflect.getProperty(daConf.deadData, x));
 				}
 			}
 		}
