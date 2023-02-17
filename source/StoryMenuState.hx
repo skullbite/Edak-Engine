@@ -81,10 +81,13 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		for (x in 0...FileSystem.readDirectory("assets/data/weeks").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:WeekData = Yaml.read(Paths.weekData('week$x'), new ParserOptions().useObjects());
+		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
+
+		for (week in 0...weekDataStuff.length) {
+			var coolWeekData:WeekData = Yaml.read(Paths.weekData(weekDataStuff[week]), new ParserOptions().useObjects());
 			if (coolWeekData.hiddenInStory != null && coolWeekData.hiddenInStory) continue;
 			weekData.push(coolWeekData);
+			// to do: reimplement week lock
 			weekUnlocked.push(true);
 		}
 

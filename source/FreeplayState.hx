@@ -17,7 +17,6 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.utils.Assets;
 
 
 #if desktop
@@ -60,10 +59,10 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
+		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
 
-		for (week in 0...FileSystem.readDirectory("assets/data/weeks").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:WeekData = Yaml.read(Paths.weekData('week$week'), new ParserOptions().useObjects());
+		for (week in 0...weekDataStuff.length) {
+			var coolWeekData:WeekData = Yaml.read(Paths.weekData(weekDataStuff[week]), new ParserOptions().useObjects());
 			var songList:Array<String> = coolWeekData.songs;
 			var colorList:Array<Int> = coolWeekData.colors;
 			var iconList:Array<String> = coolWeekData.icons;
