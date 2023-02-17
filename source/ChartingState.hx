@@ -564,10 +564,10 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		FlxG.sound.playMusic(Paths.inst(daSong, PlayState.difficultyData.get("loadsDifferentSong") ? PlayState.storyDifficulty.toLowerCase() : ""), 0.6);
+		FlxG.sound.playMusic(Paths.inst(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.storyDifficulty.toLowerCase() : ""), 0.6);
 
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, PlayState.difficultyData.get("loadsDifferentSong") ? PlayState.storyDifficulty.toLowerCase() : ""));
+		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.storyDifficulty.toLowerCase() : ""));
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();

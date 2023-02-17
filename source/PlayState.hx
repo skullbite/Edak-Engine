@@ -1,5 +1,7 @@
 package;
 
+import yaml.Parser.ParserOptions;
+import StoryMenuState.DifficultyData;
 import hstuff.HVars;
 import yaml.util.ObjectMap.AnyObjectMap;
 import yaml.Yaml;
@@ -61,6 +63,7 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
+import flash.media.Sound;
 #if (hxCodec >= "2.6.1")
 import hxcodec.VideoHandler;
 #else
@@ -88,7 +91,7 @@ class PlayState extends MusicBeatState
 	public static var saveScore:Bool = true;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:String = "Normal";
-	public static var difficultyData:AnyObjectMap;
+	public static var difficultyData:DifficultyData;
 	public static var weekSong:Int = 0;
 	public static var shits:Int = 0;
 	public static var bads:Int = 0;
@@ -174,7 +177,6 @@ class PlayState extends MusicBeatState
 	var songScore:Int = 0;
 	var songScoreDef:Int = 0;
 	var scoreTxt:FlxText;
-	var replayTxt:FlxText;
 
 	public static var campaignScore:Int = 0;
 
@@ -214,6 +216,13 @@ class PlayState extends MusicBeatState
 	var bopHealthIcons = true;
 	var moveCamera = true;
 	var forceCutscene = false;
+	var splashOffsets = {
+		x: 135,
+		y: 145
+	};
+	var popCombos = true;
+	var updateScore = true;
+	var updateTime = true;
 	// API stuff
 	
 
@@ -246,7 +255,7 @@ class PlayState extends MusicBeatState
 
 		repPresses = 0;
 		repReleases = 0;
-		difficultyData = Yaml.parse(File.getContent(Paths.difficulty(storyDifficulty.toLowerCase())));
+		difficultyData = Yaml.read(Paths.difficulty(storyDifficulty.toLowerCase()), new ParserOptions().useObjects());
 
 		// trace('Mod chart: ' + executeModchart + " - " + Paths.lua(PlayState.SONG.song.toLowerCase() + "/modchart"));
 
@@ -293,10 +302,12 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
-		var diff = difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : "";
+		var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
 
 		if (OpenFLAssets.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.getSound(Paths.inst(SONG.song, diff));
+		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) FlxG.sound.cache(Paths.inst(SONG.song, diff));
 		if (SONG.needsVoices && OpenFLAssets.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
+		else if (FileSystem.exists(Paths.voices(SONG.song, diff))) FlxG.sound.cache(Paths.voices(SONG.song, diff));
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = [];
@@ -414,7 +425,7 @@ class PlayState extends MusicBeatState
 		playerStrums = new Strumline(false, true, !isStoryMode);
 		cpuStrums = new Strumline(true, true, !isStoryMode);
 		splashes = new SplashGroup();
-		splashes.spawnSplash(0);
+		splashes.spawnSplash(0, splashOffsets.x, splashOffsets.y);
 		
 
 		// startCountdown();
@@ -476,7 +487,7 @@ class PlayState extends MusicBeatState
 			case 1: difficultyColor = FlxColor.YELLOW;
 			case 2: difficultyColor = FlxColor.RED;
 		}*/
-		difficultyColor = difficultyData.get("color");
+		difficultyColor = difficultyData.color;
 
 		songInfoTxt.applyMarkup(SONG.song.replace("-", " ").toUpperCase() + ' - ~~${storyDifficulty.toUpperCase()}~~', [
 			new FlxTextFormatMarkerPair(new FlxTextFormat(difficultyColor), "~~")
@@ -678,7 +689,7 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 		{
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : ""), 1, false);
+			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : ""), 1, false);
 		}
 
 		FlxG.sound.music.onComplete = HFunk.funcExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
@@ -712,7 +723,7 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, difficultyData.get("loadsDifferentSong") ? storyDifficulty.toLowerCase() : ""));
+			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : ""));
 		else
 			vocals = new FlxSound();
 
@@ -783,6 +794,8 @@ class PlayState extends MusicBeatState
 
 				susLength = susLength / Conductor.stepCrochet;
 				unspawnNotes.push(swagNote);
+				
+				HFunk.doDaCallback("onNoteSpawn", [swagNote, false]);
 
 				for (susNote in 0...Math.floor(susLength))
 				{
@@ -798,6 +811,7 @@ class PlayState extends MusicBeatState
 					{
 						sustainNote.x += FlxG.width / 2; // general offset
 					}
+					HFunk.doDaCallback("onNoteSpawn", [swagNote, true]);
 				}
 
 				swagNote.mustPress = gottaHitNote;
@@ -913,7 +927,7 @@ class PlayState extends MusicBeatState
 		
 		//trace(FlxG.sound.music.name);
 
-		if (songStarted) { 
+		if (songStarted && updateTime) { 
 			songTimeTxt.text = CoolUtil.msToTimestamp(FlxG.sound.music.time) + "/" + CoolUtil.msToTimestamp(FlxG.sound.music.length);
 		    songTimeTxt.screenCenter(X); 
 		}
@@ -949,15 +963,18 @@ class PlayState extends MusicBeatState
 		}*/
 
 		super.update(elapsed);
+		var scoreChangeRets = HFunk.doDaCallback("onScoreChange", []);
 
-		if (!Settings.get("botplay")) {
-			scoreTxt.text = Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy);
-			scoreTxt.size = 20;
-		}
-		else {
-			saveScore = false;
-			scoreTxt.size = 30;
-			scoreTxt.text = "BOTPLAY";
+		if (!scoreChangeRets.contains(HVars.STOP)) {
+			if (!Settings.get("botplay")) {
+				scoreTxt.text = Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy);
+				scoreTxt.size = 20;
+			}
+			else {
+				saveScore = false;
+				scoreTxt.size = 30;
+				scoreTxt.text = "BOTPLAY";
+			}
 		}
 		scoreTxt.screenCenter(X);
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
@@ -2164,7 +2181,7 @@ class PlayState extends MusicBeatState
 						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));*/
 				
 					playerStrums.lightStrum(note.noteData);
-					if ((note.rating == "sick" || (Settings.get("botplay") && note.rating == "good")) && !note.isSustainNote) splashes.spawnSplash(note.noteData, 135, 145);
+					if ((note.rating == "sick" || (Settings.get("botplay") && note.rating == "good")) && !note.isSustainNote) splashes.spawnSplash(note.noteData, splashOffsets.x, splashOffsets.y);
 
 				}
 			}

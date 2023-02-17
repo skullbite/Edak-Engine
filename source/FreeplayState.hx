@@ -1,5 +1,7 @@
 package;
 
+import StoryMenuState.WeekData;
+import yaml.Parser.ParserOptions;
 import StoryMenuState.DifficultyData;
 import flixel.system.FlxSound;
 import flixel.tweens.FlxTween;
@@ -61,11 +63,11 @@ class FreeplayState extends MusicBeatState
 		// var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
 		for (week in 0...FileSystem.readDirectory("assets/data/weeks").filter(d -> d.endsWith(".yaml")).length) {
-			var coolWeekData:AnyObjectMap = Yaml.parse(File.getContent(Paths.weekData('week$week')));
-			var songList:Array<String> = coolWeekData.get("songs");
-			var colorList:Array<Int> = coolWeekData.get("colors");
-			var iconList:Array<String> = coolWeekData.get("icons");
-			var difficultyList:Array<String> = coolWeekData.get("difficulties");
+			var coolWeekData:WeekData = Yaml.read(Paths.weekData('week$week'), new ParserOptions().useObjects());
+			var songList:Array<String> = coolWeekData.songs;
+			var colorList:Array<Int> = coolWeekData.colors;
+			var iconList:Array<String> = coolWeekData.icons;
+			var difficultyList:Array<String> = coolWeekData.difficulties;
 			for (x in 0...songList.length) {
 				var icon = iconList[iconList.length == 1 ? 0 : x];
 				var color = colorList[colorList.length == 1 ? 0 : x];
@@ -75,10 +77,10 @@ class FreeplayState extends MusicBeatState
 
 		
 		for (diff in FileSystem.readDirectory("assets/data/difficulties")) {
-			var awesomeDifficulty:AnyObjectMap = Yaml.parse(File.getContent(Paths.difficulty(diff.split(".").shift())));
+			var awesomeDifficulty:DifficultyData = Yaml.read(Paths.difficulty(diff.split(".").shift()), new ParserOptions().useObjects());
 			difficultyData.set(diff.split(".").shift().toLowerCase(), {
-				color: cast awesomeDifficulty.get("color"),
-				loadsDifferentSong: cast awesomeDifficulty.get("loadsDifferentSong")
+				color: awesomeDifficulty.color,
+				loadsDifferentSong: awesomeDifficulty.loadsDifferentSong
 		    });
 		}
 
@@ -267,8 +269,6 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (spaced && (currentlyPlaying == null || currentlyPlaying != curSelected)) {
-
-			#if PRELOAD_ALL
 			if (jukeboxInst.playing) {
 				jukeboxInst.pause();
 				jukeboxVocals.pause();
@@ -284,7 +284,6 @@ class FreeplayState extends MusicBeatState
 			    jukeboxVocals.play(true);
 			}
 			else jukeboxInst.play(true);
-		    #end
 		}
 
 		if (accepted)

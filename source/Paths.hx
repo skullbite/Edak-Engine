@@ -1,10 +1,13 @@
 package;
 
-import openfl.filesystem.File;
+import openfl.media.Sound;
+import openfl.Assets;
+import openfl.display.BitmapData;
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
-import openfl.utils.Assets as OpenFlAssets;
+import sys.io.File;
+import sys.FileSystem;
 
 class Paths
 {
@@ -43,11 +46,11 @@ class Paths
 	}
 
 	inline static public function songDataDir(key:String) {
-		return File.applicationDirectory.resolvePath('assets/songs/$key').getDirectoryListing().map(d -> d.name);
+		return FileSystem.readDirectory('assets/songs/$key');
 	}
 	
 	inline static public function scriptDir() {
-		return File.applicationDirectory.resolvePath('assets/scripts').getDirectoryListing().map(d -> d.name);
+		return FileSystem.readDirectory('assets/scripts');
 	}
 	
 	inline static public function difficulty(key:String) {
@@ -75,7 +78,8 @@ class Paths
 
 	static public function sound(key:String, ?library:String)
 	{
-		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
+		var soundPath:Dynamic = getPath('sounds/$key.$SOUND_EXT', SOUND, library);
+		return soundPath;
 	}
 
 	static public function video(key:String, ?library:String) {
@@ -89,28 +93,34 @@ class Paths
 
 	inline static public function music(key:String, ?library:String)
 	{
-		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
+		var musicPath:Dynamic = getPath('music/$key.$SOUND_EXT', MUSIC, library);
+		if (!Assets.exists(musicPath) && FileSystem.exists(musicPath)) musicPath = Sound.fromFile(musicPath);
+		return musicPath;
 	}
 
 	inline static public function voices(song:String, ?altSong:String="")
 	{
-		var coolPath = 'assets/songs/${song.toLowerCase()}/Voices';
+		var coolPath:Dynamic = 'assets/songs/${song.toLowerCase()}/Voices';
 		if (altSong != "") coolPath += '-$altSong';
 		coolPath += '.$SOUND_EXT';
+		if (!Assets.exists(coolPath) && FileSystem.exists(coolPath)) coolPath = Sound.fromFile(coolPath);
 		return coolPath;
 	}
 
 	inline static public function inst(song:String, ?altSong:String="")
 	{
-		var coolPath = 'assets/songs/${song.toLowerCase()}/Inst';
+		var coolPath:Dynamic = 'assets/songs/${song.toLowerCase()}/Inst';
 		if (altSong != "") coolPath += '-$altSong';
 		coolPath += '.$SOUND_EXT';
+		if (!Assets.exists(coolPath) && FileSystem.exists(coolPath)) coolPath = Sound.fromFile(coolPath);
 		return coolPath;
 	}
 
 	inline static public function image(key:String, ?library:String)
 	{
-		return getPath('images/$key.png', IMAGE, library);
+		var imgPath:Dynamic = getPath('images/$key.png', IMAGE, library);
+		if (!Assets.exists(imgPath) && FileSystem.exists(imgPath)) imgPath = Paths.getBitmap(imgPath);
+		return imgPath;
 	}
 
 	inline static public function font(key:String)
@@ -118,14 +128,26 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
-	inline static public function getSparrowAtlas(key:String, ?library:String)
-	{
-		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+	inline static public function getBitmap(key:String, ?library:String) {
+		return BitmapData.fromFile(key);
 	}
 
-	inline static public function getPackerAtlas(key:String, ?library:String)
+	inline static public function getSparrowAtlas(key:String, ?library:String, ?forcePath:Bool=false, ?manuallyFetch:Bool=false)
 	{
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+		var img:Dynamic = forcePath ? key+".png" : image(key, library);
+		var xml:Dynamic = forcePath ? key+".xml" : file('images/$key.xml', library);
+		if (!Assets.exists(xml)) xml = File.getContent(xml);
+
+		return FlxAtlasFrames.fromSparrow(img, xml);
+	}
+
+	inline static public function getPackerAtlas(key:String, ?library:String, ?forcePath:Bool=false, ?manuallyFetch:Bool=false)
+	{
+		var img:Dynamic = forcePath ? key+".png" : image(key, library);
+		var txt:Dynamic = forcePath ? key+".txt" : file('images/$key.txt', library);
+		if (!Assets.exists(txt)) txt = File.getContent(txt);
+
+		return FlxAtlasFrames.fromSpriteSheetPacker(img, txt);
 	}
 }
 
@@ -162,14 +184,22 @@ class CustomPaths {
 	}
 
 	public function image(key:String, useFullDir=false) {
-		return Paths.getPath('$dir/${useFullDir ? 'images/' : '' }$key.png', IMAGE, lib);
+		var imgPath:Dynamic = Paths.getPath('$dir/${useFullDir ? 'images/' : '' }$key.png', IMAGE, lib);
+		if (!Assets.exists(imgPath)) imgPath = Paths.getBitmap(imgPath, lib);
+		return imgPath;
 	}
 
     public function getSparrowAtlas(key:String, useFullDir=false) {
-		return FlxAtlasFrames.fromSparrow(image(key, useFullDir), Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.xml', lib));
+		var img:Dynamic = image(key, useFullDir);
+		var xml:Dynamic = Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.xml', lib);
+		if (!Assets.exists(xml)) xml = File.getContent(xml);
+		return FlxAtlasFrames.fromSparrow(img, xml);
 	}
 	
 	public function getPackerAtlas(key:String, useFullDir=false) {
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, useFullDir), Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.txt', lib));
+		var img:Dynamic = image(key, useFullDir);
+		var txt:Dynamic = Paths.file('$dir/${useFullDir ? 'images/' : '' }$key.txt', lib);
+		if (!Assets.exists(txt)) txt = File.getContent(txt);
+		return FlxAtlasFrames.fromSpriteSheetPacker(img, txt);
 	}
 }

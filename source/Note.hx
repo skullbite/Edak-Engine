@@ -17,19 +17,6 @@ import PlayState;
 
 using StringTools;
 
-typedef CustomNoteData = {
-	dadShouldHit:Bool,
-	bfShouldHit:Bool
-}
-
-// yeah it's literally just a class with a map in it, shut up
-class CustomNoteDataCache {
-	static public var data:Map<String, CustomNoteData> = [];
-
-	static public function get(key:String) return data.get(key);
-	static public function set(key:String, value:CustomNoteData) data.set(key, value);
-}
-
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
@@ -71,7 +58,7 @@ class Note extends FlxSprite
 		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
 		switch (this.noteType) {
-			case "Normal", "", null: 0;
+			case "Normal": null;
 			default:
 				// bug: custom notes sustains spawn in front of the parent note
 				if (FileSystem.exists('assets/custom-notes/$noteType.hx')) {
@@ -132,34 +119,17 @@ class Note extends FlxSprite
 				case 0:
 					animation.play('purpleholdend');
 			}
-			if (!Settings.get("downscroll") && animation.curAnim.name.contains("holdend")) scale.y += .29;
-
 			updateHitbox();
 
 			x -= width / 2;
 
-			if (PlayState.curStage.startsWith('school'))
+			if (PlayState.SONG.noteStyle == 'pixel')
 				x += 30;
 
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${colors[noteData]}hold');
-				/*switch (prevNote.noteData)
-				{
-					case 0:
-						prevNote.animation.play('purplehold');
-					case 1:
-						prevNote.animation.play('bluehold');
-					case 2:
-						prevNote.animation.play('greenhold');
-					case 3:
-						prevNote.animation.play('redhold');
-				}*/
-
-				if(FlxG.save.data.scrollSpeed != 1)
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * FlxG.save.data.scrollSpeed;
-				else
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * ((Settings.get("scrollSpeed") != 1 ? Settings.get("scrollSpeed") : PlayState.SONG.speed));
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}

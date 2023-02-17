@@ -1,12 +1,11 @@
 package;
 
-import yaml.util.ObjectMap.AnyObjectMap;
+import yaml.Parser.ParserOptions;
 import yaml.Yaml;
 import sys.FileSystem;
-import sys.io.File;
 import flixel.FlxSprite;
 
-typedef CharacterJsonData = {
+typedef CharacterYamlData = {
 	?storyAssets:String,
 	anims: {
 		idle:String,
@@ -38,7 +37,7 @@ class MenuCharacter extends FlxSprite
 {
 
 	private var flipped:Bool = false;
-	private var charData:AnyObjectMap;
+	private var charData:CharacterYamlData;
 
 	public function new(char:String, x:Int, y:Int)
 	{
@@ -51,7 +50,7 @@ class MenuCharacter extends FlxSprite
 		}
 		else visible = true;
 		
-		if (FileSystem.exists(Paths.weekData('characters/$char'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$char')));
+		if (FileSystem.exists(Paths.weekData('characters/$char'))) charData = Yaml.read(Paths.weekData('characters/$char'), new ParserOptions().useObjects());
 		else {
 			if (char == null) {
 				animation.add("idle", [0]);
@@ -59,17 +58,16 @@ class MenuCharacter extends FlxSprite
 				return;
 			}
 		}
-		flipped = charData.get("flipped");
+		flipped = charData.flipped;
 
-		
+		frames = Paths.getSparrowAtlas(charData.storyAssets != null ? charData.storyAssets : "storyMenu/characters/campaign_menu_UI_characters");
 
-		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "storyMenu/characters/campaign_menu_UI_characters");
-
-		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
-		if (charData.get("anims").exists("confirm")) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
+		animation.addByPrefix("idle", charData.anims.idle, charData.framerate);
+		if (charData.anims.confirm != null) animation.addByPrefix("confirm", charData.anims.confirm, charData.framerate, false);
 		
 		// offset.set(charData.get("x"), charData.get("y"));
-		setGraphicSize(Std.int(width * charData.get("scale")));
+		offset.set(charData.x, charData.y);
+		setGraphicSize(Std.int(width * charData.scale));
 		updateHitbox();
 	}
 
@@ -85,16 +83,16 @@ class MenuCharacter extends FlxSprite
 			visible = true;
 		}
 
-		if (FileSystem.exists(Paths.weekData('characters/$character'))) charData = Yaml.parse(File.getContent(Paths.weekData('characters/$character')));
-		frames = Paths.getSparrowAtlas(charData.exists("storyAssets") ? charData.get("storyAssets") : "storyMenu/characters/campaign_menu_UI_characters");
+		if (FileSystem.exists(Paths.weekData('characters/$character'))) charData = Yaml.read(Paths.weekData('characters/$character'), new ParserOptions().useObjects());
+		frames = Paths.getSparrowAtlas(charData.storyAssets != null ? charData.storyAssets : "storyMenu/characters/campaign_menu_UI_characters");
 
-		animation.addByPrefix("idle", charData.get("anims").get("idle"), charData.get("framerate"));
-		if (charData.get("anims").get("confirm") != null) animation.addByPrefix("confirm", charData.get("anims").get("confirm"), charData.get("framerate"), false);
+		animation.addByPrefix("idle", charData.anims.idle, charData.framerate);
+		if (charData.anims.confirm != null) animation.addByPrefix("confirm", charData.anims.confirm, charData.framerate, false);
 
 		animation.play("idle");
 
-		offset.set(charData.get("x"), charData.get("y"));
-		setGraphicSize(Std.int(width * charData.get("scale")));
-		flipX = charData.get("flipped");
+		offset.set(charData.x, charData.y);
+		setGraphicSize(Std.int(width * charData.scale));
+		flipX = charData.flipped;
 	}
 }
