@@ -82,6 +82,7 @@ function beatHit(beat) {
 function reposCharacters() {
     PlayState.boyfriend.y -= 220;
 	PlayState.boyfriend.x += 260;
+	PlayState.boyfriend.displaceData.camX = -300;
 }
 
 function fastCarDrive() {

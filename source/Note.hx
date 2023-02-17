@@ -1,8 +1,8 @@
 package;
 
+import hstuff.CallbackScript;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import hstuff.HVars;
-import hstuff.HNote;
 import yaml.Parser.ParserOptions;
 import sys.io.File;
 import yaml.Yaml;
@@ -20,7 +20,7 @@ using StringTools;
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
-	public var noteScript:HNote;
+	public var noteScript:Null<CallbackScript>;
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
@@ -63,7 +63,11 @@ class Note extends FlxSprite
 				// bug: custom notes sustains spawn in front of the parent note
 				if (FileSystem.exists('assets/custom-notes/$noteType.hx')) {
 					try {
-						noteScript = new HNote(this, 'assets/custom-notes/$noteType.hx');
+						noteScript = new CallbackScript('assets/custom-notes/$noteType.hx', 'Note:$noteType', {
+							note: this,
+							Paths: Paths
+						});
+
 						noteScript.execute();
 					}
 					catch (e) {

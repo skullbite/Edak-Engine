@@ -1,13 +1,13 @@
 package;
 
-import hstuff.HSub;
+import hstuff.CallbackScript;
 import sys.FileSystem;
 import sys.io.File;
 import flixel.FlxCamera;
 import flixel.FlxG;
 
 class CustomSubState extends MusicBeatSubstate {
-    public var subScript:Null<HSub> = null;
+    public var subScript:Null<CallbackScript> = null;
     var customCam:FlxCamera = new FlxCamera();
     public var subName:String;
     public function new(target:String) {
@@ -16,8 +16,11 @@ class CustomSubState extends MusicBeatSubstate {
 		FlxG.cameras.add(customCam);
         subName = target;
         if (FileSystem.exists('assets/substates/$target/init.hx')) {
-            var code = File.getContent('assets/substates/$target/init.hx');
-            subScript = new HSub(code, this);
+            subScript = new CallbackScript('assets/substates/$target/init.hx', 'CustomSub:$target', {
+                sub: this,
+                Paths: new CustomPaths(subName, "substates"),
+                _Paths: Paths
+            });
             subScript.exec("create", []);
         }
         else close();

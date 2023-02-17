@@ -315,14 +315,14 @@ class PlayState extends MusicBeatState
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
-				scripts.set('song_${x.split(".")[0]}', File.getContent(Paths.file('songs/${SONG.song.toLowerCase()}/scripts/$x')));
+				scripts.set('song_${x.split(".")[0]}', Paths.file('songs/${SONG.song.toLowerCase()}/scripts/$x'));
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
 		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx") || d.endsWith(".hxs"));
 		for (x in globalScripts) {
 			try { 
-				scripts.set('global_${x.split(".")[0]}', File.getContent(Paths.file('scripts/$x')));
+				scripts.set('global_${x.split(".")[0]}', Paths.file('scripts/$x'));
 			}
 			catch (e) {}
 		}
@@ -1087,7 +1087,7 @@ class PlayState extends MusicBeatState
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null)
 		{
 
-			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
+			if (camFollow.x != dad.getMidpoint().x + 150 + dad.displaceData.camX  && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
 				var camCall = HFunk.doDaCallback("onCamMove", ["dad"]);
 				if (camCall.contains(HVars.STOP)) return;
@@ -1096,27 +1096,13 @@ class PlayState extends MusicBeatState
 				if (moveCamera) camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
 			}
 
-			if (PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100)
+			if (PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100 + boyfriend.displaceData.camX)
 			{
 				var camCall = HFunk.doDaCallback("onCamMove", ["bf"]);
 				if (camCall.contains(HVars.STOP)) return;
 				var offsetX = boyfriend.displaceData.camX;
 				var offsetY = boyfriend.displaceData.camY;
 				if (moveCamera) camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
-
-				switch (curStage)
-				{
-					case 'limo':
-						camFollow.x = boyfriend.getMidpoint().x - 300;
-					case 'mall':
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'school':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'schoolEvil':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-				}
 			}
 		}
 

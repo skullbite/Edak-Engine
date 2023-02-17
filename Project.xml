@@ -72,7 +72,7 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
-
+	
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
 	<!-- <haxelib name="markdown" /> -->
@@ -114,6 +114,7 @@
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
 	<haxedef name="no-deprecation-warnings" />
+	<haxedef name="hscriptPos"/>
 
 	<!-- _________________________________ Custom _______________________________ -->
 

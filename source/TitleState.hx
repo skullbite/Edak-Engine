@@ -1,5 +1,6 @@
 package;
 
+import sys.io.File;
 import shaders.ColorSwap;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxG;
@@ -169,7 +170,7 @@ class TitleState extends MusicBeatState
 		bg.shader = swagShader.shader;
 		add(bg);
 
-		checkers = new FlxBackdrop(Paths.image("title/checkers"));
+		checkers = new FlxBackdrop(FlxGridOverlay.create(40, 40, -1, -1, FlxColor.WHITE, FlxColor.BLACK).graphic);
 		checkers.alpha = .07;
 		add(checkers);
 
@@ -250,7 +251,7 @@ class TitleState extends MusicBeatState
 
 	function getIntroTextShit():Array<Array<String>>
 	{
-		var fullText:String = Assets.getText(Paths.txt('introText'));
+		var fullText:String = File.getContent(Paths.txt('introText'));
 
 		var firstArray:Array<String> = fullText.split('\n');
 		var swagGoodArray:Array<Array<String>> = [];
@@ -325,7 +326,7 @@ class TitleState extends MusicBeatState
 			{
 				// Get current version of Kade Engine
 				
-				#if !debug
+				#if (UPDATES)
 				var http = new haxe.Http("https://raw.githubusercontent.com/Skullbite/Edak-Engine/master/version.downloadMe");
 				var returnedData:Array<String> = [];
 				

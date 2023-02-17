@@ -5,7 +5,7 @@ import flixel.FlxG;
 import flixel.util.FlxTimer;
 import sys.io.File;
 import sys.FileSystem;
-import hstuff.HDialogue;
+import hstuff.CallbackScript;
 import flixel.addons.text.FlxTypeText;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -14,7 +14,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
     // var background:FlxSprite;
     public var boxType:String;
-    var DialogueScript:Null<HDialogue>;
+    var dialogueScript:Null<CallbackScript>;
     var portraits:Map<String, FlxSprite> = [];
     var box:FlxSprite;
     var speakTxt:FlxTypeText;
@@ -34,10 +34,13 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
             // case "hardcoded box here":
             default:
                 if (FileSystem.exists('assets/dialogue/$boxType')) {
-                    var dialogueCode:String = File.getContent('assets/dialogue/$boxType/init.hx');
                     try {
-                        DialogueScript = new HDialogue(this, dialogueCode);
-                        DialogueScript.exec("create", []);
+                        dialogueScript = new CallbackScript('assets/dialogue/$boxType/init.hx', 'Dialogue:$boxType', {
+                            dia: this,
+                            Paths: new CustomPaths(boxType, "dialogue"),
+                            _Paths: Paths
+                        });
+                        dialogueScript.exec("create", []);
                     }
                     catch (e) {
                         trace('Failed to load $boxType: ${e.message}');
@@ -80,14 +83,14 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
             if (box.animation.exists("idle")) box.animation.play("idle");
             textStarted = true;
         }
-        if (DialogueScript.exists("createPost")) DialogueScript.exec("createPost", []);
+        if (dialogueScript.exists("createPost")) dialogueScript.exec("createPost", []);
         
         // new FlxTimer().start(10, (t) -> finishCallback());
     }
 
     function startDialogue() {
         cleanDialog();
-        if (DialogueScript.exists("preLine")) DialogueScript.exec("preLine", [curPortrait, dialogueText[0]]);
+        if (dialogueScript.exists("preLine")) dialogueScript.exec("preLine", [curPortrait, dialogueText[0]]);
         for (k => v in portraits) {
             if (k == curPortrait) {
                 v.visible = true;
@@ -121,7 +124,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
     function doEnd() {
         if (!alreadyEnding) {
             alreadyEnding = true;
-            if (DialogueScript.exists("finish")) new FlxTimer().start(.5, t -> DialogueScript.exec("finish", []));
+            if (dialogueScript.exists("finish")) new FlxTimer().start(.5, t -> dialogueScript.exec("finish", []));
             else {
                 for (x in 0...length) members[x].visible = false;
                 new FlxTimer().start(.5, t -> finishCallback());
@@ -132,7 +135,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if (DialogueScript != null && DialogueScript.exists("update")) DialogueScript.exec("update", [elapsed]);
+        if (dialogueScript != null && dialogueScript.exists("update")) dialogueScript.exec("update", [elapsed]);
         var targetPortrait = portraits[curPortrait];
         if (targetPortrait != null && targetPortrait.animation.exists("talk") && currentlyTyping) targetPortrait.animation.play("talk");
         if (FlxG.keys.justPressed.ESCAPE) doEnd();

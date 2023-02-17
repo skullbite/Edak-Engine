@@ -1,13 +1,10 @@
 package;
 
+import hstuff.CallbackScript;
 import yaml.Parser.ParserOptions;
 import yaml.Yaml;
-import hstuff.HCharacter;
-import sys.io.File;
 import sys.FileSystem;
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
@@ -48,7 +45,7 @@ class Character extends FlxSprite
 	public var stopAnims = false;
 	public var stopSinging = false;
 	public var stopDancing = false;
-	var CharScript:Null<HCharacter> = null;
+	var CharScript:Null<CallbackScript> = null;
 	public var displaceData = {
 		x: 0,
 		y: 0,
@@ -86,7 +83,11 @@ class Character extends FlxSprite
 				if (FileSystem.exists('assets/characters/$curCharacter/init.hx')) {
 					// var charCode = File.getContent('assets/characters/$curCharacter/init.hx');
 					try {
-						CharScript = new HCharacter(this, 'assets/characters/$curCharacter/init.hx');
+						CharScript = new CallbackScript('assets/characters/$curCharacter/init.hx', 'Character:$curCharacter', {
+							char: this,
+							Paths: new CustomPaths(curCharacter, "characters"),
+							_Paths: Paths
+						});
 						CharScript.exec("create", []);
 					}
 					catch (e) {

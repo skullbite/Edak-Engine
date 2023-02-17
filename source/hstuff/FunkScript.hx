@@ -2,23 +2,21 @@ package hstuff;
 
 // Better name than HGame
 class FunkScript extends HBase {
-    public var scripts:Array<CallbackScript> = [];
-    public var pre:String = "var game = PlayState.instance;";
+    public var scripts:Map<String, CallbackScript> = [];
 
-    public function loadScript(name:String, code:String) {
-        // dry run to make sure the code actually works
+    public function loadScript(name:String, path:String) {
         try {
-            var toRun = pre + code;
-            // interp.execute(parser.parseString(toRun));
-
-            var script = cast (new CallbackScript().doString(toRun), CallbackScript);
-            script.set("Paths", Paths);
-            script.set("STOP", HVars.STOP);
-            scripts.push(script);
-            trace('loaded script $name');
+            var script = new CallbackScript(path, name, {
+                Paths: Paths,
+                STOP: HVars.STOP,
+                game: PlayState.instance
+            });
+            
+            scripts.set(name, script);
+            trace('Loaded script $name');
         }
         catch (e) {
-            trace('hscript:$name failed to load: ${e.message}');
+            trace('$name failed to load: ${e.message}');
         }
     }
 

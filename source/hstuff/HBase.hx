@@ -1,7 +1,5 @@
 package hstuff;
 
-import flixel.FlxG;
-
 // @:enum abstract FlxColor(String) to String {}
 
 class HBase extends SScript {
@@ -19,7 +17,7 @@ class HBase extends SScript {
         parser.allowTypes = true;
         parser.allowJSON = true;
     }
-
+    
     // psych engine??? i might switch to a different lib which will deprecate this
     function importLib(lib:String, alias="") {
         var name = alias != "" ? alias : lib.split(".").pop();

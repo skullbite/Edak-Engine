@@ -1,9 +1,8 @@
 package;
 
+import hstuff.CallbackScript;
 import flixel.FlxSprite;
 import sys.FileSystem;
-import sys.io.File;
-import hstuff.HStage;
 import flixel.FlxBasic;
 import flixel.group.FlxGroup.FlxTypedGroup;
 
@@ -11,7 +10,7 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     public var publicSprites:Map<String, FlxBasic>;
     public var foreground:FlxTypedGroup<FlxBasic>;
     public var infrontOfGf:FlxTypedGroup<FlxBasic>; // limo AUUUUUGH
-    public var ScriptStage:Null<HStage> = null;
+    public var stageScript:Null<CallbackScript> = null;
     public var curStage:String;
     public var defaultCamZoom:Float = 1.05;
     public var cameraDisplace:{x:Float,y:Float} = {
@@ -29,12 +28,16 @@ class Stage extends FlxTypedGroup<FlxBasic> {
             default:
                 if (FileSystem.exists('assets/stages/$curStage/init.hx')) {
                     try {
-                        ScriptStage = new HStage(this, 'assets/stages/$curStage/init.hx');
-                        ScriptStage.exec("create", []);
+                        stageScript = new CallbackScript('assets/stages/$curStage/init.hx', 'Stage:$curStage', {
+                            stage: this,
+                            Paths: new CustomPaths(curStage, "stages"),
+                            _Paths: Paths
+                        });
+                        stageScript.exec("create", []);
                     }
                     catch (e) {
                         trace('Failed to load $curStage from hscript: ${e.message}');
-                        ScriptStage = null;
+                        stageScript = null;
                         loadStageInstead();
                     }
                 }
@@ -43,30 +46,30 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     }
 
     public function reposCharacters() {
-        if (ScriptStage != null && ScriptStage.exists("reposCharacters")) {
-            ScriptStage.exec("reposCharacters", []);
+        if (stageScript != null && stageScript.exists("reposCharacters")) {
+            stageScript.exec("reposCharacters", []);
             return;
         }
     }
 
     public function stepHit(curStep:Int) {
-        if (ScriptStage != null && ScriptStage.exists("stepHit")) { 
-            ScriptStage.exec("stepHit", [curStep]); 
+        if (stageScript != null && stageScript.exists("stepHit")) { 
+            stageScript.exec("stepHit", [curStep]); 
             return;
         }
     } 
 
     public function beatHit(curBeat:Int) {
-        if (ScriptStage != null && ScriptStage.exists("beatHit")) {
-            ScriptStage.exec("beatHit", [curBeat]);
+        if (stageScript != null && stageScript.exists("beatHit")) {
+            stageScript.exec("beatHit", [curBeat]);
             return;
         }
     }
 
     public function stageUpdate(elapsed:Float) {
         super.update(elapsed);
-        if (ScriptStage != null && ScriptStage.exists("update")) { 
-            ScriptStage.exec("update", [elapsed]);
+        if (stageScript != null && stageScript.exists("update")) { 
+            stageScript.exec("update", [elapsed]);
             return;
         }
     }

@@ -21,6 +21,7 @@ function reposCharacters() {
 	PlayState.boyfriend.displaceData.camY = -70;
 	PlayState.gf.x += 180;
 	PlayState.gf.y += 300;
+	PlayState.boyfriend.displaceData.camY = -100;
 	var trail = new FlxTrail(PlayState.dad, null, 4, 24, 0.3, 0.069);
 	PlayState.dadGroup.insert(0, trail);
 }
