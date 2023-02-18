@@ -109,7 +109,7 @@ class PlayState extends MusicBeatState
 
 	var songLength:Float = 0;
 
-	private var vocals:FlxSound;
+	public var vocals:FlxSound;
 
 	public static var dad:Character;
 	public static var gf:Character;
@@ -217,7 +217,7 @@ class PlayState extends MusicBeatState
 	var moveCamera = true;
 	var forceCutscene = false;
 	var splashOffsets = {
-		x: 135,
+		x: 140,
 		y: 145
 	};
 	var popCombos = true;
@@ -311,7 +311,7 @@ class PlayState extends MusicBeatState
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = [];
-		if (FileSystem.exists('assets/songs/${SONG.song.toLowerCase()}/scripts')) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hx") || d.endsWith(".hxs"));
+		if (FileSystem.exists('assets/songs/${SONG.song.toLowerCase()}/scripts')) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hxs"));
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
@@ -319,7 +319,7 @@ class PlayState extends MusicBeatState
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
-		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hx") || d.endsWith(".hxs"));
+		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hxs"));
 		for (x in globalScripts) {
 			try { 
 				scripts.set('global_${x.split(".")[0]}', Paths.file('scripts/$x'));
@@ -676,7 +676,7 @@ class PlayState extends MusicBeatState
 	var songTime:Float = 0;
 
 
-	var songStarted = false;
+	public var songStarted = false;
 
 	function startSong():Void
 	{
@@ -1331,7 +1331,7 @@ class PlayState extends MusicBeatState
 						daNote.x = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].x;
 						if (!daNote.isSustainNote) 
 							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
-						daNote.alpha = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].alpha;
+						daNote.alpha = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].alpha - (daNote.isSustainNote ? 0.4 : 0);
 					}
 					else if (!daNote.wasGoodHit && !daNote.modifiedByLua)
 					{
@@ -1339,7 +1339,7 @@ class PlayState extends MusicBeatState
 						daNote.x = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].x;
 						if (!daNote.isSustainNote) 
 							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
-						daNote.alpha = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].alpha;
+						daNote.alpha = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].alpha - (daNote.isSustainNote ? 0.4 : 0);
 					}
 
 					if (daNote.noteScript != null) daNote.noteScript.exec("propertyOverride", []);

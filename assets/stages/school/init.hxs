@@ -85,8 +85,6 @@ function reposCharacters() {
 	PlayState.boyfriend.y += 220;
 	PlayState.gf.x += 180;
 	PlayState.gf.y += 300;
-	PlayState.boyfriend.displaceData.camX = -200;
-	PlayState.boyfriend.displaceData.camY = -200;
 }
 
 function beatHit(beat) {

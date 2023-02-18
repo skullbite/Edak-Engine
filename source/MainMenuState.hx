@@ -14,6 +14,10 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
 
+#if ACTION
+import sys.io.File;
+#end
+
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -119,6 +123,11 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionShit.borderSize = 2;
 		add(versionShit);
+
+		#if ACTION
+		var actionTextThing = File.getContent(Paths.txt("_aver"));
+		versionShit.text = 'Edak Engine [ACTION BUILD]: v$edakEngineVer ($actionTextThing)';
+		#end
 
 		// NG.core.calls.event.logEvent('swag').send();
 

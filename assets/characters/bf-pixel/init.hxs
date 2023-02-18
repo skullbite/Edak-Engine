@@ -28,6 +28,9 @@ function create() {
     
     char.width -= 100;
     char.height -= 100;
+
+    char.displaceData.camY = -150;
+    char.displaceData.camX = -100;
     
     char.antialiasing = false;
     

@@ -15,7 +15,7 @@ try {
 
         Write-Host "Installing the libraries..." -ForegroundColor Yellow
         $dumbLibs = @("flixel", "openfl", "flixel-addons", "flixel-ui", "yaml", "hxcodec")
-        $gitLibs = @("haxelib git SScript https://github.com/AltronMaxX/SScript", "haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc")
+        $gitLibs = @("haxelib git SScript https://github.com/TheWorldMachinima/SScript", "haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc")
         foreach ($i in $dumbLibs) {
             &haxelib install $i
         }
@@ -28,6 +28,6 @@ try {
 catch { 
     Write-Host "No haxe? :(" -ForegroundColor Red
     Write-Host "https://haxe.org/download/" -ForegroundColor Blue
-    Write-Host $_
+    # Write-Host $_
 
 }

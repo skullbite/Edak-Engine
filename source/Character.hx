@@ -45,7 +45,7 @@ class Character extends FlxSprite
 	public var stopAnims = false;
 	public var stopSinging = false;
 	public var stopDancing = false;
-	var CharScript:Null<CallbackScript> = null;
+	var charScript:Null<CallbackScript> = null;
 	public var displaceData = {
 		x: 0,
 		y: 0,
@@ -80,24 +80,22 @@ class Character extends FlxSprite
 		switch (curCharacter)
 		{
 			default:
-				if (FileSystem.exists('assets/characters/$curCharacter/init.hx')) {
-					// var charCode = File.getContent('assets/characters/$curCharacter/init.hx');
+				if (FileSystem.exists('assets/characters/$curCharacter/init.hxs')) {
 					try {
-						CharScript = new CallbackScript('assets/characters/$curCharacter/init.hx', 'Character:$curCharacter', {
+						charScript = new CallbackScript('assets/characters/$curCharacter/init.hxs', 'Character:$curCharacter', {
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
 							_Paths: Paths
 						});
-						CharScript.exec("create", []);
+						charScript.exec("create", []);
 					}
 					catch (e) {
-						CharScript = null;
+						charScript = null;
 						trace('Failed to load $curCharacter from hscript: ${e.message}');
 						loadBfInstead();
 					}
 				}
 				else loadBfInstead();
-
 		}
 
 		dance();
@@ -126,7 +124,7 @@ class Character extends FlxSprite
 			}
 		}
 
-		if (CharScript != null && CharScript.exists("createPost")) CharScript.exec("createPost", []);
+		if (charScript != null && charScript.exists("createPost")) charScript.exec("createPost", []);
 	}
 
 	override function update(elapsed:Float)
@@ -151,8 +149,8 @@ class Character extends FlxSprite
 
 		super.update(elapsed);
 
-		if (CharScript != null && CharScript.exists("update")) {
-			CharScript.exec("update", [elapsed]);
+		if (charScript != null && charScript.exists("update")) {
+			charScript.exec("update", [elapsed]);
 			return;
 		}
 
@@ -173,8 +171,8 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (CharScript != null && CharScript.exists("dance")) {
-			CharScript.exec("dance", []);
+		if (charScript != null && charScript.exists("dance")) {
+			charScript.exec("dance", []);
 			return;
 		}
 		if (!debugMode)

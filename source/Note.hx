@@ -61,9 +61,9 @@ class Note extends FlxSprite
 			case "Normal": null;
 			default:
 				// bug: custom notes sustains spawn in front of the parent note
-				if (FileSystem.exists('assets/custom-notes/$noteType.hx')) {
+				if (FileSystem.exists('assets/custom-notes/$noteType.hxs')) {
 					try {
-						noteScript = new CallbackScript('assets/custom-notes/$noteType.hx', 'Note:$noteType', {
+						noteScript = new CallbackScript('assets/custom-notes/$noteType.hxs', 'Note:$noteType', {
 							note: this,
 							Paths: Paths
 						});
@@ -127,7 +127,7 @@ class Note extends FlxSprite
 
 			x -= width / 2;
 
-			if (PlayState.SONG.noteStyle == 'pixel')
+			if (PlayState.SONG.noteStyle == 'pixel') 
 				x += 30;
 
 			if (prevNote.isSustainNote)

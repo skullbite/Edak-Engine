@@ -21,7 +21,7 @@ for lib in ${dumbLibs[@]}; do
     haxelib install $lib
 done
 
-for lib in "haxelib git SScript https://github.com/AltronMaxX/SScript", 
+for lib in "haxelib git SScript https://github.com/TheWorldMachinima/SScript", 
            "haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc"; do
     eval "$lib"
 done

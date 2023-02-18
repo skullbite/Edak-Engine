@@ -15,13 +15,19 @@ class CustomSubState extends MusicBeatSubstate {
         customCam.bgColor.alpha = 0;
 		FlxG.cameras.add(customCam);
         subName = target;
-        if (FileSystem.exists('assets/substates/$target/init.hx')) {
-            subScript = new CallbackScript('assets/substates/$target/init.hx', 'CustomSub:$target', {
-                sub: this,
-                Paths: new CustomPaths(subName, "substates"),
-                _Paths: Paths
-            });
-            subScript.exec("create", []);
+        if (FileSystem.exists('assets/substates/$target/init.hxs')) {
+            try {
+                subScript = new CallbackScript('assets/substates/$target/init.hxs', 'CustomSub:$target', {
+                    sub: this,
+                    Paths: new CustomPaths(subName, "substates"),
+                    _Paths: Paths
+                });
+                subScript.execute();
+                subScript.exec("create", []);
+            }
+            catch (e) {
+                trace('Failed to load $target: ${e.message}');
+            }
         }
         else close();
         cameras = [customCam];

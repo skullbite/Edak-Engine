@@ -39,10 +39,10 @@ class Splash extends FlxSprite {
         var rando = FlxG.random.int(1, 2);
         
         switch (noteData) {
-            case 0: animation.addByPrefix("splash", 'note impact $rando purple', 24, false);
-            case 1: animation.addByPrefix("splash", 'note impact $rando blue', 24, false);
-            case 2: animation.addByPrefix("splash", 'note impact $rando green', 24, false);
-            case 3: animation.addByPrefix("splash", 'note impact $rando red', 24, false);
+            case 0: animation.addByPrefix("splash", 'note splash purple $rando', 24, false);
+            case 1: animation.addByPrefix("splash", 'note splash blue $rando', 24, false);
+            case 2: animation.addByPrefix("splash", 'note splash green $rando', 24, false);
+            case 3: animation.addByPrefix("splash", 'note splash red $rando', 24, false);
         }
     }
 }

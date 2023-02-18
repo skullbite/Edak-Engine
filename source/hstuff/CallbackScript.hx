@@ -15,6 +15,9 @@ class CallbackScript extends HBase {
         }
         catch (e) {
             trace('$name function "$target" failed: ${e.message}');
+            #if debug
+            trace(e.stack);
+            #end
             return null;
         }
     }

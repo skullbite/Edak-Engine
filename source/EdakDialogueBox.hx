@@ -33,13 +33,14 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
         switch (boxType) {
             // case "hardcoded box here":
             default:
-                if (FileSystem.exists('assets/dialogue/$boxType')) {
+                if (FileSystem.exists('assets/dialogue/$boxType/init.hxs')) {
                     try {
-                        dialogueScript = new CallbackScript('assets/dialogue/$boxType/init.hx', 'Dialogue:$boxType', {
+                        dialogueScript = new CallbackScript('assets/dialogue/$boxType/init.hxs', 'Dialogue:$boxType', {
                             dia: this,
                             Paths: new CustomPaths(boxType, "dialogue"),
                             _Paths: Paths
                         });
+                        dialogueScript.execute();
                         dialogueScript.exec("create", []);
                     }
                     catch (e) {

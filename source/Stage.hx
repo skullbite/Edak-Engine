@@ -26,13 +26,14 @@ class Stage extends FlxTypedGroup<FlxBasic> {
         switch (curStage) {
             // case "xyz": hardcoding auuuugh
             default:
-                if (FileSystem.exists('assets/stages/$curStage/init.hx')) {
+                if (FileSystem.exists('assets/stages/$curStage/init.hxs')) {
                     try {
-                        stageScript = new CallbackScript('assets/stages/$curStage/init.hx', 'Stage:$curStage', {
+                        stageScript = new CallbackScript('assets/stages/$curStage/init.hxs', 'Stage:$curStage', {
                             stage: this,
                             Paths: new CustomPaths(curStage, "stages"),
                             _Paths: Paths
                         });
+                        stageScript.execute();
                         stageScript.exec("create", []);
                     }
                     catch (e) {

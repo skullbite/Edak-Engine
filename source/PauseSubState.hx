@@ -181,6 +181,14 @@ class PauseSubState extends MusicBeatSubstate
 			{
 				case "Resume":
 					FlxG.cameras.remove(pauseCam);
+
+					/*if (PlayState.instance.songStarted) {
+						FlxG.sound.music.play();
+						// paranoia
+						FlxG.sound.music.looped = false;
+					    PlayState.instance.vocals.play();
+						PlayState.instance.vocals.looped = false;
+					}*/
 					close();
 				case "Restart Song":
 					FlxG.resetState();
