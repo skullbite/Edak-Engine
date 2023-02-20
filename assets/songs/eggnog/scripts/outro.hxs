@@ -17,7 +17,10 @@ function onStepHit(step) {
 }
 
 function onEndSong() {
-    if (!PlayState.isStoryMode) return;
+    if (!PlayState.isStoryMode) {
+        game.endSong();
+        return;
+    }
     lightSound.onComplete = game.endSong;
     FlxG.sound.music.volume = 0;
     game.vocals.volume = 0;
