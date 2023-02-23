@@ -7,7 +7,7 @@ var bottomBoppers:FlxSprite;
 var santa:FlxSprite;
 
 function create() {
-    stage.defaultCamZoom = 0.8;
+    PlayState.defaultCamZoom = 0.8;
     var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('bgWalls'));
 	bg.antialiasing = true;
 	bg.scrollFactor.set(0.2, 0.2);

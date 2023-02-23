@@ -8,6 +8,9 @@ import yaml.Yaml;
 import EdakDialogueBox.EdakeDialogueBox;
 import hstuff.FunkScript;
 import openfl.Assets as OpenFLAssets;
+import openfl.utils.AssetCache;
+import openfl.media.Sound;
+import lime.media.AudioBuffer;
 import sys.io.File;
 import sys.FileSystem;
 import flixel.input.keyboard.FlxKey;
@@ -180,7 +183,7 @@ class PlayState extends MusicBeatState
 
 	public static var campaignScore:Int = 0;
 
-	var defaultCamZoom:Float = 1.05;
+	public static var defaultCamZoom:Float = 1.05;
 
 	public static var daPixelZoom:Float = 6;
 
@@ -238,6 +241,7 @@ class PlayState extends MusicBeatState
 		dadGroup = new FlxTypedGroup();
 		gfGroup = new FlxTypedGroup();
 		boyfriendGroup = new FlxTypedGroup();
+		defaultCamZoom = 1.05;
 		if (Settings.get("botplay")) saveScore = false;
 		
 		if (FlxG.save.data.fpsCap > 290)
@@ -305,13 +309,14 @@ class PlayState extends MusicBeatState
 		var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
 
 		if (OpenFLAssets.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.getSound(Paths.inst(SONG.song, diff));
-		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) FlxG.sound.cache(Paths.inst(SONG.song, diff));
+		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.cache.setSound("_inst", Sound.fromAudioBuffer(AudioBuffer.fromFile(Paths.inst(SONG.song, diff))));
 		if (SONG.needsVoices && OpenFLAssets.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
-		else if (FileSystem.exists(Paths.voices(SONG.song, diff))) FlxG.sound.cache(Paths.voices(SONG.song, diff));
+		else if (SONG.needsVoices && FileSystem.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.cache.setSound("_voices", Sound.fromAudioBuffer(AudioBuffer.fromFile(Paths.voices(SONG.song, diff))));
+		
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = [];
-		if (FileSystem.exists('assets/songs/${SONG.song.toLowerCase()}/scripts')) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hxs"));
+		if (FileSystem.exists(Paths.file('songs/${SONG.song.toLowerCase()}/scripts'))) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hxs"));
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
@@ -367,8 +372,6 @@ class PlayState extends MusicBeatState
 		}
 
 		stage = new Stage();
-
-		defaultCamZoom = stage.defaultCamZoom;
 
 		add(stage);
 
@@ -689,7 +692,8 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 		{
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song, difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : ""), 1, false);
+			var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
+			FlxG.sound.playMusic(Paths.inst(SONG.song, diff), 1, false);
 		}
 
 		FlxG.sound.music.onComplete = HFunk.funcExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
@@ -722,8 +726,9 @@ class PlayState extends MusicBeatState
 
 		curSong = songData.song;
 
+		var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song, difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : ""));
+			vocals = new FlxSound().loadEmbedded(Paths.voices(SONG.song, diff));
 		else
 			vocals = new FlxSound();
 
@@ -1395,6 +1400,11 @@ class PlayState extends MusicBeatState
 		HFunk.doDaCallback("onUpdatePost", []);
 	}
 
+	public function preExit() {
+		Paths.curModDir = null;
+		saveScore = true;
+	}
+
 	function endSong():Void
 	{
 
@@ -1430,14 +1440,16 @@ class PlayState extends MusicBeatState
 
 					transIn = FlxTransitionableState.defaultTransIn;
 					transOut = FlxTransitionableState.defaultTransOut;
-					saveScore = false;
+					// saveScore = false;
 
+					Paths.curModDir = null;
 					FlxG.switchState(new StoryMenuState());
 
 					// if ()
 					StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 
 					if (saveScore) Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+					saveScore = true;
 
 					FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
 					FlxG.save.flush();
@@ -1462,7 +1474,7 @@ class PlayState extends MusicBeatState
 			{
 				trace('WENT BACK TO FREEPLAY??');
 				FlxG.sound.music.kill();
-				saveScore = true;
+				preExit();
 				FlxG.switchState(new FreeplayState());
 			}
 		}
@@ -2279,6 +2291,7 @@ class PlayState extends MusicBeatState
 		return new FlxRuntimeShader(shaderStuff[0], shaderStuff[1]);
 	}
 
+	
 	function playVideo(videoPath:String, endCallBack:Void -> Void) {
 		#if (hxCodec >= "2.6.1")
 		var videoHandler = new VideoHandler();

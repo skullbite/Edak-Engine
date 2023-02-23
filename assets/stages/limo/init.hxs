@@ -11,7 +11,7 @@ var grpLimoDancers:Dynamic;
 var bgLimo:Dynamic;
 
 function create() {
-	stage.defaultCamZoom = 0.9;
+	PlayState.defaultCamZoom = 0.9;
     importLib("flixel.group.FlxTypedGroup");
     // importLib("BackgroundDancer");
     fastCarCanDrive = true;

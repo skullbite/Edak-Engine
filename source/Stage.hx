@@ -11,8 +11,6 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     public var foreground:FlxTypedGroup<FlxBasic>;
     public var infrontOfGf:FlxTypedGroup<FlxBasic>; // limo AUUUUUGH
     public var stageScript:Null<CallbackScript> = null;
-    public var curStage:String;
-    public var defaultCamZoom:Float = 1.05;
     public var cameraDisplace:{x:Float,y:Float} = {
         x: 0.0,
         y: 0.0
@@ -22,13 +20,13 @@ class Stage extends FlxTypedGroup<FlxBasic> {
         publicSprites = new Map();
         foreground = new FlxTypedGroup();
         infrontOfGf = new FlxTypedGroup();
-        curStage = PlayState.curStage;
+        var curStage = PlayState.curStage;
         switch (curStage) {
             // case "xyz": hardcoding auuuugh
             default:
-                if (FileSystem.exists('assets/stages/$curStage/init.hxs')) {
+                if (FileSystem.exists(Paths.file('stages/$curStage/init.hxs'))) {
                     try {
-                        stageScript = new CallbackScript('assets/stages/$curStage/init.hxs', 'Stage:$curStage', {
+                        stageScript = new CallbackScript(Paths.file('stages/$curStage/init.hxs'), 'Stage:$curStage', {
                             stage: this,
                             Paths: new CustomPaths(curStage, "stages"),
                             _Paths: Paths

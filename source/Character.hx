@@ -80,9 +80,9 @@ class Character extends FlxSprite
 		switch (curCharacter)
 		{
 			default:
-				if (FileSystem.exists('assets/characters/$curCharacter/init.hxs')) {
+				if (FileSystem.exists(Paths.file('characters/$curCharacter/init.hxs'))) {
 					try {
-						charScript = new CallbackScript('assets/characters/$curCharacter/init.hxs', 'Character:$curCharacter', {
+						charScript = new CallbackScript(Paths.file('characters/$curCharacter/init.hxs'), 'Character:$curCharacter', {
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
 							_Paths: Paths

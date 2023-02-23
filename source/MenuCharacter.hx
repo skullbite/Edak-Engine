@@ -50,7 +50,7 @@ class MenuCharacter extends FlxSprite
 		}
 		else visible = true;
 		
-		if (FileSystem.exists(Paths.weekData('characters/$char'))) charData = Yaml.read(Paths.weekData('characters/$char'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.yaml('weeks/characters/$char'))) charData = Yaml.read(Paths.yaml('weeks/characters/$char'), new ParserOptions().useObjects());
 		else {
 			if (char == null) {
 				animation.add("idle", [0]);
@@ -83,7 +83,7 @@ class MenuCharacter extends FlxSprite
 			visible = true;
 		}
 
-		if (FileSystem.exists(Paths.weekData('characters/$character'))) charData = Yaml.read(Paths.weekData('characters/$character'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.yaml('weeks/characters/$character'))) charData = Yaml.read(Paths.yaml('weeks/characters/$character'), new ParserOptions().useObjects());
 		frames = Paths.getSparrowAtlas(charData.storyAssets != null ? charData.storyAssets : "storyMenu/characters/campaign_menu_UI_characters");
 
 		animation.addByPrefix("idle", charData.anims.idle, charData.framerate);

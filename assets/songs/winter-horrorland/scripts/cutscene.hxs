@@ -41,7 +41,7 @@ function onCutscene() {
 				}
 			});
 			
-			FlxTween.tween(FlxG.camera, {zoom: game.defaultCamZoom}, 2.5, {
+			FlxTween.tween(FlxG.camera, {zoom: PlayState.defaultCamZoom}, 2.5, {
 				ease: FlxEase.quadInOut,
 				onComplete: function(twn:FlxTween)
 				{

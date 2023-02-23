@@ -33,7 +33,9 @@ typedef WeekData = {
 	difficulties:Array<String>,
 	?storyDad:String,
 	?storyBf:String,
-	?storyGf:String
+	?storyGf:String,
+	path:String,
+	?modPath:String
 }
 
 
@@ -82,16 +84,31 @@ class StoryMenuState extends MusicBeatState
 		transOut = FlxTransitionableState.defaultTransOut;
 
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
+		var swagWeeks = PolyFrog.getModWeeks();
 
 		for (week in 0...weekDataStuff.length) {
-			var coolWeekData:WeekData = Yaml.read(Paths.weekData(weekDataStuff[week]), new ParserOptions().useObjects());
+			var coolWeekData:WeekData = Yaml.read(Paths.yaml("weeks/" + weekDataStuff[week]), new ParserOptions().useObjects());
 			if (coolWeekData.hiddenInStory != null && coolWeekData.hiddenInStory) continue;
+			coolWeekData.path = weekDataStuff[week].split("/").pop().replace(".yaml", "");
+			coolWeekData.modPath = null;
 			weekData.push(coolWeekData);
 			// to do: reimplement week lock
 			weekUnlocked.push(true);
 		}
+		for (k => v in swagWeeks) {
+			for (week in v) {
+				var daWeek:WeekData = Yaml.read(week, new ParserOptions().useObjects());
+				daWeek.path = week.split("/").pop().replace(".yaml", "");
+				var modThing = week.split("/");
+				modThing.resize(2);
+				daWeek.modPath = modThing.join("/");
+				weekData.push(daWeek);
+				weekUnlocked.push(true);
+			}
+		}
 
-		for (x in FileSystem.readDirectory("assets/data/difficulties").filter(d -> d.endsWith(".yaml"))) {
+
+		for (x in FileSystem.readDirectory(Paths.file("data/difficulties")).filter(d -> d.endsWith(".yaml"))) {
 			var awesomeDifficultyStuff:DifficultyData = Yaml.read(Paths.difficulty(x.split(".").shift()), new ParserOptions().useObjects());
 			difficultyData.set(x.split(".").shift(), awesomeDifficultyStuff);
 		}
@@ -135,7 +152,7 @@ class StoryMenuState extends MusicBeatState
 
 		for (i in 0...weekData.length)
 		{
-			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
+			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, weekData[i].path);
 			weekThing.y += ((weekThing.height + 20) * i);
 			weekThing.targetY = i;
 			grpWeekText.add(weekThing);
@@ -304,6 +321,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
+			Paths.curModDir = weekData[curWeek].modPath;
 			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty].toLowerCase(), PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
 			PlayState.storyWeek = curWeek;

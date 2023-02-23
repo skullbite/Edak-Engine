@@ -15,9 +15,9 @@ class CustomSubState extends MusicBeatSubstate {
         customCam.bgColor.alpha = 0;
 		FlxG.cameras.add(customCam);
         subName = target;
-        if (FileSystem.exists('assets/substates/$target/init.hxs')) {
+        if (FileSystem.exists(Paths.file('substates/$target/init.hxs'))) {
             try {
-                subScript = new CallbackScript('assets/substates/$target/init.hxs', 'CustomSub:$target', {
+                subScript = new CallbackScript(Paths.file('assets/substates/$target/init.hxs'), 'CustomSub:$target', {
                     sub: this,
                     Paths: new CustomPaths(subName, "substates"),
                     _Paths: Paths
@@ -33,7 +33,16 @@ class CustomSubState extends MusicBeatSubstate {
         cameras = [customCam];
     }
     
-
+    override function beatHit() {
+        super.beatHit();
+        if (subScript != null) subScript.exec("beatHit", [curBeat]);
+    }
+    
+    override function stepHit() {
+        super.stepHit();
+        if (subScript != null) subScript.exec("stepHit", [curStep]);
+    }
+    
     override function close() {
         FlxG.cameras.remove(customCam);
         super.close();

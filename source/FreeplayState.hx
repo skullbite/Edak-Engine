@@ -60,18 +60,12 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
+		var awesomeMods = PolyFrog.getModWeeks();
 
-		for (week in 0...weekDataStuff.length) {
-			var coolWeekData:WeekData = Yaml.read(Paths.weekData(weekDataStuff[week]), new ParserOptions().useObjects());
-			var songList:Array<String> = coolWeekData.songs;
-			var colorList:Array<Int> = coolWeekData.colors;
-			var iconList:Array<String> = coolWeekData.icons;
-			var difficultyList:Array<String> = coolWeekData.difficulties;
-			for (x in 0...songList.length) {
-				var icon = iconList[iconList.length == 1 ? 0 : x];
-				var color = colorList[colorList.length == 1 ? 0 : x];
-				songs.push(new SongMetadata(songList[x], week, icon, color, difficultyList));
-			}
+		for (week in 0...weekDataStuff.length) addWeek(Paths.yaml("weeks/" + weekDataStuff[week]), week);
+
+		for (k => v in awesomeMods) {
+			for (week in 0...v.length) addWeek(v[week], week, k);
 		}
 
 		
@@ -120,8 +114,10 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 
+			if (songs[i].modPath != null) Paths.curModDir = songs[i].modPath;
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
+			Paths.curModDir = null;	
 
 			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
@@ -200,25 +196,16 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	/*public function addSong(songName:String, weekNum:Int, songCharacter:String)
+	public function addWeek(yamlPath:String, weekNum:Int, ?modPath:String)
 	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter));
-	}
+		var dataStuff:WeekData = Yaml.read(yamlPath, new ParserOptions().useObjects());
 
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-	{
-		if (songCharacters == null)
-			songCharacters = ['dad'];
-
-		var num:Int = 0;
-		for (song in songs)
-		{
-			addSong(song, weekNum, songCharacters[num]);
-
-			if (songCharacters.length != 1)
-				num++;
+		for (x in 0...dataStuff.songs.length) {
+			var icon = dataStuff.icons[dataStuff.icons.length == 1 ? 0 : x];
+			var color = dataStuff.colors[dataStuff.colors.length == 1 ? 0 : x];
+			songs.push(new SongMetadata(dataStuff.songs[x], weekNum, icon, color, dataStuff.difficulties, modPath));
 		}
-	}*/
+	}
 
 	override function update(elapsed:Float)
 	{
@@ -287,6 +274,7 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
+			Paths.curModDir = songs[curSelected].modPath;
 			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty], songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
@@ -432,13 +420,15 @@ class SongMetadata
 	public var songCharacter:String = "";
 	public var color:FlxColor = 0;
 	public var difficulties:Array<String> = ["Easy", "Normal", "Hard"];
+	public var modPath:Null<String>;
 
-	public function new(song:String, week:Int, songCharacter:String, color:FlxColor, difficulties:Array<String>)
+	public function new(song:String, week:Int, songCharacter:String, color:FlxColor, difficulties:Array<String>, ?modPath:String)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 		this.color = color;
 		this.difficulties = difficulties;
+		if (modPath != null) this.modPath = modPath;
 	}
 }

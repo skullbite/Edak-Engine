@@ -18,7 +18,7 @@ function onBeatHit(beat) {
     switch (beat) {
         case 30: FlxTween.tween(game.camHUD, { alpha: 1 }, 0.5);
         case 32: PlayState.gf.bopSpeed = 1;
-        case 96, 192: FlxTween.tween(game, { defaultCamZoom: 1.2 }, 0.3, { ease: FlxEase.quadOut });
-        case 128, 224: FlxTween.tween(game, { defaultCamZoom: 1.05 }, 0.3, { ease: FlxEase.quadOut });
+        case 96, 192: FlxTween.tween(PlayState, { defaultCamZoom: 1.2 }, 0.3, { ease: FlxEase.quadOut });
+        case 128, 224: FlxTween.tween(PlayState, { defaultCamZoom: 1.05 }, 0.3, { ease: FlxEase.quadOut });
     }
 }
