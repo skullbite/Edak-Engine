@@ -1,4 +1,4 @@
-# Edak Engine (Beta)
+# Edak Engine (Alpha)
 
 A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configure. 
 
