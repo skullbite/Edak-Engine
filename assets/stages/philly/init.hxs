@@ -53,7 +53,7 @@ function create() {
     stage.publicSprites["phillyTrain"] = phillyTrain;
 
 
-	trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes', true));
+	trainSound = new FlxSound().loadEmbedded(Paths.sound('sounds/train_passes'));
 	FlxG.sound.list.add(trainSound);
 
 	// var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
