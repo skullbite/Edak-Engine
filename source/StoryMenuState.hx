@@ -40,7 +40,6 @@ typedef WeekData = {
 
 
 typedef DifficultyData = {
-	?animName:String,
 	?offsets:Array<Int>,
 	color:Int,
 	?loadsDifferentSong:Bool
@@ -52,6 +51,7 @@ class StoryMenuState extends MusicBeatState
 
 	var weekData:Array<WeekData> = [];
 	var difficultyData:Map<String, DifficultyData> = [];
+	var modDifficulties:Map<String, Map<String, DifficultyData>> = [];
 	var curDifficulty:Int = 1;
 	var curDifficultyArray = ["Easy", "Normal", "Hard"];
 
@@ -90,7 +90,6 @@ class StoryMenuState extends MusicBeatState
 			var coolWeekData:WeekData = Yaml.read(Paths.yaml("weeks/" + weekDataStuff[week]), new ParserOptions().useObjects());
 			if (coolWeekData.hiddenInStory != null && coolWeekData.hiddenInStory) continue;
 			coolWeekData.path = weekDataStuff[week].split("/").pop().replace(".yaml", "");
-			coolWeekData.modPath = null;
 			weekData.push(coolWeekData);
 			// to do: reimplement week lock
 			weekUnlocked.push(true);
@@ -109,9 +108,11 @@ class StoryMenuState extends MusicBeatState
 
 
 		for (x in FileSystem.readDirectory(Paths.file("data/difficulties")).filter(d -> d.endsWith(".yaml"))) {
-			var awesomeDifficultyStuff:DifficultyData = Yaml.read(Paths.difficulty(x.split(".").shift()), new ParserOptions().useObjects());
+			var awesomeDifficultyStuff:DifficultyData = Yaml.read(Paths.yaml('difficulties/${x.split(".").shift()}'), new ParserOptions().useObjects());
 			difficultyData.set(x.split(".").shift(), awesomeDifficultyStuff);
 		}
+
+		modDifficulties = PolyFrog.getModDifficulties();
 
 		if (FlxG.sound.music != null)
 		{
@@ -192,17 +193,11 @@ class StoryMenuState extends MusicBeatState
 		leftArrow.animation.play('idle');
 		difficultySelectors.add(leftArrow);
 
-		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
-		sprDifficulty.frames = ui_tex;
-		/*sprDifficulty.animation.addByPrefix('easy', 'EASY');
-		sprDifficulty.animation.addByPrefix('normal', 'NORMAL');
-		sprDifficulty.animation.addByPrefix('hard', 'HARD');
-		sprDifficulty.animation.play('easy');*/
-		for (k => v in difficultyData) sprDifficulty.animation.addByPrefix(k.toLowerCase(), v.animName);
+		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y).loadGraphic(Paths.image("storyMenu/story_ui"));
 
 		difficultySelectors.add(sprDifficulty);
 
-		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
+		rightArrow = new FlxSprite(sprDifficulty.x + 240, leftArrow.y);
 		rightArrow.frames = ui_tex;
 		rightArrow.animation.addByPrefix('idle', 'arrow right');
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
@@ -353,12 +348,18 @@ class StoryMenuState extends MusicBeatState
 		leftArrow.visible = curDifficultyArray.length != 1;
 		rightArrow.visible = curDifficultyArray.length != 1;
 
-		var fuck = difficultyData[curDifficultyArray[curDifficulty].toLowerCase()];
-		sprDifficulty.animation.play(fuck.animName.toLowerCase());
+		var diff = curDifficultyArray[curDifficulty].toLowerCase();
+		var fuck = difficultyData[diff];
+		if (modDifficulties.exists(weekData[curWeek].modPath) && modDifficulties[weekData[curWeek].modPath].exists(diff)) {
+			fuck = modDifficulties[weekData[curWeek].modPath][diff];
+			Paths.curModDir = weekData[curWeek].modPath;
+		}
+		sprDifficulty.loadGraphic(Paths.image('storyMenu/difficulties/$diff'));
+		// sprDifficulty.animation.play(fuck.animName.toLowerCase());
 		sprDifficulty.offset.x = fuck.offsets[0];
 		sprDifficulty.offset.y = fuck.offsets[1];
+		Paths.curModDir = null;
 
-		if (curDifficultyArray.length == 1) return;
 
 		/*switch (curDifficulty)
 		{
@@ -373,15 +374,16 @@ class StoryMenuState extends MusicBeatState
 				sprDifficulty.offset.x = 20;
 		}*/
 
+		#if !switch
+		intendedScore = Highscore.getWeekScore(curWeek, curDifficultyArray[curDifficulty]).score;
+		#end
+
+		if (curDifficultyArray.length == 1) return;
+
 		sprDifficulty.alpha = 0;
 
 		// USING THESE WEIRD VALUES SO THAT IT DOESNT FLOAT UP
 		sprDifficulty.y = leftArrow.y - 15;
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficultyArray[curDifficulty]).score;
-
-		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficultyArray[curDifficulty]).score;
-		#end
 
 		FlxTween.tween(sprDifficulty, {y: leftArrow.y + 15, alpha: 1}, 0.07);
 	}
@@ -398,13 +400,13 @@ class StoryMenuState extends MusicBeatState
 		if (curWeek < 0)
 			curWeek = weekData.length - 1;
 
-		
 		if (curDifficultyArray != weekData[curWeek].difficulties) {
+			var lastDiffs = curDifficultyArray;
 			curDifficultyArray = weekData[curWeek].difficulties;
 			var lastDiff = curDifficulty;
 			if (curDifficultyArray.length <= 2) curDifficulty = 0;
 		    else curDifficulty = 1;
-		    if (lastDiff != curDifficulty) changeDifficulty();
+		    if (lastDiff != curDifficulty || lastDiffs[lastDiff] != curDifficultyArray[curDifficulty]) changeDifficulty();
 		}
 
 		var bullShit:Int = 0;

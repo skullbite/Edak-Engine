@@ -259,7 +259,9 @@ class PlayState extends MusicBeatState
 
 		repPresses = 0;
 		repReleases = 0;
-		difficultyData = Yaml.read(Paths.difficulty(storyDifficulty.toLowerCase()), new ParserOptions().useObjects());
+
+		difficultyData = Yaml.read(Paths.yaml('difficulties/${storyDifficulty.toLowerCase()}'), new ParserOptions().useObjects());
+		
 
 		// trace('Mod chart: ' + executeModchart + " - " + Paths.lua(PlayState.SONG.song.toLowerCase() + "/modchart"));
 

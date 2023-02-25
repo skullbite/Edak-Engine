@@ -61,10 +61,6 @@ class Paths
 	inline static public function scriptDir() {
 		return FileSystem.readDirectory(file('scripts'));
 	}
-	
-	inline static public function difficulty(key:String) {
-		return getPath('data/difficulties/$key.yaml', TEXT, null);
-	}
 
 	inline static public function yaml(key:String, ?library:String) {
 		return getPath('data/$key.yaml', TEXT, library);

@@ -36,6 +36,7 @@ class FreeplayState extends MusicBeatState
 	var curDifficulty:Int = 1;
 	var curDifficultyArray:Array<String> = ["Easy", "Normal", "Hard"];
 	var difficultyData:Map<String, DifficultyData> = [];
+	var modDifficulties:Map<String, Map<String, DifficultyData>> = [];
 
 	var jukeboxInst:FlxSound = new FlxSound();
 	var jukeboxVocals:FlxSound = new FlxSound();
@@ -69,14 +70,12 @@ class FreeplayState extends MusicBeatState
 		}
 
 		
-		for (diff in FileSystem.readDirectory("assets/data/difficulties")) {
-			var awesomeDifficulty:DifficultyData = Yaml.read(Paths.difficulty(diff.split(".").shift()), new ParserOptions().useObjects());
-			difficultyData.set(diff.split(".").shift().toLowerCase(), {
-				color: awesomeDifficulty.color,
-				loadsDifferentSong: awesomeDifficulty.loadsDifferentSong
-		    });
+		for (diff in FileSystem.readDirectory(Paths.file("data/difficulties"))) {
+			var awesomeDifficulty:DifficultyData = Yaml.read(Paths.yaml('difficulties/${diff.split(".").shift()}'), new ParserOptions().useObjects());
+			difficultyData.set(diff.split(".").shift().toLowerCase(), awesomeDifficulty);
 		}
 
+		modDifficulties = PolyFrog.getModDifficulties();
 
 		// todo: play song button because lag
 		if (FlxG.sound.music != null)
@@ -114,7 +113,7 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 
-			if (songs[i].modPath != null) Paths.curModDir = songs[i].modPath;
+			Paths.curModDir = songs[i].modPath;
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
 			Paths.curModDir = null;	
@@ -317,9 +316,14 @@ class FreeplayState extends MusicBeatState
 				diffText2.text = "< HARD >";
 		}*/
 		// diffText.text = '< ${curDifficultyArray[curDifficulty].toUpperCase()} >';
-		var doTheArrows = curDifficultyArray.length == 1 ? '*${curDifficultyArray[curDifficulty].toUpperCase()}*' : '< *${curDifficultyArray[curDifficulty].toUpperCase()}* >';
+		var diff = curDifficultyArray[curDifficulty].toLowerCase();
+		var diffData = difficultyData[diff];
+		if (modDifficulties.exists(songs[curSelected].modPath) && modDifficulties[songs[curSelected].modPath].exists(diff)) {
+			diffData = modDifficulties[songs[curSelected].modPath][diff];
+		}
+		var doTheArrows = curDifficultyArray.length == 1 ? '*${diff.toUpperCase()}*' : '< *${curDifficultyArray[curDifficulty].toUpperCase()}* >';
 		diffText.applyMarkup(doTheArrows, [
-			new FlxTextFormatMarkerPair(new FlxTextFormat(difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase()).color), "*")
+			new FlxTextFormatMarkerPair(new FlxTextFormat(diffData.color), "*")
 		]);
 		// diffText2.x = scoreBG.x + Std.int(scoreBG.width / 2);
 		diffText.x = bottomBG.x + Std.int(bottomBG.width / 2);

@@ -1,8 +1,12 @@
 package;
 
 import sys.FileSystem;
+import StoryMenuState.DifficultyData;
+import yaml.Yaml;
+import yaml.Parser.ParserOptions;
 
-// awesome mod manager woo
+// PolyFrog! get it? because polymod and kades a frog- uh
+// its a mod helper woo
 // if this turns out to be all static functions i'll just move it back to Paths
 class PolyFrog {
     public static function getModWeeks() {
@@ -14,5 +18,17 @@ class PolyFrog {
             weekDirs.set('mods/$x', orderThingy.map(week -> 'mods/$x/data/weeks/$week.yaml'));
         }
         return weekDirs;
+    }
+
+    public static function getModDifficulties():Map<String, Map<String, DifficultyData>> {
+        var modsThatAreCool = FileSystem.readDirectory("mods");
+        var diffMap:Map<String, Map<String, DifficultyData>> = [];
+        for (x in modsThatAreCool) {
+            if (!FileSystem.exists('mods/$x/data/difficulties') || !FileSystem.isDirectory('mods/$x/data/difficulties')) continue;
+            var miniDiffMap:Map<String, DifficultyData> = [];
+            for (y in FileSystem.readDirectory('mods/$x/data/difficulties')) miniDiffMap.set(y.split(".").shift(), Yaml.read('mods/$x/data/difficulties/$y', new ParserOptions().useObjects()));
+            diffMap.set('mods/$x', miniDiffMap);
+        }
+        return diffMap;
     }
 }

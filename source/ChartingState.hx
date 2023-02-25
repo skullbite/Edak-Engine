@@ -177,13 +177,13 @@ class ChartingState extends MusicBeatState
 		var realP2 = _song.player2;
 
 		/* janky way of making sure the correct character icons get fetched. */
-		if (FileSystem.exists('assets/characters/${_song.player1}/config.yaml')) {
-			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player1}/config.yaml', new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.file('characters/${_song.player1}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP1 = theSwag.iconName;
 		}
 
-		if (FileSystem.exists('assets/characters/${_song.player2}/config.yaml')) {
-			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player2}/config.yaml', new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.file('characters/${_song.player2}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.file('/characters/${_song.player2}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP2 = theSwag.iconName;
 		}
 
@@ -350,13 +350,26 @@ class ChartingState extends MusicBeatState
 		});
 
 		var characters:Array<String> = FileSystem.readDirectory("assets/characters").filter(d -> FileSystem.exists('assets/characters/$d/init.hxs'));
-		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
+		var gfVersions:Array<String> = CoolUtil.coolTextFile("assets/data/gfVersionList.txt");
 		var stages:Array<String> = FileSystem.readDirectory("assets/stages").filter(d -> FileSystem.exists('assets/stages/$d/init.hxs'));
-		var noteStyles:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteStyleList'));
-		var extChars:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
-		var extStages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		var noteStyles:Array<String> = CoolUtil.coolTextFile("assets/data/noteStyleList.txt");
+		var extChars:Array<String> = CoolUtil.coolTextFile("assets/data/characterList.txt");
+		var extStages:Array<String> = CoolUtil.coolTextFile("assets/data/stageList.txt");
 		if (extChars != [""]) characters.concat(extChars);
 		if (stages != [""]) stages.concat(extStages);
+
+		if (Paths.curModDir != null) {
+			var charPath = Paths.curModDir + '/characters';
+			var gfVerPath = Paths.curModDir + '/data/gfVersionList.txt';
+			var stagePath = Paths.curModDir + '/stages';
+			var noteStylePath = Paths.curModDir + '/data/noteStyleList.txt';
+			trace(charPath, gfVerPath, stagePath, noteStylePath);
+			// because concat hates me
+			if (FileSystem.exists(charPath)) FileSystem.readDirectory(charPath).filter(d -> FileSystem.exists(charPath + '/$d/init.hxs')).map(d -> characters.push(d));
+			if (FileSystem.exists(gfVerPath)) CoolUtil.coolTextFile(gfVerPath).map(d -> gfVersions.push(d));
+			if (FileSystem.exists(stagePath)) FileSystem.readDirectory(stagePath).filter(d -> FileSystem.exists(stagePath + '/$d/init.hxs')).map(d -> stages.push(d));
+			if (FileSystem.exists(noteStylePath)) CoolUtil.coolTextFile(noteStylePath).map(d -> noteStyles.push(d));
+		}
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -526,7 +539,8 @@ class ChartingState extends MusicBeatState
 		var stepperNoteTypeLabel = new FlxText(10, 50, "Note Type");
 		
 		try {
-			noteTypes = noteTypes.concat(FileSystem.readDirectory("assets/custom-notes").map(d -> d.replace(".hxs", "")));
+			noteTypes = noteTypes.concat(FileSystem.readDirectory("assets/custom-notes").filter(d -> d.endsWith(".hxs")).map(d -> d.split(".").shift()));
+			if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + "/custom-notes")) noteTypes.concat(FileSystem.readDirectory(Paths.curModDir + "/custom-notes"));
 		}
 		catch (e) {}
 		
@@ -1231,13 +1245,13 @@ class ChartingState extends MusicBeatState
 	{
 		var realP1 = _song.player1;
 		var realP2 = _song.player2;
-		if (FileSystem.exists('assets/characters/${_song.player1}/config.yaml')) {
-			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player1}/config.yaml', new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.file('characters/${_song.player1}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP1 = theSwag.iconName;
 		}
 
-		if (FileSystem.exists('assets/characters/${_song.player2}/config.yaml')) {
-			var theSwag:SwagConfig = Yaml.read('assets/characters/${_song.player2}/config.yaml', new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.file('characters/${_song.player2}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP2 = theSwag.iconName;
 		}
 

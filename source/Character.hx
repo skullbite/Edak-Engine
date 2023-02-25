@@ -13,7 +13,7 @@ typedef SwagConfig = {
 	?barColor:Int,
 	?iconName:String,
 	?deadData: {
-		?character:String,
+		?char:String,
 		?sound:String,
 		?music:String,
 		?end:String,
@@ -30,7 +30,6 @@ class Character extends FlxSprite
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var iconName:String = 'bf';
-	public var deadChar:String = 'bf';
 	// thx gabi
 	public var deadData:{char:String, sound:String, music:String, end:String, bpm:Int} = {
 		char: "bf",
@@ -60,14 +59,13 @@ class Character extends FlxSprite
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		iconName = character;
-		deadChar = character;
 		this.isPlayer = isPlayer;
 		
 		antialiasing = true;
 
 		// we config loading here
-		if (FileSystem.exists('assets/characters/$curCharacter/config.yaml')) {
-			var daConf:SwagConfig = Yaml.read('assets/characters/$curCharacter/config.yaml', new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.file('characters/$curCharacter/config.yaml'))) {
+			var daConf:SwagConfig = Yaml.read(Paths.file('characters/$curCharacter/config.yaml'), new ParserOptions().useObjects());
 			if (daConf.barColor != null) barColor = Std.string(daConf.barColor);
 			if (daConf.iconName != null) iconName = daConf.iconName;
 			if (daConf.deadData != null) {
