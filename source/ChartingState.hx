@@ -177,13 +177,13 @@ class ChartingState extends MusicBeatState
 		var realP2 = _song.player2;
 
 		/* janky way of making sure the correct character icons get fetched. */
-		if (FileSystem.exists(Paths.file('characters/${_song.player1}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.getPath('characters/${_song.player1}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP1 = theSwag.iconName;
 		}
 
-		if (FileSystem.exists(Paths.file('characters/${_song.player2}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.file('/characters/${_song.player2}/config.yaml'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.getPath('characters/${_song.player2}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.getPath('/characters/${_song.player2}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP2 = theSwag.iconName;
 		}
 
@@ -1245,13 +1245,13 @@ class ChartingState extends MusicBeatState
 	{
 		var realP1 = _song.player1;
 		var realP2 = _song.player2;
-		if (FileSystem.exists(Paths.file('characters/${_song.player1}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.getPath('characters/${_song.player1}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP1 = theSwag.iconName;
 		}
 
-		if (FileSystem.exists(Paths.file('characters/${_song.player2}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.file('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.getPath('characters/${_song.player2}/config.yaml'))) {
+			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
 			if (theSwag.iconName != null) realP2 = theSwag.iconName;
 		}
 

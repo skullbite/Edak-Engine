@@ -70,7 +70,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		
-		for (diff in FileSystem.readDirectory(Paths.file("data/difficulties"))) {
+		for (diff in FileSystem.readDirectory(Paths.getPath("data/difficulties"))) {
 			var awesomeDifficulty:DifficultyData = Yaml.read(Paths.yaml('difficulties/${diff.split(".").shift()}'), new ParserOptions().useObjects());
 			difficultyData.set(diff.split(".").shift().toLowerCase(), awesomeDifficulty);
 		}

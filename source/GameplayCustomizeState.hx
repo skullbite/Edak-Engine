@@ -18,9 +18,9 @@ class GameplayCustomizeState extends MusicBeatState
     var defaultX:Float = FlxG.width * 0.55 - 135;
     var defaultY:Float = FlxG.height / 2 - 50;
 
-    var background:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.file('stage/stageback.png', IMAGE, 'stages'));
-    var curt:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.file('stage/stagecurtains.png', IMAGE, 'stages'));
-    var front:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.file('stage/stagefront.png', IMAGE, 'stages'));
+    var background:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.getPath('stage/stageback.png', 'stages'));
+    var curt:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.getPath('stage/stagecurtains.png', 'stages'));
+    var front:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.getPath('stage/stagefront.png', 'stages'));
 
     var sick:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/normal/ratings/sick'));
 

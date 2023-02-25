@@ -11,7 +11,7 @@ class BackgroundGirls extends FlxSprite
 
 		// BG fangirls dissuaded
 		// frames = Paths.getSparrowAtlas('school/bgFreaks', 'stages');
-		frames = FlxAtlasFrames.fromSparrow(Paths.file('school/bgFreaks.png', IMAGE, 'stages'), Paths.file('school/bgFreaks.xml', TEXT, 'stages'));
+		frames = FlxAtlasFrames.fromSparrow(Paths.getPath('school/bgFreaks.png', 'stages'), Paths.getPath('school/bgFreaks.xml', 'stages'));
 
 		animation.addByIndices('danceLeft', 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
 		animation.addByIndices('danceRight', 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);

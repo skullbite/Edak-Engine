@@ -318,18 +318,18 @@ class PlayState extends MusicBeatState
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = [];
-		if (FileSystem.exists(Paths.file('songs/${SONG.song.toLowerCase()}/scripts'))) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hxs"));
+		if (FileSystem.exists(Paths.getPath('songs/${SONG.song.toLowerCase()}/scripts'))) songScripts = Paths.songDataDir('${SONG.song.toLowerCase()}/scripts').filter(d -> d.endsWith(".hxs"));
 		var scripts:Map<String, String> = [];
 		for (x in songScripts) {
 			try {
-				scripts.set('song_${x.split(".")[0]}', Paths.file('songs/${SONG.song.toLowerCase()}/scripts/$x'));
+				scripts.set('song_${x.split(".")[0]}', Paths.getPath('songs/${SONG.song.toLowerCase()}/scripts/$x'));
 			}
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
 		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hxs"));
 		for (x in globalScripts) {
 			try { 
-				scripts.set('global_${x.split(".")[0]}', Paths.file('scripts/$x'));
+				scripts.set('global_${x.split(".")[0]}', Paths.getPath('scripts/$x'));
 			}
 			catch (e) {}
 		}

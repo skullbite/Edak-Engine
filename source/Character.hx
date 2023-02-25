@@ -64,8 +64,8 @@ class Character extends FlxSprite
 		antialiasing = true;
 
 		// we config loading here
-		if (FileSystem.exists(Paths.file('characters/$curCharacter/config.yaml'))) {
-			var daConf:SwagConfig = Yaml.read(Paths.file('characters/$curCharacter/config.yaml'), new ParserOptions().useObjects());
+		if (FileSystem.exists(Paths.getPath('characters/$curCharacter/config.yaml'))) {
+			var daConf:SwagConfig = Yaml.read(Paths.getPath('characters/$curCharacter/config.yaml'), new ParserOptions().useObjects());
 			if (daConf.barColor != null) barColor = Std.string(daConf.barColor);
 			if (daConf.iconName != null) iconName = daConf.iconName;
 			if (daConf.deadData != null) {
@@ -78,9 +78,9 @@ class Character extends FlxSprite
 		switch (curCharacter)
 		{
 			default:
-				if (FileSystem.exists(Paths.file('characters/$curCharacter/init.hxs'))) {
+				if (FileSystem.exists(Paths.getPath('characters/$curCharacter/init.hxs'))) {
 					try {
-						charScript = new CallbackScript(Paths.file('characters/$curCharacter/init.hxs'), 'Character:$curCharacter', {
+						charScript = new CallbackScript(Paths.getPath('characters/$curCharacter/init.hxs'), 'Character:$curCharacter', {
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
 							_Paths: Paths
@@ -213,7 +213,7 @@ class Character extends FlxSprite
 	// (in case there's an issue with hscript)
 	function loadBfInstead() {
 		curCharacter = "bf";
-		frames = FlxAtlasFrames.fromSparrow(Paths.file('bf/BOYFRIEND.png', IMAGE, 'characters'), Paths.file('bf/BOYFRIEND.xml', TEXT, 'characters'));
+		frames = FlxAtlasFrames.fromSparrow(Paths.getPath('bf/BOYFRIEND.png', 'characters'), Paths.getPath('bf/BOYFRIEND.xml', 'characters'));
 		animation.addByPrefix('idle', 'BF idle dance', 24, false);
 		animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 		animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);

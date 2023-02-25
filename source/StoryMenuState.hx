@@ -107,7 +107,7 @@ class StoryMenuState extends MusicBeatState
 		}
 
 
-		for (x in FileSystem.readDirectory(Paths.file("data/difficulties")).filter(d -> d.endsWith(".yaml"))) {
+		for (x in FileSystem.readDirectory(Paths.getPath("data/difficulties")).filter(d -> d.endsWith(".yaml"))) {
 			var awesomeDifficultyStuff:DifficultyData = Yaml.read(Paths.yaml('difficulties/${x.split(".").shift()}'), new ParserOptions().useObjects());
 			difficultyData.set(x.split(".").shift(), awesomeDifficultyStuff);
 		}

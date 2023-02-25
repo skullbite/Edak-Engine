@@ -24,9 +24,9 @@ class Stage extends FlxTypedGroup<FlxBasic> {
         switch (curStage) {
             // case "xyz": hardcoding auuuugh
             default:
-                if (FileSystem.exists(Paths.file('stages/$curStage/init.hxs'))) {
+                if (FileSystem.exists(Paths.getPath('stages/$curStage/init.hxs'))) {
                     try {
-                        stageScript = new CallbackScript(Paths.file('stages/$curStage/init.hxs'), 'Stage:$curStage', {
+                        stageScript = new CallbackScript(Paths.getPath('stages/$curStage/init.hxs'), 'Stage:$curStage', {
                             stage: this,
                             Paths: new CustomPaths(curStage, "stages"),
                             _Paths: Paths
@@ -75,13 +75,13 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 
     function loadStageInstead() {
         // PlayState.defaultCamZoom = 0.9;
-		var bg = new FlxSprite(-600, -200).loadGraphic(Paths.file('stage/stageback.png', IMAGE, 'stages'));
+		var bg = new FlxSprite(-600, -200).loadGraphic(Paths.getPath('stage/stageback.png', 'stages'));
 		bg.antialiasing = true;
 		bg.scrollFactor.set(0.9, 0.9);
 		bg.active = false;
 		add(bg);
 
-		var stageFront = new FlxSprite(-650, 600).loadGraphic(Paths.file('stage/stagefront.png', IMAGE, 'stages'));
+		var stageFront = new FlxSprite(-650, 600).loadGraphic(Paths.getPath('stage/stagefront.png', 'stages'));
 		stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
 		stageFront.updateHitbox();
 		stageFront.antialiasing = true;
@@ -89,7 +89,7 @@ class Stage extends FlxTypedGroup<FlxBasic> {
 		stageFront.active = false;
 		add(stageFront);
 
-		var stageCurtains = new FlxSprite(-500, -300).loadGraphic(Paths.file('stage/stagecurtains.png', IMAGE, 'stages'));
+		var stageCurtains = new FlxSprite(-500, -300).loadGraphic(Paths.getPath('stage/stagecurtains.png', 'stages'));
 		stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
 		stageCurtains.updateHitbox();
 		stageCurtains.antialiasing = true;
