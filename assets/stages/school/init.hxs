@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 
 function create() {
 	stage.cameraDisplace.x = 200;
+	PlayState.curUi = "pixel";
     var bgSky = new FlxSprite().loadGraphic(Paths.image('weebSky'));
 	bgSky.scrollFactor.set(0.1, 0.1);
 	stage.add(bgSky);

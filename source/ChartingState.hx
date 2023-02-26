@@ -126,7 +126,6 @@ class ChartingState extends MusicBeatState
 				player1: 'bf',
 				player2: 'dad',
 				gfVersion: 'gf',
-				noteStyle: 'normal',
 				stage: 'stage',
 				speed: 1
 			};
@@ -352,7 +351,6 @@ class ChartingState extends MusicBeatState
 		var characters:Array<String> = FileSystem.readDirectory("assets/characters").filter(d -> FileSystem.exists('assets/characters/$d/init.hxs'));
 		var gfVersions:Array<String> = CoolUtil.coolTextFile("assets/data/gfVersionList.txt");
 		var stages:Array<String> = FileSystem.readDirectory("assets/stages").filter(d -> FileSystem.exists('assets/stages/$d/init.hxs'));
-		var noteStyles:Array<String> = CoolUtil.coolTextFile("assets/data/noteStyleList.txt");
 		var extChars:Array<String> = CoolUtil.coolTextFile("assets/data/characterList.txt");
 		var extStages:Array<String> = CoolUtil.coolTextFile("assets/data/stageList.txt");
 		if (extChars != [""]) characters.concat(extChars);
@@ -362,13 +360,10 @@ class ChartingState extends MusicBeatState
 			var charPath = Paths.curModDir + '/characters';
 			var gfVerPath = Paths.curModDir + '/data/gfVersionList.txt';
 			var stagePath = Paths.curModDir + '/stages';
-			var noteStylePath = Paths.curModDir + '/data/noteStyleList.txt';
-			trace(charPath, gfVerPath, stagePath, noteStylePath);
 			// because concat hates me
 			if (FileSystem.exists(charPath)) FileSystem.readDirectory(charPath).filter(d -> FileSystem.exists(charPath + '/$d/init.hxs')).map(d -> characters.push(d));
 			if (FileSystem.exists(gfVerPath)) CoolUtil.coolTextFile(gfVerPath).map(d -> gfVersions.push(d));
 			if (FileSystem.exists(stagePath)) FileSystem.readDirectory(stagePath).filter(d -> FileSystem.exists(stagePath + '/$d/init.hxs')).map(d -> stages.push(d));
-			if (FileSystem.exists(noteStylePath)) CoolUtil.coolTextFile(noteStylePath).map(d -> noteStyles.push(d));
 		}
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
@@ -403,14 +398,6 @@ class ChartingState extends MusicBeatState
 		
 		var stageLabel = new FlxText(140,180,64,'Stage');
 
-		var noteStyleDropDown = new FlxUIDropDownMenu(10, 300, FlxUIDropDownMenu.makeStrIdLabelArray(noteStyles, true), function(noteStyle:String)
-			{
-				_song.noteStyle = noteStyles[Std.parseInt(noteStyle)];
-			});
-		noteStyleDropDown.selectedLabel = _song.noteStyle;
-
-		var noteStyleLabel = new FlxText(10,280,64,'Note Skin');
-
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -441,8 +428,6 @@ class ChartingState extends MusicBeatState
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
-		tab_group_assets.add(noteStyleDropDown);
-		tab_group_assets.add(noteStyleLabel);
 		tab_group_assets.add(gfVersionDropDown);
 		tab_group_assets.add(gfVersionLabel);
 		tab_group_assets.add(stageDropDown);

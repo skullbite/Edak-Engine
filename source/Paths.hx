@@ -38,8 +38,8 @@ class Paths
 	inline static public function txt(key:String, ?library:String) return getPath('data/$key.txt', library);
 	inline static public function xml(key:String, ?library:String) return getPath('data/$key.xml', library);
 	inline static public function json(key:String, isSong=false, ?library:String) return getPath('${isSong ? "songs" : "data"}/$key.json', library);
-    static public function sound(key:String, ?library:String) return getPath('sounds/$key.$SOUND_EXT', library);
-	static public function video(key:String, ?library:String) return getPath('videos/$key', library);
+    inline static public function sound(key:String, ?library:String) return getPath('sounds/$key.$SOUND_EXT', library);
+	inline static public function video(key:String, ?library:String) return getPath('videos/$key', library);
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String) return sound(key + FlxG.random.int(min, max), library);
 	inline static public function font(key:String) return getPath('fonts/$key');
 	inline static public function getBitmap(key:String, ?library:String) return BitmapData.fromFile(key);

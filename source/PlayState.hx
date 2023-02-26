@@ -88,6 +88,7 @@ class PlayState extends MusicBeatState
 	public static var HFunk:FunkScript;
 
 	public static var curStage:String = '';
+	public static var curUi:String = "normal";
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
@@ -220,7 +221,7 @@ class PlayState extends MusicBeatState
 	var moveCamera = true;
 	var forceCutscene = false;
 	var splashOffsets = {
-		x: 140,
+		x: 132,
 		y: 145
 	};
 	var popCombos = true;
@@ -242,6 +243,7 @@ class PlayState extends MusicBeatState
 		gfGroup = new FlxTypedGroup();
 		boyfriendGroup = new FlxTypedGroup();
 		defaultCamZoom = 1.05;
+		curUi = 'normal';
 		if (Settings.get("botplay")) saveScore = false;
 		
 		if (FlxG.save.data.fpsCap > 290)
@@ -311,9 +313,9 @@ class PlayState extends MusicBeatState
 		var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
 
 		if (OpenFLAssets.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.getSound(Paths.inst(SONG.song, diff));
-		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.cache.setSound("_inst", Sound.fromAudioBuffer(AudioBuffer.fromFile(Paths.inst(SONG.song, diff))));
+		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.cache.setSound("_inst", Sound.fromFile(Paths.inst(SONG.song, diff)));
 		if (SONG.needsVoices && OpenFLAssets.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
-		else if (SONG.needsVoices && FileSystem.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.cache.setSound("_voices", Sound.fromAudioBuffer(AudioBuffer.fromFile(Paths.voices(SONG.song, diff))));
+		else if (SONG.needsVoices && FileSystem.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.cache.setSound("_voices", Sound.fromFile(Paths.voices(SONG.song, diff)));
 		
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
@@ -327,11 +329,21 @@ class PlayState extends MusicBeatState
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
 		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hxs"));
+		var loadingModScripts = Paths.curModDir != null;
 		for (x in globalScripts) {
 			try { 
-				scripts.set('global_${x.split(".")[0]}', Paths.getPath('scripts/$x'));
+				scripts.set('${loadingModScripts ? 'mod_' : ''}global_${x.split(".")[0]}', Paths.getPath('scripts/$x'));
 			}
 			catch (e) {}
+		}
+		if (loadingModScripts) {
+			var regularGlobals = FileSystem.readDirectory('assets/scripts').filter(d -> d.endsWith(".hxs"));
+			for (x in regularGlobals) {
+				try {
+					scripts.set('global_${x.split(".")[0]}', 'assets/scripts/$x');
+				}
+				catch (e) {}
+			}
 		}
 		for (k => v in scripts) HFunk.loadScript(k, v);
 
@@ -583,31 +595,10 @@ class PlayState extends MusicBeatState
 			if (swagCounter % dad.bopSpeed == 0) gf.dance();
 			if (swagCounter % dad.bopSpeed == 0) boyfriend.dance();
 
-			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-			introAssets.set('default', ['ui/normal/countdown/ready', "ui/normal/countdown/set", "ui/normal/countdown/go"]);
-			introAssets.set('school', [
-				'ui/pixel/countdown/ready',
-				'ui/pixel/countdown/set',
-				'ui/pixel/countdown/date'
-			]);
-			introAssets.set('schoolEvil', [
-				'ui/pixel/countdown/ready',
-				'ui/pixel/countdown/set',
-				'ui/pixel/countdown/date'
-			]);
-
-			var introAlts:Array<String> = introAssets.get('default');
+			var prefix = 'ui/$curUi/countdown';
+			var introAlts:Array<String> = ['$prefix/ready', '$prefix/set', '$prefix/go'];
 			var altSuffix:String = "";
-
-			for (value in introAssets.keys())
-			{
-				if (value == curStage)
-				{
-					introAlts = introAssets.get(value);
-					altSuffix = '-pixel';
-				}
-			}
-			
+			if (curUi == 'pixel') altSuffix = "-pixel";
 
 			switch (swagCounter)
 
@@ -619,7 +610,7 @@ class PlayState extends MusicBeatState
 					ready.scrollFactor.set();
 					ready.updateHitbox();
 
-					if (curStage.startsWith('school'))
+					if (curUi == 'pixel')
 						ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
 
 					ready.screenCenter();
@@ -636,7 +627,7 @@ class PlayState extends MusicBeatState
 					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 					set.scrollFactor.set();
 
-					if (curStage.startsWith('school'))
+					if (curUi == 'pixel')
 						set.setGraphicSize(Std.int(set.width * daPixelZoom));
 
 					set.screenCenter();
@@ -653,7 +644,7 @@ class PlayState extends MusicBeatState
 					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
 					go.scrollFactor.set();
 
-					if (curStage.startsWith('school'))
+					if (curUi == 'pixel')
 						go.setGraphicSize(Std.int(go.width * daPixelZoom));
 
 					go.updateHitbox();
@@ -1565,18 +1556,8 @@ class PlayState extends MusicBeatState
 				else if (combo > 4)
 					daRating = 'bad';
 			 */
-	
-			var pixelShitPart1:String = "";
-			var pixelShitPart2:String = '';
 
-			var uiType = "normal";
-
-	
-			if (curStage.startsWith('school')) uiType = "pixel";
-
-	
-			
-			rating.loadGraphic(Paths.image('ui/${uiType}/ratings/' + daRating.replace("miss", "shit") + pixelShitPart2));
+			rating.loadGraphic(Paths.image('ui/$curUi/ratings/' + daRating.replace("miss", "shit")));
 			rating.screenCenter();
 			rating.y -= 50;
 			rating.x = coolText.x - 125;
@@ -1639,7 +1620,7 @@ class PlayState extends MusicBeatState
 
 			if(!FlxG.save.data.botplay) add(currentTimingShown);
 			
-			var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/${uiType}/combo/combo'));
+			var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/$curUi/combo/combo'));
 			comboSpr.screenCenter();
 			comboSpr.x = rating.x;
 			comboSpr.y = rating.y + 100;
@@ -1656,7 +1637,7 @@ class PlayState extends MusicBeatState
 			currentTimingShown.velocity.x += comboSpr.velocity.x;
 			if(!FlxG.save.data.botplay) add(rating);
 	
-			if (!curStage.startsWith('school'))
+			if (curUi != 'pixel')
 			{
 				rating.setGraphicSize(Std.int(rating.width * 0.7));
 				rating.antialiasing = true;
@@ -1693,13 +1674,13 @@ class PlayState extends MusicBeatState
 			var daLoop:Int = 0;
 			for (i in seperatedScore)
 			{
-				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/${uiType}/combo/' + 'num' + i));
+				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/$curUi/combo/' + 'num' + i));
 				numScore.screenCenter();
 				numScore.x = rating.x + (43 * daLoop) - 50;
 				numScore.y = rating.y + 100;
 				numScore.cameras = [camHUD];
 
-				if (!curStage.startsWith('school'))
+				if (PlayState.curUi != 'pixel')
 				{
 					numScore.antialiasing = true;
 					numScore.setGraphicSize(Std.int(numScore.width * 0.5));
@@ -1946,7 +1927,7 @@ class PlayState extends MusicBeatState
 					if ((!holdArray[spr.ID] && !Settings.get("botplay")) || (Settings.get("botplay") && spr.animation.curAnim.name == "confirm" && spr.animation.curAnim.finished))
 						spr.animation.play('static');
 
-					if (spr.animation.curAnim != null && spr.animation.curAnim.name == 'confirm' && SONG.noteStyle != "pixel")
+					if (spr.animation.curAnim != null && spr.animation.curAnim.name == 'confirm' && curUi != "pixel")
 					{
 						spr.centerOffsets();
 						spr.offset.x -= 13;

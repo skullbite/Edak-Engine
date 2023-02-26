@@ -23,7 +23,7 @@ class Strumline extends FlxTypedGroup<FlxSprite> {
                 var middleScrollOffset = Settings.get("middlescroll") && !Settings.get("downscroll") && followMiddlescroll ? 20 : 0;
                 var babyArrow:FlxSprite = new FlxSprite(0, (Settings.get("downscroll") ? FlxG.height - 165 : 50) + middleScrollOffset);
     
-                switch (PlayState.SONG.noteStyle)
+                switch (PlayState.curUi)
                 {
                     case 'pixel':
                         babyArrow.loadGraphic(Paths.image('strums/pixel/arrows-pixels', null), true, 17, 17);
@@ -124,7 +124,7 @@ class Strumline extends FlxTypedGroup<FlxSprite> {
 
     public function lightStrum(targetStrum:Int=0) {
         members[targetStrum].animation.play("confirm", true);
-        if (forDad && members[targetStrum].animation.curAnim.name == 'confirm' && PlayState.SONG.noteStyle != "pixel") {
+        if (forDad && members[targetStrum].animation.curAnim.name == 'confirm' && PlayState.curUi != "pixel") {
             members[targetStrum].centerOffsets();
             members[targetStrum].offset.x -= 13;
             members[targetStrum].offset.y -= 13;

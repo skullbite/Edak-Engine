@@ -61,9 +61,9 @@ class Note extends FlxSprite
 			case "Normal": null;
 			default:
 				// bug: custom notes sustains spawn in front of the parent note
-				if (FileSystem.exists('assets/custom-notes/$noteType.hxs')) {
+				if (FileSystem.exists(Paths.getPath('custom-notes/$noteType.hxs'))) {
 					try {
-						noteScript = new CallbackScript('assets/custom-notes/$noteType.hxs', 'Note:$noteType', {
+						noteScript = new CallbackScript(Paths.getPath('custom-notes/$noteType.hxs'), 'Note:$noteType', {
 							note: this,
 							Paths: Paths
 						});
@@ -127,14 +127,17 @@ class Note extends FlxSprite
 
 			x -= width / 2;
 
-			if (PlayState.SONG.noteStyle == 'pixel') 
+			if (PlayState.curUi == 'pixel') {
 				x += 30;
+				offset.x = -10;
+			}
 
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${colors[noteData]}hold');
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * ((Settings.get("scrollSpeed") != 1 ? Settings.get("scrollSpeed") : PlayState.SONG.speed));
 				prevNote.updateHitbox();
+				if (PlayState.curUi == 'pixel') prevNote.offset.x = -10;
 				// prevNote.setGraphicSize();
 			}
 		}
@@ -142,11 +145,11 @@ class Note extends FlxSprite
 
 	function loadSprite() {
 		if (noteScript != null && noteScript.exists("loadSprite")) {
-			noteScript.exec("loadSprite", [PlayState.SONG.noteStyle, isSustainNote && prevNote != null]);
+			noteScript.exec("loadSprite", [PlayState.curUi, isSustainNote && prevNote != null]);
 			return;
 		}
 
-		switch (PlayState.SONG.noteStyle)
+		switch (PlayState.curUi)
 		{
 			case 'pixel':
 				var imgPath = Paths.image('strums/pixel/arrows-pixels');
@@ -201,6 +204,7 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		// if (isSustainNote && PlayState.curUi == 'pixel') offset.x = pixelSustainOffset;
 		if (noteScript != null && noteScript.exists("update")) noteScript.exec("update", [elapsed]);
 
 		if (mustPress)

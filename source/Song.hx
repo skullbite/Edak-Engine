@@ -17,7 +17,6 @@ typedef SwagSong =
 	var player1:String;
 	var player2:String;
 	var gfVersion:String;
-	var noteStyle:String;
 	var stage:String;
 	var ?diff:String; // just for the autosave
 }
@@ -33,7 +32,6 @@ class Song
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
 	public var gfVersion:String = 'gf';
-	public var noteStyle:String = 'normal';
 	public var stage:String = 'stage';
 
 	public function new(song, notes, bpm)
