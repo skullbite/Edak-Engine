@@ -3,8 +3,22 @@ name: edakBuilder
 on: push
 
 jobs:
+  makeNightly: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/create-release@v1
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: nightly
+          body: 🐸🌙 ~ Edak Engine build based on the latest commit.
+
   edakWin:
     runs-on: windows-latest
+    needs: makeNightly
     steps:
       - uses: actions/checkout@v2
 
@@ -36,15 +50,25 @@ jobs:
 
       - name: Build Game
         run: haxelib run lime build windows -DACTION
+        
+      - name: Zip Build
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r edakWin.zip export/release/windows/bin
       
       - name: Publish Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: edakWin
-          path: 'export/release/windows/bin'
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./edakWin.zip
+          asset_name: edakWin.zip
+          asset_content_type: application/zip
 
   edakMac:
     runs-on: macos-11
+    needs: makeNightly
     steps:
       - uses: actions/checkout@v2
 
@@ -78,12 +102,21 @@ jobs:
         run: |
           haxelib run lime build macos -DACTION
           sudo chmod +x "export/release/macos/bin/EdakEngine.app/Contents/MacOS/EdakEngine"
+
+      - name: Zip Build
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r edakMac.zip export/release/macos/bin
       
       - name: Publish Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: edakMac
-          path: 'export/release/macos/bin'
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./edakMac.zip
+          asset_name: edakMac.zip
+          asset_content_type: application/zip
 
 # weird vlc/hxcodec issues, rip for now
 #  edakLinux:
