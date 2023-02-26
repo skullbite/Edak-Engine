@@ -12,9 +12,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: nightly
+          tag_name: nightly-${{ github.run_id }}
           release_name: nightly
-          body: 🐸🌙 ~ Edak Engine build based on the latest commit.
+          body: |
+            🐸🌙 ~ Edak Engine build based on the latest commit.
+            SHA: `${{ github.sha }}`
 
   edakWin:
     runs-on: windows-latest
