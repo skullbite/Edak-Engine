@@ -12,7 +12,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: nightly
           release_name: nightly
           body: 🐸🌙 ~ Edak Engine build based on the latest commit.
 
@@ -33,15 +33,8 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          haxelib install flixel-addons
-          haxelib install flixel-ui
-          haxelib install hxcodec
-          haxelib install yaml
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript
+          haxelib install hmm
+          haxelib run hmm install
 
       - name: Create Version Tag and Asset
         run: |
@@ -83,15 +76,8 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          haxelib install flixel-addons
-          haxelib install flixel-ui
-          haxelib install hxcodec
-          haxelib install yaml
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript
+          haxelib install hmm
+          haxelib run hmm install
 
       - name: Create Version Tag and Asset
         run: |
