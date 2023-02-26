@@ -35,8 +35,15 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install hmm
-          haxelib run hmm install
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install flixel-ui
+          haxelib install hxcodec
+          haxelib install yaml
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990
 
       - name: Create Version Tag and Asset
         run: |
@@ -78,8 +85,15 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install hmm
-          haxelib run hmm install
+          haxelib install lime
+          haxelib install openfl
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install flixel-ui
+          haxelib install hxcodec
+          haxelib install yaml
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990
 
       - name: Create Version Tag and Asset
         run: |
