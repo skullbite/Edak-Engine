@@ -43,7 +43,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990e
 
       - name: Create Version Tag and Asset
         run: |
@@ -93,7 +93,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990e
 
       - name: Create Version Tag and Asset
         run: |
