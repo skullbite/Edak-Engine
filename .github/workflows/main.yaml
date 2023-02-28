@@ -54,9 +54,7 @@ jobs:
         run: haxelib run lime build windows -DACTION
         
       - name: Zip Build
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r edakWin.zip export/release/windows/bin
+        run: tar.exe -a -c -f edakWin.zip export/release/windows/bin
       
       - name: Publish Build
         uses: actions/upload-release-asset@v1
@@ -106,9 +104,7 @@ jobs:
           sudo chmod +x "export/release/macos/bin/EdakEngine.app/Contents/MacOS/EdakEngine"
 
       - name: Zip Build
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r edakMac.zip export/release/macos/bin
+        run: zip -r edakMac.zip export/release/macos/bin
       
       - name: Publish Build
         uses: actions/upload-release-asset@v1
