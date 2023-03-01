@@ -3,24 +3,8 @@ name: edakBuilder
 on: push
 
 jobs:
-  makeNightly: 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/create-release@v1
-        id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: nightly-${{ github.run_id }}
-          release_name: nightly
-          body: |
-            🐸🌙 ~ Edak Engine build based on the latest commit.
-            SHA: `${{ github.sha }}`
-
   edakWin:
     runs-on: windows-latest
-    needs: makeNightly
     steps:
       - uses: actions/checkout@v2
 
@@ -57,18 +41,15 @@ jobs:
         run: tar.exe -a -c -f edakWin.zip export/release/windows/bin
       
       - name: Publish Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./edakWin.zip
-          asset_name: edakWin.zip
-          asset_content_type: application/zip
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: nightly
+          files: edakWin.zip
 
   edakMac:
     runs-on: macos-11
-    needs: makeNightly
     steps:
       - uses: actions/checkout@v2
 
@@ -107,14 +88,12 @@ jobs:
         run: zip -r edakMac.zip export/release/macos/bin
       
       - name: Publish Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./edakMac.zip
-          asset_name: edakMac.zip
-          asset_content_type: application/zip
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: nightly
+          files: edakMac.zip
 
 # weird vlc/hxcodec issues, rip for now
 #  edakLinux:
