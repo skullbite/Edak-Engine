@@ -5,12 +5,22 @@ on: push
 jobs:
   makeRelease:
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.coolOutputs.outputs.upload }}
+      
     steps:
-      - id: release
+      - name: Make Release
+        id: release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
+      - name: Set Outputs
+        id: coolOutputs
+        run: |
+          echo "upload=${{ steps.release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
+          
+        
         
   edakWin:
     runs-on: windows-latest
@@ -53,7 +63,7 @@ jobs:
       - name: Publish Build
         uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ jobs.makeRelease.outputs.upload_url }}
+          upload_url: ${{ needs.makeRelease.outputs.upload_url }}
           asset_path: dakWin.zip
 
   edakMac:
@@ -99,7 +109,7 @@ jobs:
       - name: Publish Build
         uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ jobs.makeRelease.outputs.upload_url }}
+          upload_url: ${{ needs.makeRelease.outputs.upload_url }}
           asset_path: edakMac.zip
 
 # weird vlc/hxcodec issues, rip for now
