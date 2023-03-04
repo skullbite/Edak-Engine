@@ -26,7 +26,7 @@ class PolyFrog {
         for (x in modsThatAreCool) {
             if (!FileSystem.exists('mods/$x/data/difficulties') || !FileSystem.isDirectory('mods/$x/data/difficulties')) continue;
             var miniDiffMap:Map<String, DifficultyData> = [];
-            for (y in FileSystem.readDirectory('mods/$x/data/difficulties')) miniDiffMap.set(y.split(".").shift(), Yaml.read('mods/$x/data/difficulties/$y', new ParserOptions().useObjects()));
+            for (y in FileSystem.readDirectory('mods/$x/data/difficulties')) miniDiffMap.set(y.split(".").shift().toLowerCase(), Yaml.read('mods/$x/data/difficulties/$y', new ParserOptions().useObjects()));
             diffMap.set('mods/$x', miniDiffMap);
         }
         return diffMap;

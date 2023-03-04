@@ -135,7 +135,7 @@ class StoryMenuState extends MusicBeatState
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
 
-		var ui_tex = Paths.getSparrowAtlas('storyMenu/campaign_menu_UI_assets');
+		var ui_tex = Paths.getSparrowAtlas('storyMenu/story_ui');
 		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
@@ -356,8 +356,10 @@ class StoryMenuState extends MusicBeatState
 		}
 		sprDifficulty.loadGraphic(Paths.image('storyMenu/difficulties/$diff'));
 		// sprDifficulty.animation.play(fuck.animName.toLowerCase());
-		sprDifficulty.offset.x = fuck.offsets[0];
-		sprDifficulty.offset.y = fuck.offsets[1];
+		if (fuck.offsets != null) {
+			sprDifficulty.offset.x = fuck.offsets[0];
+		    sprDifficulty.offset.y = fuck.offsets[1];
+		}
 		Paths.curModDir = null;
 
 

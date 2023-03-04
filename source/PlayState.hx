@@ -313,10 +313,9 @@ class PlayState extends MusicBeatState
 		var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
 
 		if (OpenFLAssets.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.getSound(Paths.inst(SONG.song, diff));
-		else if (FileSystem.exists(Paths.inst(SONG.song, diff))) OpenFLAssets.cache.setSound("_inst", Sound.fromFile(Paths.inst(SONG.song, diff)));
+		// else if (FileSystem.exists(Paths.inst(SONG.song, diff))) cachedInst = Sound.fromFile(Paths.inst(SONG.song, diff));
 		if (SONG.needsVoices && OpenFLAssets.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.getSound(Paths.voices(SONG.song, diff));
-		else if (SONG.needsVoices && FileSystem.exists(Paths.voices(SONG.song, diff))) OpenFLAssets.cache.setSound("_voices", Sound.fromFile(Paths.voices(SONG.song, diff)));
-		
+		// else if (SONG.needsVoices && FileSystem.exists(Paths.voices(SONG.song, diff))) cachedVocals = Sound.fromFile(Paths.voices(SONG.song, diff));
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 		var songScripts = [];
@@ -329,7 +328,7 @@ class PlayState extends MusicBeatState
 			catch (e) { /* most likely doesn't exist but is still cached in runtime, silently ignored */ }
 		}
 		var globalScripts = Paths.scriptDir().filter(d -> d.endsWith(".hxs"));
-		var loadingModScripts = Paths.curModDir != null;
+		var loadingModScripts = Paths.getPath("scripts").startsWith("mods/");
 		for (x in globalScripts) {
 			try { 
 				scripts.set('${loadingModScripts ? 'mod_' : ''}global_${x.split(".")[0]}', Paths.getPath('scripts/$x'));
@@ -442,8 +441,7 @@ class PlayState extends MusicBeatState
 		playerStrums = new Strumline(false, true, !isStoryMode);
 		cpuStrums = new Strumline(true, true, !isStoryMode);
 		splashes = new SplashGroup();
-		splashes.spawnSplash(0, splashOffsets.x, splashOffsets.y);
-		
+		splashes.spawnSplash(0);
 
 		// startCountdown();
 
@@ -685,8 +683,9 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 		{
-			var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
-			FlxG.sound.playMusic(Paths.inst(SONG.song, diff), 1, false);
+
+				var diff = difficultyData.loadsDifferentSong != null && difficultyData.loadsDifferentSong ? storyDifficulty.toLowerCase() : "";
+				FlxG.sound.playMusic(Paths.inst(SONG.song, diff), 1, false);
 		}
 
 		FlxG.sound.music.onComplete = HFunk.funcExists("onEndSong") ? () -> HFunk.doDaCallback("onEndSong", []) : endSong;
@@ -793,7 +792,6 @@ class PlayState extends MusicBeatState
 				susLength = susLength / Conductor.stepCrochet;
 				unspawnNotes.push(swagNote);
 				
-				HFunk.doDaCallback("onNoteSpawn", [swagNote, false]);
 
 				for (susNote in 0...Math.floor(susLength))
 				{
@@ -809,18 +807,14 @@ class PlayState extends MusicBeatState
 					{
 						sustainNote.x += FlxG.width / 2; // general offset
 					}
-					HFunk.doDaCallback("onNoteSpawn", [swagNote, true]);
+					HFunk.doDaCallback("onNoteSpawn", [sustainNote, true]);
 				}
 
 				swagNote.mustPress = gottaHitNote;
 
-				if (swagNote.mustPress)
-				{
-					swagNote.x += FlxG.width / 2; // general offset
-				}
-				else
-				{
-				}
+				if (swagNote.mustPress) swagNote.x += FlxG.width / 2; // general offset
+
+				HFunk.doDaCallback("onNoteSpawn", [swagNote, false]);
 			}
 			daBeats += 1;
 		}
@@ -1542,7 +1536,7 @@ class PlayState extends MusicBeatState
 	
 	
 			songScore += Math.round(score);
-			songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
+			songScoreDef += Math.round(Highscore.convertScore(noteDiff));
 
 			var msTiming = HelperFunctions.truncateFloat(noteDiff, 3);
 
@@ -2143,7 +2137,6 @@ class PlayState extends MusicBeatState
 
 					var noteCall = HFunk.doDaCallback("goodNoteHit", [note.noteData, note]);
 					if (noteCall.contains(HVars.STOP)) return;
-	
 
 					switch (note.noteData)
 					{
@@ -2162,7 +2155,7 @@ class PlayState extends MusicBeatState
 						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));*/
 				
 					playerStrums.lightStrum(note.noteData);
-					if ((note.rating == "sick" || (Settings.get("botplay") && note.rating == "good")) && !note.isSustainNote) splashes.spawnSplash(note.noteData, splashOffsets.x, splashOffsets.y);
+					if ((note.rating == "sick" || (Settings.get("botplay") && note.rating == "good")) && !note.isSustainNote) splashes.spawnSplash(note.noteData);
 
 				}
 			}
@@ -2213,7 +2206,7 @@ class PlayState extends MusicBeatState
 		var nextSect = SONG.notes[Math.floor(curStep / 16)];
 		if (nextSect != null)
 		{
-			if (nextSect.bpm != null && nextSect.bpm != Conductor.bpm)
+			if (nextSect.bpm != null && nextSect.bpm != Conductor.bpm && nextSect.bpm > 0 && (nextSect.changeBPM == null || (nextSect.changeBPM != null && nextSect.changeBPM)))
 			{
 				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
 				FlxG.log.add('CHANGED BPM!');

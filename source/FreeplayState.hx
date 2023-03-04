@@ -318,10 +318,10 @@ class FreeplayState extends MusicBeatState
 		// diffText.text = '< ${curDifficultyArray[curDifficulty].toUpperCase()} >';
 		var diff = curDifficultyArray[curDifficulty].toLowerCase();
 		var diffData = difficultyData[diff];
-		if (modDifficulties.exists(songs[curSelected].modPath) && modDifficulties[songs[curSelected].modPath].exists(diff)) {
-			diffData = modDifficulties[songs[curSelected].modPath][diff];
-		}
-		var doTheArrows = curDifficultyArray.length == 1 ? '*${diff.toUpperCase()}*' : '< *${curDifficultyArray[curDifficulty].toUpperCase()}* >';
+
+		if (modDifficulties.exists(songs[curSelected].modPath) && modDifficulties.get(songs[curSelected].modPath).exists(diff)) diffData = modDifficulties[songs[curSelected].modPath][diff];
+		
+		var doTheArrows = curDifficultyArray.length == 1 ? '*${diff.toUpperCase()}*' : '< *${diff.toUpperCase()}* >';
 		diffText.applyMarkup(doTheArrows, [
 			new FlxTextFormatMarkerPair(new FlxTextFormat(diffData.color), "*")
 		]);

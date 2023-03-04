@@ -6,7 +6,14 @@ class CallbackScript extends HBase {
         super(path);
         name = printName;
         var scriptVars = Reflect.fields(variables);
-        for (x in 0...scriptVars.length) set(scriptVars[x], Reflect.getProperty(variables, scriptVars[x]));
+        for (x in 0...scriptVars.length) {
+            /*probably gonna remain unused but this is supposed to bind all of a class/objects properties to a script's variables
+            if (scriptVars[x] == "bind") {
+                var bigProperties = Reflect.fields(Reflect.getProperty(variables, scriptVars[x]));
+                // for (y in 0...bigProperties.length) set(bigProperties[y], Reflect.getProperty(scriptVars[x], bigProperties[y]));
+            }*/
+            set(scriptVars[x], Reflect.getProperty(variables, scriptVars[x]));
+        }
     }
 
     public function exec(target:String, args:Array<Dynamic>):Dynamic {

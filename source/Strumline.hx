@@ -100,8 +100,7 @@ class Strumline extends FlxTypedGroup<FlxSprite> {
     
                 // psych engine!!!!!
                 if (Settings.get("middlescroll") && followMiddlescroll) {
-                    if (!Settings.get("downscroll")) babyArrow.y += 0;
-                    else babyArrow.y -= 10;
+                    if (Settings.get("downscroll")) babyArrow.y -= 10;
                     if (forDad) {
                         babyArrow.alpha = .5;
                         babyArrow.x += 320;

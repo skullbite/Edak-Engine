@@ -24,6 +24,7 @@ typedef SwagConfig = {
 class Character extends FlxSprite
 {
 	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var defaultOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 	public var barColor:String = "0xe76aca";
 
@@ -57,6 +58,7 @@ class Character extends FlxSprite
 		super(x, y);
 
 		animOffsets = new Map<String, Array<Dynamic>>();
+		defaultOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		iconName = character;
 		this.isPlayer = isPlayer;
@@ -81,6 +83,12 @@ class Character extends FlxSprite
 				if (FileSystem.exists(Paths.getPath('characters/$curCharacter/init.hxs'))) {
 					try {
 						charScript = new CallbackScript(Paths.getPath('characters/$curCharacter/init.hxs'), 'Character:$curCharacter', {
+							animation: animation,
+							addOffset: addOffset,
+							rescaleOffsets: rescaleOffsets,
+							scale: scale,
+							barColor: barColor,
+							playAnim: playAnim,
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
 							_Paths: Paths
@@ -287,6 +295,17 @@ class Character extends FlxSprite
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
+		defaultOffsets[name] = [x, y];
+		x *= scale.x;
+		y *= scale.y;
 		animOffsets[name] = [x, y];
+	}
+
+	// saw this in fe and needed it badly
+	public function rescaleOffsets() {
+		for (k => v in animOffsets) {
+			v[0] = defaultOffsets[k][0] * scale.x;
+			v[1] = defaultOffsets[k][1] * scale.y;
+		}
 	}
 }

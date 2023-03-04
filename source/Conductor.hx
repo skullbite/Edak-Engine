@@ -50,7 +50,7 @@ class Conductor
 		var totalPos:Float = 0;
 		for (i in 0...song.notes.length)
 		{
-			if(song.notes[i].bpm != null && song.notes[i].bpm != curBPM)
+			if(song.notes[i].bpm != null && song.notes[i].bpm != curBPM && song.notes[i].bpm != 0 && (song.notes[i].changeBPM == null || song.notes[i].changeBPM != null && song.notes[i].changeBPM))
 			{
 				curBPM = song.notes[i].bpm;
 				var event:BPMChangeEvent = {

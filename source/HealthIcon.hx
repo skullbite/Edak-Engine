@@ -1,5 +1,6 @@
 package;
 
+import openfl.display.BitmapData;
 import sys.FileSystem;
 import openfl.Assets;
 import flixel.FlxSprite;
@@ -21,7 +22,8 @@ class HealthIcon extends FlxSprite
 	}
 
 	public function swapIcon(target:String) {
-		if (FileSystem.exists(Paths.image('icons/$target'))) loadGraphic(Paths.image('icons/$target'), true, 150, 150);
+		var img = Paths.image('icons/$target');
+		if ((img is String && FileSystem.exists(img)) || img is BitmapData) loadGraphic(img, true, 150, 150);
 		else loadGraphic(Paths.image('icons/face'), true, 150, 150);
 
 		antialiasing = true;

@@ -27,6 +27,9 @@ class Stage extends FlxTypedGroup<FlxBasic> {
                 if (FileSystem.exists(Paths.getPath('stages/$curStage/init.hxs'))) {
                     try {
                         stageScript = new CallbackScript(Paths.getPath('stages/$curStage/init.hxs'), 'Stage:$curStage', {
+                            add: add,
+                            remove: remove,
+                            foreground: foreground,
                             stage: this,
                             Paths: new CustomPaths(curStage, "stages"),
                             _Paths: Paths
