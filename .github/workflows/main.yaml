@@ -18,11 +18,8 @@ jobs:
           prerelease: false
       - name: Set Outputs
         id: coolOutputs
-        run: |
-          echo "upload=${{ steps.release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
+        run: echo "upload=${{ steps.release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
           
-        
-        
   edakWin:
     runs-on: windows-latest
     needs: makeRelease
@@ -61,11 +58,11 @@ jobs:
       - name: Zip Build
         run: tar.exe -a -c -f edakWin.zip export/release/windows/bin
       
-      - name: Publish Build
-        uses: shogo82148/actions-upload-release-asset@v1
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.makeRelease.outputs.upload_url }}
-          asset_path: dakWin.zip
+          name: WinBuild
+          path: edakWin.zip
 
   edakMac:
     runs-on: macos-11
@@ -107,11 +104,44 @@ jobs:
       - name: Zip Build
         run: zip -r edakMac.zip export/release/macos/bin
       
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: MacBuild
+          path: edakMac.zip
+
       - name: Publish Build
         uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ needs.makeRelease.outputs.upload_url }}
           asset_path: edakMac.zip
+  
+  releaseBuilds:
+    runs-on: ubuntu-latest
+    needs: [makeRelease, edakWin, edakMac]
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Publish Win Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./WinBuild/edakWin.zip
+          asset_name: edakWin.zip
+          asset_content_type: application/zip
+
+      - name: Publish Mac Build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./MacBuild/edakMac.zip
+          asset_name: edakMac.zip
+          asset_content_type: application/zip
 
 # weird vlc/hxcodec issues, rip for now
 #  edakLinux:
