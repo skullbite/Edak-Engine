@@ -87,7 +87,6 @@ class Character extends FlxSprite
 							addOffset: addOffset,
 							rescaleOffsets: rescaleOffsets,
 							scale: scale,
-							barColor: barColor,
 							playAnim: playAnim,
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
@@ -175,7 +174,7 @@ class Character extends FlxSprite
 	/**
 	 * FOR GF DANCING SHIT
 	 */
-	public function dance()
+	public function dance(force = false)
 	{
 		if (charScript != null && charScript.exists("dance")) {
 			charScript.exec("dance", []);
@@ -186,9 +185,9 @@ class Character extends FlxSprite
 			if (!animation.curAnim.name.startsWith('hair')) {
 				if (animation.exists('danceLeft') && animation.exists('danceRight')) {
 					danced = !danced;
-					playAnim(danced ? "danceRight" : "danceLeft");
+					playAnim(danced ? "danceRight" : "danceLeft", force);
 				}
-				else playAnim("idle", true);
+				else playAnim("idle", force);
 			}
 			/*switch (curCharacter)
 			{

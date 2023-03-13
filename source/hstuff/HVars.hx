@@ -1,5 +1,5 @@
 package hstuff;
 
 class HVars {
-    static public var STOP:Int = 0;
+    static public var STOP:String = "THISISASTRINGTHATSTOPSFUNCTIONSLOL";
 }

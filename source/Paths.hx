@@ -1,5 +1,6 @@
 package;
 
+import flixel.system.FlxAssets.FlxSoundAsset;
 import openfl.media.Sound;
 import openfl.Assets;
 import openfl.display.BitmapData;
@@ -13,14 +14,18 @@ using StringTools;
 class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
+	#if MODS
 	public static var curModDir:Null<String>;
+	#end
 
 	static public function getPath(file:String, ?library:Null<String>)
 	{
+		#if MODS
 		if (curModDir != null) {
 			var daModPath = (library != null ? getLibraryPath(file, library) : getPreloadPath(file)).replace("assets/", curModDir + "/");
 			if (FileSystem.exists(daModPath)) return daModPath;
 		}
+		#end
 
 		if (library != null)
 			return getLibraryPath(file, library);
@@ -58,7 +63,7 @@ class Paths
 
 	inline static public function voices(song:String, ?altSong:String="")
 	{
-		var coolPath:Dynamic = 'songs/${song.toLowerCase()}/Voices';
+		var coolPath:FlxSoundAsset = 'songs/${song.toLowerCase()}/Voices';
 		if (altSong != "") coolPath += '-$altSong';
 		coolPath += '.$SOUND_EXT';
 		coolPath = getPath(coolPath);

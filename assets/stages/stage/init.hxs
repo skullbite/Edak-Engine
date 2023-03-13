@@ -28,8 +28,7 @@ function create() {
 
 function reposCharacters() {
     if (PlayState.SONG.song.toLowerCase() == 'tutorial') { 
-        PlayState.dad.x = PlayState.gf.x;
-        PlayState.dad.y = PlayState.gf.y;
-        PlayState.gf.visible = false;
+        PlayState.dad.x = 400;
+        PlayState.dad.y = 130;
     }
 }

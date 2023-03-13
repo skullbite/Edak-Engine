@@ -51,7 +51,9 @@ class StoryMenuState extends MusicBeatState
 
 	var weekData:Array<WeekData> = [];
 	var difficultyData:Map<String, DifficultyData> = [];
+	#if MODS
 	var modDifficulties:Map<String, Map<String, DifficultyData>> = [];
+	#end
 	var curDifficulty:Int = 1;
 	var curDifficultyArray = ["Easy", "Normal", "Hard"];
 
@@ -84,7 +86,9 @@ class StoryMenuState extends MusicBeatState
 		transOut = FlxTransitionableState.defaultTransOut;
 
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
+		#if MODS
 		var swagWeeks = PolyFrog.getModWeeks();
+		#end
 
 		for (week in 0...weekDataStuff.length) {
 			var coolWeekData:WeekData = Yaml.read(Paths.yaml("weeks/" + weekDataStuff[week]), new ParserOptions().useObjects());
@@ -94,6 +98,7 @@ class StoryMenuState extends MusicBeatState
 			// to do: reimplement week lock
 			weekUnlocked.push(true);
 		}
+		#if MODS
 		for (k => v in swagWeeks) {
 			for (week in v) {
 				var daWeek:WeekData = Yaml.read(week, new ParserOptions().useObjects());
@@ -105,6 +110,7 @@ class StoryMenuState extends MusicBeatState
 				weekUnlocked.push(true);
 			}
 		}
+		#end
 
 
 		for (x in FileSystem.readDirectory(Paths.getPath("data/difficulties")).filter(d -> d.endsWith(".yaml"))) {
@@ -112,7 +118,9 @@ class StoryMenuState extends MusicBeatState
 			difficultyData.set(x.split(".").shift(), awesomeDifficultyStuff);
 		}
 
+		#if MODS
 		modDifficulties = PolyFrog.getModDifficulties();
+		#end
 
 		if (FlxG.sound.music != null)
 		{
@@ -316,7 +324,9 @@ class StoryMenuState extends MusicBeatState
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
+			#if MODS
 			Paths.curModDir = weekData[curWeek].modPath;
+			#end
 			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty].toLowerCase(), PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
 			PlayState.storyWeek = curWeek;
@@ -350,17 +360,21 @@ class StoryMenuState extends MusicBeatState
 
 		var diff = curDifficultyArray[curDifficulty].toLowerCase();
 		var fuck = difficultyData[diff];
+		#if MODS
 		if (modDifficulties.exists(weekData[curWeek].modPath) && modDifficulties[weekData[curWeek].modPath].exists(diff)) {
 			fuck = modDifficulties[weekData[curWeek].modPath][diff];
 			Paths.curModDir = weekData[curWeek].modPath;
 		}
+		#end
 		sprDifficulty.loadGraphic(Paths.image('storyMenu/difficulties/$diff'));
 		// sprDifficulty.animation.play(fuck.animName.toLowerCase());
 		if (fuck.offsets != null) {
 			sprDifficulty.offset.x = fuck.offsets[0];
 		    sprDifficulty.offset.y = fuck.offsets[1];
 		}
+		#if MODS
 		Paths.curModDir = null;
+		#end
 
 
 		/*switch (curDifficulty)

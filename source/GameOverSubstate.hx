@@ -21,12 +21,22 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		instance = this;
-		var daBf:String = PlayState.boyfriend.deadData.char;
-		var daBpm:Int = PlayState.boyfriend.deadData.bpm;
-		deathSound = PlayState.boyfriend.deadData.sound;
-		deathMusic = PlayState.boyfriend.deadData.music;
-		endSound = PlayState.boyfriend.deadData.end;
-
+		var daBf:String;
+		var daBpm:Int;
+		if (PlayState.boyfriend != null) {
+			daBf = PlayState.boyfriend.deadData.char;
+		    daBpm = PlayState.boyfriend.deadData.bpm;
+		    deathSound = PlayState.boyfriend.deadData.sound;
+		    deathMusic = PlayState.boyfriend.deadData.music;
+		    endSound = PlayState.boyfriend.deadData.end;
+		}
+		else {
+			daBf = 'bf';
+			daBpm = 100;
+			deathSound = "gameover/normal/fnf_loss_sfx";
+			deathMusic = "ingame/normal/gameOver";
+			endSound = "ingame/normal/gameOverEnd";
+		}
 		super();
 
 		Conductor.songPosition = 0;

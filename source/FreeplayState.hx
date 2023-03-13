@@ -36,7 +36,9 @@ class FreeplayState extends MusicBeatState
 	var curDifficulty:Int = 1;
 	var curDifficultyArray:Array<String> = ["Easy", "Normal", "Hard"];
 	var difficultyData:Map<String, DifficultyData> = [];
+	#if MODS
 	var modDifficulties:Map<String, Map<String, DifficultyData>> = [];
+	#end
 
 	var jukeboxInst:FlxSound = new FlxSound();
 	var jukeboxVocals:FlxSound = new FlxSound();
@@ -61,13 +63,17 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
+		#if MODS
 		var awesomeMods = PolyFrog.getModWeeks();
+		#end
 
 		for (week in 0...weekDataStuff.length) addWeek(Paths.yaml("weeks/" + weekDataStuff[week]), week);
 
+		#if MODS
 		for (k => v in awesomeMods) {
 			for (week in 0...v.length) addWeek(v[week], week, k);
 		}
+		#end
 
 		
 		for (diff in FileSystem.readDirectory(Paths.getPath("data/difficulties"))) {
@@ -75,7 +81,9 @@ class FreeplayState extends MusicBeatState
 			difficultyData.set(diff.split(".").shift().toLowerCase(), awesomeDifficulty);
 		}
 
+		#if MODS
 		modDifficulties = PolyFrog.getModDifficulties();
+		#end
 
 		// todo: play song button because lag
 		if (FlxG.sound.music != null)
@@ -113,10 +121,14 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 
+			#if MODS
 			Paths.curModDir = songs[i].modPath;
+			#end
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
-			Paths.curModDir = null;	
+			#if MODS
+			Paths.curModDir = null;
+			#end	
 
 			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
@@ -262,18 +274,26 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.music.pause();
 			var songSuffix = difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase()).loadsDifferentSong ? curDifficultyArray[curDifficulty].toLowerCase() : "";
 
+			#if MODS
+			Paths.curModDir = songs[curSelected].modPath;
+			#end
 		    jukeboxInst.loadEmbedded(Paths.inst(songs[curSelected].songName, songSuffix));
-			if (FileSystem.exists('assets/songs/' + songs[curSelected].songName + '/Voices$songSuffix.ogg')) {
+			if (FileSystem.exists(Paths.voices(songs[curSelected].songName, songSuffix))) {
 				jukeboxVocals.loadEmbedded(Paths.voices(songs[curSelected].songName, songSuffix));
 				jukeboxInst.play(true);
 			    jukeboxVocals.play(true);
 			}
 			else jukeboxInst.play(true);
+			#if MODS
+			Paths.curModDir = null;
+			#end
 		}
 
 		if (accepted)
 		{
+			#if MODS
 			Paths.curModDir = songs[curSelected].modPath;
+			#end
 			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty], songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
@@ -319,7 +339,9 @@ class FreeplayState extends MusicBeatState
 		var diff = curDifficultyArray[curDifficulty].toLowerCase();
 		var diffData = difficultyData[diff];
 
+		#if MODS
 		if (modDifficulties.exists(songs[curSelected].modPath) && modDifficulties.get(songs[curSelected].modPath).exists(diff)) diffData = modDifficulties[songs[curSelected].modPath][diff];
+		#end
 		
 		var doTheArrows = curDifficultyArray.length == 1 ? '*${diff.toUpperCase()}*' : '< *${diff.toUpperCase()}* >';
 		diffText.applyMarkup(doTheArrows, [

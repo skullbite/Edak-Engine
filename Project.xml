@@ -84,6 +84,7 @@
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
+
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->
 
@@ -116,6 +117,8 @@
 
 	<haxedef name="no-deprecation-warnings" />
 	<haxedef name="hscriptPos"/>
+
+	<haxedef name="MODS"/>
 
 	<!-- _________________________________ Custom _______________________________ -->
 

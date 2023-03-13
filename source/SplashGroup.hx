@@ -11,7 +11,7 @@ class SplashGroup extends FlxTypedGroup<FlxSprite> {
         x: 132, 
         y: 145 
     };
-    public var perStrumOffsets = [{x: 0, y: 0}, {x: 40, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}];
+    public var perStrumOffsets = [{x: 0, y: 0}, {x: 5, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}];
     var firstSplash = true;
     
 	public var color:Int = 0xffffff;

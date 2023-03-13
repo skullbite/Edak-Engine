@@ -15,6 +15,14 @@ class CoolUtil
 		return difficultyArray[PlayState.storyDifficulty];
 	}*/
 
+	inline public static function ezNullCheck(potentiallyNull:Null<Dynamic>, nullntRet:Null<Dynamic>,  totallyNotNull:Dynamic):Dynamic return potentiallyNull != null ? nullntRet : totallyNotNull;
+
+	public static function sillyArray<T>(value:T, length:Int): Array<T> {
+		var coolArray = [];
+		for (i in 0...length) coolArray.push(value);
+		return coolArray;
+	}
+
 	public static function getShaderStuffs(shaderPaths:Array<String>) {
 		var rets = [];
 		if (FileSystem.exists(shaderPaths[0])) rets.push(File.getContent(shaderPaths[0]));

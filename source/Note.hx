@@ -7,12 +7,7 @@ import yaml.Parser.ParserOptions;
 import sys.io.File;
 import yaml.Yaml;
 import sys.FileSystem;
-import flixel.addons.effects.FlxSkewedSprite;
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
 import PlayState;
 
 using StringTools;
@@ -31,13 +26,18 @@ class Note extends FlxSprite
 	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var isSustainEnd(get, null):Bool = false;
+	function get_isSustainEnd():Bool {
+		return animation.curAnim.name.endsWith("holdend");
+	}
 	public var noteType:String;
-	public var dadShouldHit:Bool = true;
-	public var bfShouldHit:Bool = true;
+	public var noHit:Bool = false;
+
 
 	public var noteScore:Float = 1;
 	
 	public static var colors:Array<String> = ["purple", "blue", "green", "red"];
+	public static var pixelScale:Float = 0.838;
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var PURP_NOTE:Int = 0;
 	public static var GREEN_NOTE:Int = 2;
@@ -100,7 +100,7 @@ class Note extends FlxSprite
 		// we make sure its downscroll and its a SUSTAIN NOTE (aka a trail, not a note)
 		// and flip it so it doesn't look weird.
 		// THIS DOESN'T FUCKING FLIP THE NOTE, CONTRIBUTERS DON'T JUST COMMENT THIS OUT JESUS
-		if (FlxG.save.data.downscroll && sustainNote) 
+		if (Settings.get("downscroll") && sustainNote) 
 			flipY = true;
 
 		if (isSustainNote && prevNote != null)
@@ -135,7 +135,9 @@ class Note extends FlxSprite
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${colors[noteData]}hold');
+				if (Settings.get("downscroll")) prevNote.angle = 180;
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * ((Settings.get("scrollSpeed") != 1 ? Settings.get("scrollSpeed") : PlayState.SONG.speed));
+			    if (PlayState.curUi == 'pixel') prevNote.scale.y *= pixelScale;
 				prevNote.updateHitbox();
 				if (PlayState.curUi == 'pixel') prevNote.offset.x = -10;
 				// prevNote.setGraphicSize();

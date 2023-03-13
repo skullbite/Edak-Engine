@@ -68,26 +68,23 @@ class Strumline extends FlxTypedGroup<FlxSprite> {
     
                         babyArrow.antialiasing = true;
                         babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
+                        babyArrow.x += Note.swagWidth * i;
     
-                        switch (Math.abs(i))
+                        switch (i)
                         {
                             case 0:
-                                babyArrow.x += Note.swagWidth * 0;
                                 babyArrow.animation.addByPrefix('static', 'arrowLEFT');
                                 babyArrow.animation.addByPrefix('pressed', 'left press', 24, false);
                                 babyArrow.animation.addByPrefix('confirm', 'left confirm', 24, false);
                             case 1:
-                                babyArrow.x += Note.swagWidth * 1;
                                 babyArrow.animation.addByPrefix('static', 'arrowDOWN');
                                 babyArrow.animation.addByPrefix('pressed', 'down press', 24, false);
                                 babyArrow.animation.addByPrefix('confirm', 'down confirm', 24, false);
                             case 2:
-                                babyArrow.x += Note.swagWidth * 2;
                                 babyArrow.animation.addByPrefix('static', 'arrowUP');
                                 babyArrow.animation.addByPrefix('pressed', 'up press', 24, false);
                                 babyArrow.animation.addByPrefix('confirm', 'up confirm', 24, false);
                             case 3:
-                                babyArrow.x += Note.swagWidth * 3;
                                 babyArrow.animation.addByPrefix('static', 'arrowRIGHT');
                                 babyArrow.animation.addByPrefix('pressed', 'right press', 24, false);
                                 babyArrow.animation.addByPrefix('confirm', 'right confirm', 24, false);
@@ -138,6 +135,6 @@ class Strumline extends FlxTypedGroup<FlxSprite> {
                 FlxTween.tween(members[i], {y: members[i].y + 10, alpha: Settings.get("middlescroll") && forDad ? .5 : 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
             }
         }
-        else for (i in 0...members.length) FlxTween.tween(members[i], {y: members[i].y + 10, alpha: Settings.get("middlescroll") && forDad ? .5 : 1}, 1, { ease: FlxEase.circOut });
+        else for (i in 0...members.length) members[i].alpha = Settings.get("middlescroll") && forDad ? .5 : 1;
     }
 }

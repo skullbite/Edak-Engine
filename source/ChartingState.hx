@@ -356,6 +356,7 @@ class ChartingState extends MusicBeatState
 		if (extChars != [""]) characters.concat(extChars);
 		if (stages != [""]) stages.concat(extStages);
 
+		#if MODS
 		if (Paths.curModDir != null) {
 			var charPath = Paths.curModDir + '/characters';
 			var gfVerPath = Paths.curModDir + '/data/gfVersionList.txt';
@@ -365,6 +366,7 @@ class ChartingState extends MusicBeatState
 			if (FileSystem.exists(gfVerPath)) CoolUtil.coolTextFile(gfVerPath).map(d -> gfVersions.push(d));
 			if (FileSystem.exists(stagePath)) FileSystem.readDirectory(stagePath).filter(d -> FileSystem.exists(stagePath + '/$d/init.hxs')).map(d -> stages.push(d));
 		}
+		#end
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -525,7 +527,9 @@ class ChartingState extends MusicBeatState
 		
 		try {
 			noteTypes = noteTypes.concat(FileSystem.readDirectory("assets/custom-notes").filter(d -> d.endsWith(".hxs")).map(d -> d.split(".").shift()));
+			#if MODS
 			if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + "/custom-notes")) noteTypes.concat(FileSystem.readDirectory(Paths.curModDir + "/custom-notes"));
+			#end
 		}
 		catch (e) {}
 		
