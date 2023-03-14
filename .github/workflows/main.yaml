@@ -49,8 +49,8 @@ jobs:
 
       - name: Create Version Tag and Asset
         run: |
-          echo "${{github.run_id}}" > VERSION
-          echo "${{github.run_id}}" > assets/data/_aver.txt
+          echo "${{github.sha}}" > VERSION
+          echo "${{github.sha}}" > assets/data/_aver.txt
 
       - name: Build Game
         run: haxelib run lime build windows -DACTION
@@ -93,8 +93,8 @@ jobs:
 
       - name: Create Version Tag and Asset
         run: |
-          echo "${{github.run_id}}" > VERSION
-          echo "${{github.run_id}}" > assets/data/_aver.txt
+          echo "${{github.sha}}" > VERSION
+          echo "${{github.sha}}" > assets/data/_aver.txt
       
       - name: Build Game
         run: |
