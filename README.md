@@ -10,6 +10,8 @@ A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configu
 - A cleaner filesystem
 
 # Credits
+[TheWorldMachinima](https://github.com/TheWorldMachinima) - Maintains the SScript library used by this engine.
+
 [KadeDev](https://github.com/KadeDev) - Made the engine I forked
 
 [Rozebud](https://github.com/ThatRozebudDude) and Co. - [B-side](https://gamebanana.com/mods/42724) (legacy) assets
