@@ -36,14 +36,17 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
 
+	var menuTxts = ['FNF: v$gameVer', 'Edak Engine: v$engineVer'];
+
 	var newGaming:FlxText;
 	var newGaming2:FlxText;
 	public static var firstStart:Bool = true;
 
 	public static var nightly:String = "-alpha";
 
-	public static var edakEngineVer:String = "1.0.0" + nightly;
+	public static var engineVer:String = "1.0.0" + nightly;
 	public static var gameVer:String = "0.2.7.1";
+	public var bruh:FlxTypedGroup<FlxText>;
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -109,25 +112,28 @@ class MainMenuState extends MusicBeatState
 			finishedFunnyMove = true;
 		}
 
+		bruh = new FlxTypedGroup();
+		add(bruh);
+
+		#if ACTION
+		var commitSHA = File.getContent(Paths.txt('_aver')).substring(0, 7);
+		menuTxts.push('ACTION BUILD: $commitSHA');
+		#end
+
+		menuTxts.reverse();
+		for (x in 0...menuTxts.length) {
+			var versionShit:FlxText = new FlxText(5, FlxG.height - (x * 20), 0, menuTxts[x], 12);
+			versionShit.offset.y = 20;
+		    versionShit.scrollFactor.set();
+		    versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		    versionShit.borderSize = 2;
+		    bruh.add(versionShit);
+		}
+
 		firstStart = false;
 
 		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 40, 0, 'FNF: v$gameVer', 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		versionShit.borderSize = 2;
-		add(versionShit);
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 20, 0, 'Edak Engine: v$edakEngineVer', 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		versionShit.borderSize = 2;
-		add(versionShit);
-
-		#if ACTION
-		var actionTextThing = File.getContent(Paths.txt("_aver"));
-		versionShit.text = 'Edak Engine [ACTION BUILD]: v$edakEngineVer ($actionTextThing)';
-		#end
 
 		// NG.core.calls.event.logEvent('swag').send();
 
