@@ -17,7 +17,7 @@ class CustomSubState extends MusicBeatSubstate {
         subName = target;
         if (FileSystem.exists(Paths.getPath('substates/$target/init.hxs'))) {
             try {
-                subScript = new CallbackScript(Paths.getPath('assets/substates/$target/init.hxs'), 'CustomSub:$target', {
+                subScript = new CallbackScript(Paths.getPath('substates/$target/init.hxs'), 'CustomSub:$target', {
                     sub: this,
                     Paths: new CustomPaths(subName, "substates"),
                     _Paths: Paths
