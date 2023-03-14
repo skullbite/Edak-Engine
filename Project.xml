@@ -43,7 +43,7 @@
 
 	<assets path="assets" embed="false" exclude="*.ogg|exclude" if="web"/> 
 	<assets path="assets" embed="false" exclude="*.mp3|exclude" unless="web"/> 
-	<template path="example_mod/.exists" rename="mods/.exists"/>
+	<assets path="example_mod/.exists" rename="mods/.exists" if="MODS"/>
 
 	
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
