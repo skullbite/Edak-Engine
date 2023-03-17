@@ -114,7 +114,7 @@ class Ratings
         // trace('Hit Info\nDifference: ' + noteDiff + '\nZone: ' + Conductor.safeZoneOffset * 1.5 + "\nTS: " + customTimeScale + "\nLate: " + 155 * customTimeScale);
 
 	if (FlxG.save.data.botplay)
-	    return "good"; // FUNNY
+	    return "sick"; // FUNNY
 	    
         if (noteDiff > 166 * customTimeScale) // so god damn early its a miss
             return "miss";
@@ -139,7 +139,7 @@ class Ratings
     {
         if (!Settings.get("accuracyDisplay")) return "Score: " + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score);
         return 
-        (FlxG.save.data.npsDisplay ? "NPS: " + nps + " (Max " + maxNPS + ")" + (!FlxG.save.data.botplay ? " ~ " : "") : "") + (!FlxG.save.data.botplay ?	// NPS Toggle
+        (FlxG.save.data.npsDisplay ? "NPS: " + nps + "/" + maxNPS + (!FlxG.save.data.botplay ? " ~ " : "") : "") + (!FlxG.save.data.botplay ?	// NPS Toggle
         "Score: " + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + 									// Score
         " ~ Misses: " + PlayState.misses + 																				// Misses/Combo Breaks
         " ~ Accuracy: " + (FlxG.save.data.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + "%") +  				// Accuracy

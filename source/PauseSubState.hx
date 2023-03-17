@@ -195,9 +195,9 @@ class PauseSubState extends MusicBeatSubstate
 				#if debug
 				case "Toggle Botplay":
 					Settings.set("botplay", !Settings.get("botplay"));
+					PlayState.instance.updateScoreTxt();
 				#end
 				case "Exit to menu":
-					PlayState.saveScore = true;
 					if (FlxG.save.data.fpsCap > 290)
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
 					PlayState.instance.preExit();
