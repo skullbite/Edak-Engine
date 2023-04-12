@@ -72,8 +72,18 @@ class TitleState extends MusicBeatState
 		 });
 		 
 		#end
+		
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
+		FlxSprite.defaultAntialiasing = true;
+		Paths.music('menu/freakyMenu');
+		Paths.music('ingame/breakfast');
+
+		#if debug
+		FlxG.console.registerClass(Paths);
+		FlxG.console.registerClass(PlayState);
+		FlxG.console.autoPause = false;
+		#end
 
 		// DEBUG BULLSHIT
 
@@ -93,9 +103,13 @@ class TitleState extends MusicBeatState
 		#if AUTOSAVE
 		    if (Settings.get("autosave") != null) {
 		        PlayState.SONG = Song.parseJSONshit(Settings.get("autosave"));
-				PlayState.storyDifficulty = "Hard";
+				PlayState.difficulty = "Hard";
 				FlxG.switchState(new PlayState());
 		    }
+		#end
+
+		#if PLAYBASE
+		    FlxG.switchState(new PlayBase());
 		#end
 
 		swagShader = new ColorSwap();

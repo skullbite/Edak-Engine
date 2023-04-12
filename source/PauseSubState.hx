@@ -27,13 +27,10 @@ class PauseSubState extends MusicBeatSubstate
 	// var perSongOffset:FlxText;
 	
 	var offsetChanged:Bool = false;
-	var pauseCam:FlxCamera = new FlxCamera();
 
-	public function new(x:Float, y:Float)
+	public function new()
 	{
 		super();
-		pauseCam.bgColor.alpha = 0;
-		FlxG.cameras.add(pauseCam);
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('ingame/breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -54,7 +51,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += PlayState.storyDifficulty.toUpperCase();
+		levelDifficulty.text += PlayState.difficulty.toUpperCase();
 		levelDifficulty.scrollFactor.set();
 		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
 		levelDifficulty.updateHitbox();
@@ -90,7 +87,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		changeSelection();
 
-		cameras = [pauseCam];
+		cameras = [PlayState.instance.camTop];
 	}
 
 	override function update(elapsed:Float)
@@ -179,19 +176,8 @@ class PauseSubState extends MusicBeatSubstate
 
 			switch (daSelected)
 			{
-				case "Resume":
-					FlxG.cameras.remove(pauseCam);
-
-					/*if (PlayState.instance.songStarted) {
-						FlxG.sound.music.play();
-						// paranoia
-						FlxG.sound.music.looped = false;
-					    PlayState.instance.vocals.play();
-						PlayState.instance.vocals.looped = false;
-					}*/
-					close();
-				case "Restart Song":
-					FlxG.resetState();
+				case "Resume": close();
+				case "Restart Song": FlxG.resetState();
 				#if debug
 				case "Toggle Botplay":
 					Settings.set("botplay", !Settings.get("botplay"));

@@ -24,16 +24,15 @@ class Note extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
-	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var isSustainEnd(get, null):Bool = false;
 	function get_isSustainEnd():Bool {
-		return animation.curAnim.name.endsWith("holdend");
+		return animation.curAnim?.name.endsWith("holdend");
 	}
 	public var noteType:String;
 	public var noHit:Bool = false;
-
+	public var strumSyncVariables = ["alpha", "visible", "angle", "color", "x"];
 
 	public var noteScore:Float = 1;
 	
@@ -59,9 +58,7 @@ class Note extends FlxSprite
 		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
 		switch (this.noteType) {
-			case "Normal": null;
 			default:
-				// bug: custom notes sustains spawn in front of the parent note
 				if (FileSystem.exists(Paths.getPath('custom-notes/$noteType.hxs'))) {
 					try {
 						noteScript = new CallbackScript(Paths.getPath('custom-notes/$noteType.hxs'), 'Note:$noteType', {
@@ -147,8 +144,8 @@ class Note extends FlxSprite
 	}
 
 	function loadSprite() {
-		if (noteScript != null && noteScript.exists("loadSprite")) {
-			noteScript.exec("loadSprite", [PlayState.curUi, isSustainNote && prevNote != null]);
+		if (noteScript?.exists(CREATE)) {
+			noteScript.exec(CREATE, [PlayState.curUi, isSustainNote && prevNote != null]);
 			return;
 		}
 
@@ -181,6 +178,7 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
+				antialiasing = false;
 			default:
 				frames = Paths.getSparrowAtlas("strums/normal/NOTE_assets");
 				animation.addByPrefix('greenScroll', 'green0');
@@ -200,7 +198,6 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * 0.7));
 				updateHitbox();
-				antialiasing = true;
 		}
 	}
 
@@ -208,8 +205,8 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 		// if (isSustainNote && PlayState.curUi == 'pixel') offset.x = pixelSustainOffset;
-		if (noteScript != null && noteScript.exists("update")) noteScript.exec("update", [elapsed]);
-
+		if (noteScript?.exists(UPDATE)) noteScript.exec(UPDATE, [elapsed]);
+		
 		if (mustPress)
 		{
 			// ass
@@ -239,6 +236,12 @@ class Note extends FlxSprite
 
 			if (strumTime <= Conductor.songPosition)
 				wasGoodHit = true;
+		}
+
+		if (tooLate)
+		{
+			if (alpha > 0.3)
+				alpha = 0.3;
 		}
 
 		if (tooLate)

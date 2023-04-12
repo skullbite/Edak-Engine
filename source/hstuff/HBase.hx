@@ -5,6 +5,7 @@ package hstuff;
 class HBase extends SScript {
     public function new(?path:String) {
         super(path);
+        set("set", set);
         set("PlayState", PlayState);
         set("GameOverSubstate", GameOverSubstate);
         set("importLib", importLib);

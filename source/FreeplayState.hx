@@ -1,5 +1,6 @@
 package;
 
+import sys.thread.Mutex;
 import StoryMenuState.WeekData;
 import yaml.Parser.ParserOptions;
 import StoryMenuState.DifficultyData;
@@ -27,6 +28,7 @@ using StringTools;
 
 class FreeplayState extends MusicBeatState
 {
+	// static var STATIC_BOTTOM_TXT = "";
 	var songs:Array<SongMetadata> = [];
 
 	var bg:FlxSprite;
@@ -46,6 +48,7 @@ class FreeplayState extends MusicBeatState
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
+	var infoTxt:FlxText;
 	var scoreBG:FlxSprite;
 	var bottomBG:FlxSprite;
 	var rateText:FlxText;
@@ -59,9 +62,11 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
+	var mutex:Mutex;
 
 	override function create()
 	{
+		mutex = new Mutex();
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
 		#if MODS
 		var awesomeMods = PolyFrog.getModWeeks();
@@ -85,7 +90,6 @@ class FreeplayState extends MusicBeatState
 		modDifficulties = PolyFrog.getModDifficulties();
 		#end
 
-		// todo: play song button because lag
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
@@ -93,10 +97,10 @@ class FreeplayState extends MusicBeatState
 		}
 		 
 
-		 #if desktop
-		 // Updating Discord Rich Presence
-		 DiscordClient.changePresence("In the Freeplay Menu", null);
-		 #end
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("In the Freeplay Menu", null);
+		#end
 
 		var isDebug:Bool = false;
 
@@ -144,7 +148,7 @@ class FreeplayState extends MusicBeatState
 		add(coolBotomInfo);
 		
 		// like the psych engine :D
-		var infoTxt = new FlxText(2, coolBotomInfo.y + 2, 0, "[SPACE] Play Current Song");
+		infoTxt = new FlxText(2, coolBotomInfo.y + 2, 0, "[SPACE] Play Current Song");
 		infoTxt.setFormat(Paths.font("vcr.ttf"), 17);
 		add(infoTxt);
 
@@ -272,7 +276,7 @@ class FreeplayState extends MusicBeatState
 			}
 			currentlyPlaying = curSelected;
 			FlxG.sound.music.pause();
-			var songSuffix = difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase()).loadsDifferentSong ? curDifficultyArray[curDifficulty].toLowerCase() : "";
+			var songSuffix = difficultyData.get(curDifficultyArray[curDifficulty].toLowerCase()).loadsDifferentSong ? curDifficultyArray[curDifficulty].toLowerCase() : null;
 
 			#if MODS
 			Paths.curModDir = songs[curSelected].modPath;
@@ -296,9 +300,9 @@ class FreeplayState extends MusicBeatState
 			#end
 			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty], songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
-			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
+			PlayState.difficulty = curDifficultyArray[curDifficulty].toLowerCase();
+			PlayState.week = songs[curSelected].week;
+			trace('CUR WEEK' + PlayState.week);
 			if (jukeboxInst.playing) {
 				jukeboxInst.kill();
 				jukeboxVocals.kill();

@@ -1,5 +1,7 @@
 package hstuff;
 
+import hstuff.HVars.Callbacks;
+
 class CallbackScript extends HBase {
     var name:String = "h";
     public function new(path:String, printName:String, variables:Dynamic) {
@@ -16,14 +18,15 @@ class CallbackScript extends HBase {
         }
     }
 
-    public function exec(target:String, args:Array<Dynamic>):Dynamic {
+    public function exec(target:Callbacks, args:Array<Dynamic>):Dynamic {
         try {
-            return call(target, args);
+            return call(target, args).returnValue;
         }
         catch (e) {
-            trace('$name function "$target" failed: ${e.message}');
+            
+            // trace('$name function "$target" failed: ${e.message}');
             #if debug
-            trace(e.stack);
+            Sys.println(e.message);
             #end
             return null;
         }

@@ -1,5 +1,6 @@
 package;
 
+import hstuff.HVars;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.util.FlxTimer;
@@ -37,11 +38,13 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
                     try {
                         dialogueScript = new CallbackScript(Paths.getPath('dialogue/$boxType/init.hxs'), 'Dialogue:$boxType', {
                             dia: this,
+                            add: add,
+                            remove: remove,
                             Paths: new CustomPaths(boxType, "dialogue"),
                             _Paths: Paths
                         });
                         dialogueScript.execute();
-                        dialogueScript.exec("create", []);
+                        dialogueScript.exec(CREATE, []);
                     }
                     catch (e) {
                         trace('Failed to load $boxType: ${e.message}');
@@ -84,14 +87,14 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
             if (box.animation.exists("idle")) box.animation.play("idle");
             textStarted = true;
         }
-        if (dialogueScript.exists("createPost")) dialogueScript.exec("createPost", []);
+        if (dialogueScript.exists(CREATE_POST)) dialogueScript.exec(CREATE_POST, []);
         
         // new FlxTimer().start(10, (t) -> finishCallback());
     }
 
     function startDialogue() {
         cleanDialog();
-        if (dialogueScript.exists("preLine")) dialogueScript.exec("preLine", [curPortrait, dialogueText[0]]);
+        if (dialogueScript.exists(BEFORE_LINE)) dialogueScript.exec(BEFORE_LINE, [curPortrait, dialogueText[0]]);
         for (k => v in portraits) {
             if (k == curPortrait) {
                 v.visible = true;
@@ -125,7 +128,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
     function doEnd() {
         if (!alreadyEnding) {
             alreadyEnding = true;
-            if (dialogueScript.exists("finish")) new FlxTimer().start(.5, t -> dialogueScript.exec("finish", []));
+            if (dialogueScript.exists(FINISH)) new FlxTimer().start(.5, t -> dialogueScript.exec(FINISH, []));
             else {
                 for (x in 0...length) members[x].visible = false;
                 new FlxTimer().start(.5, t -> finishCallback());
@@ -136,7 +139,7 @@ class EdakeDialogueBox extends FlxTypedGroup<FlxBasic> {
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if (dialogueScript != null && dialogueScript.exists("update")) dialogueScript.exec("update", [elapsed]);
+        if (dialogueScript.exists(UPDATE)) dialogueScript.exec(UPDATE, [elapsed]);
         var targetPortrait = portraits[curPortrait];
         if (targetPortrait != null && targetPortrait.animation.exists("talk") && currentlyTyping) targetPortrait.animation.play("talk");
         if (FlxG.keys.justPressed.ESCAPE) doEnd();

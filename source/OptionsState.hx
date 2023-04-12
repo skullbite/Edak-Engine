@@ -137,7 +137,7 @@ class SubStateOpenText extends TickText {
 
     override public function tick(_=0) {
         OptionsState.instance.persistentUpdate = false;
-        OptionsState.instance.persistentDraw = false;
+        // OptionsState.instance.persistentDraw = false;
         OptionsState.instance.acceptInput = false;
         switch (key) {
             case "controls": OptionsState.instance.openSubState(new KeyBindMenu());

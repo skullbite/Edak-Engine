@@ -1,4 +1,4 @@
-package;
+package uiGroups;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxSprite;
@@ -6,7 +6,7 @@ import flixel.FlxG;
 
 class SplashGroup extends FlxTypedGroup<FlxSprite> {
     public var splashAssets = "strums/noteSplashes";
-    public var targetStrumGroup = PlayState.playerStrums;
+    public var targetStrumGroup = PlayState.instance.playerStrums;
     public var offsets = {
         x: 132, 
         y: 145 
@@ -19,7 +19,7 @@ class SplashGroup extends FlxTypedGroup<FlxSprite> {
 	public var defaultFramerate:Int = 24;
 
     public function spawnSplash(noteData:Int, ?customAnim:String) {
-        var strumTarget = PlayState.playerStrums.members[noteData];
+        var strumTarget = targetStrumGroup.members[noteData];
         // recycle(Splash);
        
         var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x + perStrumOffsets[noteData].x, offsets.y + perStrumOffsets[noteData].y, noteData, splashAssets, defaultFramerate, customAnim);

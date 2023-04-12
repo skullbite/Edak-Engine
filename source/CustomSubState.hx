@@ -1,5 +1,6 @@
 package;
 
+import hstuff.HVars.Callbacks;
 import hstuff.CallbackScript;
 import sys.FileSystem;
 import sys.io.File;
@@ -19,11 +20,13 @@ class CustomSubState extends MusicBeatSubstate {
             try {
                 subScript = new CallbackScript(Paths.getPath('substates/$target/init.hxs'), 'CustomSub:$target', {
                     sub: this,
+                    add: add,
+                    remove: remove,
                     Paths: new CustomPaths(subName, "substates"),
                     _Paths: Paths
                 });
                 subScript.execute();
-                subScript.exec("create", []);
+                subScript.exec(CREATE, []);
             }
             catch (e) {
                 trace('Failed to load $target: ${e.message}');
@@ -32,24 +35,28 @@ class CustomSubState extends MusicBeatSubstate {
         else close();
         cameras = [customCam];
     }
+
+    override function sectionHit() {
+        super.sectionHit();
+        if (subScript?.exists(SECTION)) subScript.exec(SECTION, [curSection]);
+    }
     
     override function beatHit() {
         super.beatHit();
-        if (subScript != null) subScript.exec("beatHit", [curBeat]);
+        if (subScript?.exists(BEAT)) subScript.exec(BEAT, [curBeat]);
     }
     
     override function stepHit() {
         super.stepHit();
-        if (subScript != null) subScript.exec("stepHit", [curStep]);
+        if (subScript?.exists(BEAT)) subScript.exec(STEP, [curStep]);
     }
     
     override function close() {
-        FlxG.cameras.remove(customCam);
         super.close();
     }
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if (subScript != null) subScript.exec("update", [elapsed]);
+        if (subScript?.exists(BEAT)) subScript.exec(UPDATE, [elapsed]);
     }
 }

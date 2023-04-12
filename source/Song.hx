@@ -10,6 +10,7 @@ typedef SwagSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
+	// var events:Array<Dynamic>; // [strumTime, [["ev1","val1","val2"], ["ev2","v1","v2"]]]
 	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;

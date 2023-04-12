@@ -58,7 +58,7 @@ class ChartingState extends MusicBeatState
 	 * Array of notes showing when each section STARTS in STEPS
 	 * Usually rounded up??
 	 */
-	var curSection:Int = 0;
+	// var curSection:Int = 0;
 
 	public static var lastSection:Int = 0;
 
@@ -130,7 +130,7 @@ class ChartingState extends MusicBeatState
 				speed: 1
 			};
 		}
-		currentDiff = PlayState.storyDifficulty;
+		currentDiff = PlayState.difficulty;
 
 		bg = new FlxSprite(-100).loadGraphic(Paths.image('menuBGs/menuBlack'));
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
@@ -172,19 +172,8 @@ class ChartingState extends MusicBeatState
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		var realP1 = _song.player1;
-		var realP2 = _song.player2;
-
-		/* janky way of making sure the correct character icons get fetched. */
-		if (FileSystem.exists(Paths.getPath('characters/${_song.player1}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
-			if (theSwag.iconName != null) realP1 = theSwag.iconName;
-		}
-
-		if (FileSystem.exists(Paths.getPath('characters/${_song.player2}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.getPath('/characters/${_song.player2}/config.yaml'), new ParserOptions().useObjects());
-			if (theSwag.iconName != null) realP2 = theSwag.iconName;
-		}
+		var realP1 = Character.fetchIcon(_song.player1);
+		var realP2 = Character.fetchIcon(_song.player2);		
 
 		leftIcon = new HealthIcon(realP1);
 		rightIcon = new HealthIcon(realP2);
@@ -247,7 +236,7 @@ class ChartingState extends MusicBeatState
 	{
 		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
 		typingShit = UI_songTitle;
-		var UI_difficultyTitle = new FlxUIInputText(10, 25, 70, PlayState.storyDifficulty);
+		var UI_difficultyTitle = new FlxUIInputText(10, 25, 70, PlayState.difficulty);
 		diffStuff = UI_difficultyTitle;
 
 		var check_voices = new FlxUICheckBox(10, 40, null, null, "Has voice track", 100);
@@ -567,10 +556,10 @@ class ChartingState extends MusicBeatState
 			// vocals.stop();
 		}
 
-		FlxG.sound.playMusic(Paths.inst(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.storyDifficulty.toLowerCase() : ""), 0.6);
+		FlxG.sound.playMusic(Paths.inst(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.difficulty.toLowerCase() : null), 0.6);
 
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.storyDifficulty.toLowerCase() : ""));
+		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong, PlayState.difficultyData.loadsDifferentSong ? PlayState.difficulty.toLowerCase() : null));
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
@@ -1232,17 +1221,8 @@ class ChartingState extends MusicBeatState
 
 	function updateHeads():Void
 	{
-		var realP1 = _song.player1;
-		var realP2 = _song.player2;
-		if (FileSystem.exists(Paths.getPath('characters/${_song.player1}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
-			if (theSwag.iconName != null) realP1 = theSwag.iconName;
-		}
-
-		if (FileSystem.exists(Paths.getPath('characters/${_song.player2}/config.yaml'))) {
-			var theSwag:SwagConfig = Yaml.read(Paths.getPath('characters/${_song.player1}/config.yaml'), new ParserOptions().useObjects());
-			if (theSwag.iconName != null) realP2 = theSwag.iconName;
-		}
+		var realP1 = Character.fetchIcon(_song.player1);
+		var realP2 = Character.fetchIcon(_song.player2);
 
 		if (check_mustHitSection.checked)
 		{
@@ -1556,14 +1536,14 @@ class ChartingState extends MusicBeatState
 	function loadJson(song:String):Void
 	{
 		PlayState.SONG = Song.loadFromJson(currentDiff, song.toLowerCase());
-		PlayState.storyDifficulty = currentDiff.toLowerCase();
+		PlayState.difficulty = currentDiff.toLowerCase();
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 
 	function loadAutosave():Void
 	{
 		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
-		PlayState.storyDifficulty = PlayState.SONG.diff.toLowerCase();
+		PlayState.difficulty = PlayState.SONG.diff.toLowerCase();
 		Reflect.deleteField(PlayState.SONG, "diff");
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}

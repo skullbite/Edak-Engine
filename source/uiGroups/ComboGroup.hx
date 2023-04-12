@@ -1,6 +1,6 @@
-package;
+package uiGroups;
 
-import flixel.tweens.FlxEase;
+import PlayState;
 import flixel.FlxG;
 import flixel.tweens.FlxTween;
 import flixel.text.FlxText;
@@ -35,6 +35,7 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
 
         rating = new FlxSprite();
         rating.alpha = 0;
+
         rating.cameras = [PlayState.instance.camHUD];
         add(rating);
         
@@ -78,15 +79,19 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
         if (isPixelUi) scaleStuff = PlayState.daPixelZoom * 0.7;
         
         rating.loadGraphic(Paths.image('ui/${PlayState.curUi}/ratings/' + ratingStr.replace("miss", "shit")));
+        if (isPixelUi) rating.antialiasing = false;
         rating.setGraphicSize(Std.int(rating.width * scaleStuff));
         rating.x = basePos.x - 70;
-        if (isPixelUi) rating.x += 160;
         rating.screenCenter(Y);
         rating.y -= 65;
         rating.acceleration.x = 0;
         rating.acceleration.y = 550;
         rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
+        if (isPixelUi) {
+            rating.x += 160;
+            rating.y -= 10;
+        }
         rating.alpha = 1;
 
         ms.text = Std.string(Math.round(msVal)) + "ms";
@@ -97,24 +102,34 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
         ms.alpha = 1;
 
         var combo = PlayState.instance.combo;
-        var comboThing = Std.string(combo).split("");
-        while (comboThing.length < 3) comboThing.insert(0, "0");
 
-        for (num in 0...comboThing.length) {
-            var numSpr = new ComboSprite((basePos.x - 20) + (43 * num), basePos.y - 30, comboThing[num]);
-            numbers.add(numSpr);
+        if (combo >= 10) {
+            var comboThing = Std.string(combo).split("");
+            while (comboThing.length < 3) comboThing.insert(0, "0");
+    
+            var spacing = 43;
+            if (isPixelUi) {
+                spacing += 10;
+                ms.x += 10;
+            }
+            for (num in 0...comboThing.length) {
 
-            tweens.numbers.push(FlxTween.tween(numSpr, { alpha: 0 }, 0.5, {  
-                startDelay: Conductor.crochet * 0.001,
-                onComplete: t -> if (numSpr != null) numSpr.destroy() 
-            }));
+                var numSpr = new ComboSprite((basePos.x - 20) + (spacing * num), basePos.y - 30, comboThing[num]);
+                numbers.add(numSpr);
+    
+                tweens.numbers.push(FlxTween.tween(numSpr, { alpha: 0 }, 0.5, {  
+                    startDelay: Conductor.crochet * 0.001,
+                    onComplete: t -> if (numSpr != null) numSpr.destroy() 
+                }));
+            }
         }
+       
 
         tweens.rating = FlxTween.tween(rating, { alpha: 0 }, 0.5, { 
             startDelay: Conductor.crochet * 0.001
         });
 
-        tweens.text = FlxTween.tween(ms, { alpha: 0, y: ms.y - FlxG.random.int(20, 30) }, 0.7, { onUpdate: t -> ms.velocity.y += 1 });
+        tweens.text = FlxTween.tween(ms, { alpha: 0, y: ms.y - FlxG.random.int(20, 30) }, 0.7, { onUpdate: t -> ms.velocity.y += FlxG.elapsed });
     }
 }
 

@@ -10,7 +10,7 @@ typedef SettingsData = {
     ?max:Float,
     ?options:Array<String>
 }; 
-// todo
+// todon't
 class Settings {
     public static var categories:Map<String, Map<String, SettingsData>> = [
         "Gameplay" => [
@@ -108,6 +108,11 @@ class Settings {
             },
             "botplay" => {
                 displayName: "Use Botplay",
+                type: "bool",
+                value: false
+            },
+            "gitaroo" => {
+                displayName: "Easter Egg Pause",
                 type: "bool",
                 value: false
             }

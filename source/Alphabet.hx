@@ -277,8 +277,6 @@ class AlphaCharacter extends FlxSprite
 		if (animation.exists(letter)) animation.play(letter);
 		updateHitbox();
 
-		FlxG.log.add('the row' + row);
-
 		y = (110 - height);
 		y += row * 60;
 	}

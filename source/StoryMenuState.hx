@@ -320,17 +320,17 @@ class StoryMenuState extends MusicBeatState
 				stopspamming = true;
 			}
 
-			PlayState.storyPlaylist = weekData[curWeek].songs;
+			PlayState.playlist = weekData[curWeek].songs;
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
 			#if MODS
 			Paths.curModDir = weekData[curWeek].modPath;
 			#end
-			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty].toLowerCase(), PlayState.storyPlaylist[0].toLowerCase());
-			PlayState.storyDifficulty = curDifficultyArray[curDifficulty].toLowerCase();
-			PlayState.storyWeek = curWeek;
-			PlayState.campaignScore = 0;
+			PlayState.SONG = Song.loadFromJson(curDifficultyArray[curDifficulty].toLowerCase(), PlayState.playlist[0].toLowerCase());
+			PlayState.difficulty = curDifficultyArray[curDifficulty].toLowerCase();
+			PlayState.week = curWeek;
+			PlayState.weekScore = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				LoadingState.loadAndSwitchState(new PlayState(), true);

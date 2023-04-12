@@ -1,5 +1,7 @@
 package;
 
+import openfl.filters.ShaderFilter;
+import flixel.addons.display.FlxRuntimeShader;
 import lime.utils.Assets;
 import sys.FileSystem;
 import sys.io.File;
@@ -12,17 +14,15 @@ class CoolUtil
 
 	public static function difficultyString():String
 	{
-		return difficultyArray[PlayState.storyDifficulty];
+		return difficultyArray[PlayState.difficulty];
 	}*/
-
-	inline public static function ezNullCheck(potentiallyNull:Null<Dynamic>, nullntRet:Null<Dynamic>,  totallyNotNull:Dynamic):Dynamic return potentiallyNull != null ? nullntRet : totallyNotNull;
 
 	public static function sillyArray<T>(value:T, length:Int): Array<T> {
 		var coolArray = [];
 		for (i in 0...length) coolArray.push(value);
 		return coolArray;
 	}
-
+	public static function returnShaderFilter(shader:FlxRuntimeShader) return new ShaderFilter(shader);
 	public static function getShaderStuffs(shaderPaths:Array<String>) {
 		var rets = [];
 		if (FileSystem.exists(shaderPaths[0])) rets.push(File.getContent(shaderPaths[0]));

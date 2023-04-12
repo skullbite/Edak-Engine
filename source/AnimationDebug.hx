@@ -1,197 +1,178 @@
 package;
 
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
+import flixel.ui.FlxSpriteButton;
 import flixel.util.FlxColor;
+import flixel.FlxSprite;
+import flixel.text.FlxText;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.FlxG;
 
-/**
-	*DEBUG MODE
- */
-class AnimationDebug extends FlxState
-{
-	var bf:Boyfriend;
-	var dad:Character;
+class AnimationDebug extends MusicBeatState {
+	var target:String;
 	var char:Character;
-	var textAnim:FlxText;
-	var dumbTexts:FlxTypedGroup<FlxText>;
+	var camDot:FlxSprite;
+	var anims:FlxTypedGroup<FlxText>;
+	var buttons:FlxTypedGroup<FlxSpriteButton>;
+	var cameraDisplaceButton:FlxSpriteButton;
+	var camDis:FlxText;
+	var resetButton:FlxSpriteButton;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
-	var isDad:Bool = true;
-	var daAnim:String = 'spooky';
-	var camFollow:FlxObject;
-
-	public function new(daAnim:String = 'spooky')
-	{
+	var isPlayer:Bool;
+	var camFocused:Bool = false;
+	public function new(awesomeChar:String, isPlayer:Bool) {
 		super();
-		this.daAnim = daAnim;
+		target = awesomeChar;
+		this.isPlayer = isPlayer;
 	}
 
-	override function create()
-	{
+	override public function create() {
 		FlxG.sound.music.stop();
+		FlxG.mouse.visible = true;
+		var bg = new FlxSprite().loadGraphic(Paths.image('menuBGs/menuDesat'));
+		bg.color = 0x5C5C5C;
+		add(bg);
 
-		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
-		gridBG.scrollFactor.set(0.5, 0.5);
-		add(gridBG);
+		char = new Character(0, 0, target, isPlayer);
+		char.x += char.displaceData.x;
+		char.y += char.displaceData.y;
+		char.debugMode = true;
+		char.screenCenter();
+		add(char);
 
-		if (daAnim == 'bf')
-			isDad = false;
+		var midpoint = char.getGraphicMidpoint();
+		var xOff = !isPlayer ? 150 : -100;
+		camDot = new FlxSprite().makeGraphic(10, 10);
+		camDot.screenCenter();
+		camDot.setPosition(midpoint.x + xOff + char.displaceData.camX, midpoint.y - 100 + char.displaceData.camY);
+		add(camDot);
 
-		if (isDad)
-		{
-			dad = new Character(0, 0, daAnim);
-			dad.screenCenter();
-			dad.debugMode = true;
-			add(dad);
+		anims = new FlxTypedGroup();
+		add(anims);
+		buttons = new FlxTypedGroup();
+		add(buttons);
 
-			char = dad;
-			dad.flipX = false;
+
+		var iHateMapLoops = 0;
+		for (k => v in char.animOffsets) {
+			// if (!char.animation.exists(k)) continue;
+			animList.push(k);
+			var swagTxt = new FlxText(110, 20 + (iHateMapLoops * 25));
+			swagTxt.text = Std.string(v);
+			swagTxt.size = 20;
+			swagTxt.borderStyle = OUTLINE;
+			swagTxt.borderSize = 2;
+			swagTxt.ID = iHateMapLoops;
+			anims.add(swagTxt);
+
+			var button = new FlxSpriteButton(20, 25 + (iHateMapLoops * 25), null, () -> switchAnims(swagTxt.ID, true));
+			button.ID = iHateMapLoops;
+			button.createTextLabel(k);
+			buttons.add(button);
+
+			/*var squareButton = new FlxSprite(20, 20 + (iHateMapLoops * 25)).makeGraphic(10, 10);
+			mouseManager.add(squareButton, f -> switchAnims(swagTxt.ID, true));*/
+			
+			iHateMapLoops++;
 		}
-		else
-		{
-			bf = new Boyfriend(0, 0);
-			bf.screenCenter();
-			bf.debugMode = true;
-			add(bf);
 
-			char = bf;
-			bf.flipX = false;
-		}
+		cameraDisplaceButton = new FlxSpriteButton(1075, 25, null, () -> {
+			camFocused = true;
+			switchAnims(cameraDisplaceButton.ID, true);
+		});
+		cameraDisplaceButton.createTextLabel("Camera Displace");
+		cameraDisplaceButton.ID = buttons.length;
+		buttons.add(cameraDisplaceButton);
 
-		dumbTexts = new FlxTypedGroup<FlxText>();
-		add(dumbTexts);
+		camDis = new FlxText(FlxG.width - 115, 20);
+		camDis.ID = anims.length;
+		camDis.text = '[${char.displaceData.camX},${char.displaceData.camY}]';
+		camDis.size = 20;
+		camDis.borderStyle = OUTLINE;
+		camDis.borderSize = 2;
+		anims.add(camDis);
 
-		textAnim = new FlxText(300, 16);
-		textAnim.size = 26;
-		textAnim.scrollFactor.set();
-		add(textAnim);
-
-		genBoyOffsets();
-
-		camFollow = new FlxObject(0, 0, 2, 2);
-		camFollow.screenCenter();
-		add(camFollow);
-
-		FlxG.camera.follow(camFollow);
-
+		switchAnims();
 		super.create();
 	}
 
-	function genBoyOffsets(pushList:Bool = true):Void
-	{
-		var daLoop:Int = 0;
-
-		for (anim => offsets in char.animOffsets)
-		{
-			var text:FlxText = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
-			text.scrollFactor.set();
-			text.color = FlxColor.BLUE;
-			dumbTexts.add(text);
-
-			if (pushList)
-				animList.push(anim);
-
-			daLoop++;
+	function switchAnims(change:Int=0, ?jump:Bool=false) {
+		if (jump) {
+			if (change == curAnim) return;
+			curAnim = change;
 		}
+		else {
+			curAnim += change;
+
+		    if (curAnim >= animList.length)
+		    	curAnim = 0;
+		    if (curAnim < 0)
+		    	curAnim = animList.length - 1;
+		}
+
+		if (curAnim != cameraDisplaceButton.ID) camFocused = false;
+		if (camFocused) {
+			camDot.color = FlxColor.CYAN;
+		}
+		else {
+			camDot.color = FlxColor.WHITE;
+			char.playAnim(animList[curAnim], true);
+		}
+
+		for (x in buttons) {
+			if (x.ID == curAnim) {
+				x.color = FlxColor.CYAN;
+			}
+			else x.color = FlxColor.WHITE;
+		}
+
+		for (x in anims) {
+			if (x.ID == curAnim) {
+				x.color = FlxColor.CYAN;
+			}
+			else x.color = FlxColor.WHITE;
+		}
+		
 	}
 
-	function updateTexts():Void
-	{
-		dumbTexts.forEach(function(text:FlxText)
-		{
-			text.kill();
-			dumbTexts.remove(text, true);
-		});
+	function editCam(changeVal:Int=0, onX:Bool=true) {
+		changeVal *= -1;
+		if (FlxG.keys.pressed.SHIFT) changeVal *= 10;
+		if (onX) char.displaceData.camX += changeVal;
+		else char.displaceData.camY += changeVal;
+		var midpoint = char.getGraphicMidpoint();
+		var xOff = !isPlayer ? 150 : -100;
+		camDot.screenCenter();
+		camDot.setPosition(midpoint.x + xOff + char.displaceData.camX, midpoint.y - 100 + char.displaceData.camY);
+		camDis.text = '[${char.displaceData.camX},${char.displaceData.camY}]';
 	}
 
-	override function update(elapsed:Float)
-	{
-		textAnim.text = char.animation.curAnim.name;
+	function changeText(changeVal:Int=0, onX:Bool=true) {
+		if (camFocused) return;
+		if (FlxG.keys.pressed.SHIFT) changeVal *= 10;
+		char.animOffsets[animList[curAnim]][onX ? 0 : 1] += changeVal;
+		char.playAnim(animList[curAnim], true);
+		anims.members[curAnim].text = '${char.animOffsets[animList[curAnim]]}';
+	}
 
-		if (FlxG.keys.justPressed.E)
-			FlxG.camera.zoom += 0.25;
-		if (FlxG.keys.justPressed.Q)
-			FlxG.camera.zoom -= 0.25;
-		if (FlxG.keys.justPressed.ESCAPE)
-			FlxG.switchState(new PlayState());
-
-		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L)
-		{
-			if (FlxG.keys.pressed.I)
-				camFollow.velocity.y = -90;
-			else if (FlxG.keys.pressed.K)
-				camFollow.velocity.y = 90;
-			else
-				camFollow.velocity.y = 0;
-
-			if (FlxG.keys.pressed.J)
-				camFollow.velocity.x = -90;
-			else if (FlxG.keys.pressed.L)
-				camFollow.velocity.x = 90;
-			else
-				camFollow.velocity.x = 0;
-		}
-		else
-		{
-			camFollow.velocity.set();
-		}
-
-		if (FlxG.keys.justPressed.W)
-		{
-			curAnim -= 1;
-		}
-
-		if (FlxG.keys.justPressed.S)
-		{
-			curAnim += 1;
-		}
-
-		if (curAnim < 0)
-			curAnim = animList.length - 1;
-
-		if (curAnim >= animList.length)
-			curAnim = 0;
-
-		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE)
-		{
-			char.playAnim(animList[curAnim]);
-
-			updateTexts();
-			genBoyOffsets(false);
-		}
-
-		var upP = FlxG.keys.anyJustPressed([UP]);
-		var rightP = FlxG.keys.anyJustPressed([RIGHT]);
-		var downP = FlxG.keys.anyJustPressed([DOWN]);
-		var leftP = FlxG.keys.anyJustPressed([LEFT]);
-
-		var holdShift = FlxG.keys.pressed.SHIFT;
-		var multiplier = 1;
-		if (holdShift)
-			multiplier = 10;
-
-		if (upP || rightP || downP || leftP)
-		{
-			updateTexts();
-			if (upP)
-				char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
-			if (downP)
-				char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
-			if (leftP)
-				char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
-			if (rightP)
-				char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
-
-			updateTexts();
-			genBoyOffsets(false);
-			char.playAnim(animList[curAnim]);
-		}
-
+	override function update(elapsed:Float) {
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.DOWN) (camFocused ? editCam : changeText)(-1, false);
+		if (FlxG.keys.justPressed.RIGHT) (camFocused ? editCam : changeText)(-1);
+		if (FlxG.keys.justPressed.UP) (camFocused ? editCam : changeText)(1, false);
+		if (FlxG.keys.justPressed.LEFT) (camFocused ? editCam : changeText)(1);
+		if (FlxG.keys.justPressed.ESCAPE) {
+			FlxG.mouse.visible = false;
+			FlxG.switchState(new PlayState());
+		}
+
+		if (FlxG.keys.justPressed.SPACE) char.playAnim(animList[curAnim], true);	
+		
+		if (FlxG.keys.justPressed.W) switchAnims(-1);
+		if (FlxG.keys.justPressed.S) switchAnims(1);
+		if (FlxG.keys.justPressed.A) FlxG.camera.zoom -= .1;
+		if (FlxG.keys.justPressed.D) FlxG.camera.zoom += .1;
 	}
+
 }

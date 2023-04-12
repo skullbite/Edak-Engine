@@ -23,12 +23,12 @@ class GameOverSubstate extends MusicBeatSubstate
 		instance = this;
 		var daBf:String;
 		var daBpm:Int;
-		if (PlayState.boyfriend != null) {
-			daBf = PlayState.boyfriend.deadData.char;
-		    daBpm = PlayState.boyfriend.deadData.bpm;
-		    deathSound = PlayState.boyfriend.deadData.sound;
-		    deathMusic = PlayState.boyfriend.deadData.music;
-		    endSound = PlayState.boyfriend.deadData.end;
+		if (PlayState.bf != null) {
+			daBf = PlayState.bf.deadData.char;
+		    daBpm = PlayState.bf.deadData.bpm;
+		    deathSound = PlayState.bf.deadData.sound;
+		    deathMusic = PlayState.bf.deadData.music;
+		    endSound = PlayState.bf.deadData.end;
 		}
 		else {
 			daBf = 'bf';
@@ -41,7 +41,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		Conductor.songPosition = 0;
 
-		var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverStart", []);
+		var gameOverRets = PlayState.HFunk.doDaCallback(GAME_OVER_CREATE, []);
 		if (gameOverRets.contains(HVars.STOP)) return;
 
 		// PlayState.HFunk.doDaCallback("onGameOver", []);
@@ -67,7 +67,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		super.update(elapsed);
 
-		var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverUpdate", [elapsed]);
+		var gameOverRets = PlayState.HFunk.doDaCallback(GAME_OVER_UPDATE, [elapsed]);
 		if (gameOverRets.contains(HVars.STOP)) return;
 
 		if (controls.ACCEPT)
@@ -108,7 +108,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		if (!isEnding)
 		{
-			var gameOverRets = PlayState.HFunk.doDaCallback("onGameOverEnd", []);
+			var gameOverRets = PlayState.HFunk.doDaCallback(GAME_OVER_END, []);
 		    if (gameOverRets.contains(HVars.STOP)) return;
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);

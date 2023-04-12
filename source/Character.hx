@@ -1,8 +1,7 @@
 package;
 
+import hstuff.HVars;
 import hstuff.CallbackScript;
-import yaml.Parser.ParserOptions;
-import yaml.Yaml;
 import sys.FileSystem;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -21,16 +20,21 @@ typedef SwagConfig = {
 	}
 }
 
-class Character extends FlxSprite
+class Character extends FrogSprite
 {
-	public var animOffsets:Map<String, Array<Dynamic>>;
-	public var defaultOffsets:Map<String, Array<Dynamic>>;
+
+
 	public var debugMode:Bool = false;
 	public var barColor:String = "0xe76aca";
 
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
-	public var iconName:String = 'bf';
+	public var iconName(get, default):String;
+	function get_iconName() {
+		if (charScript != null && charScript.exists(ICON)) return charScript.exec(ICON, []);
+		return curCharacter;
+	}
+	
 	// thx gabi
 	public var deadData:{char:String, sound:String, music:String, end:String, bpm:Int} = {
 		char: "bf",
@@ -41,7 +45,8 @@ class Character extends FlxSprite
 	};
 
 	public var holdTimer:Float = 0;
-	public var bopSpeed:Int = 2;
+	// -1 so if it's set to anything else, the bop speed gets automatically set
+	public var bopSpeed:Int = -1;
 	public var stopAnims = false;
 	public var stopSinging = false;
 	public var stopDancing = false;
@@ -53,29 +58,20 @@ class Character extends FlxSprite
 		camY: 0
 	};
 
+	public static function fetchIcon(name:String) {
+		if (FileSystem.exists(Paths.getPath('characters/$name/init.hxs'))) {
+			var script:CallbackScript = new CallbackScript(Paths.getPath('characters/$name/init.hxs'), '', {});
+			if (script.exists(ICON)) return script.exec(ICON, []);
+			return name;
+		}
+		return name;
+	}
+
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
 		super(x, y);
-
-		animOffsets = new Map<String, Array<Dynamic>>();
-		defaultOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
-		iconName = character;
 		this.isPlayer = isPlayer;
-		
-		antialiasing = true;
-
-		// we config loading here
-		if (FileSystem.exists(Paths.getPath('characters/$curCharacter/config.yaml'))) {
-			var daConf:SwagConfig = Yaml.read(Paths.getPath('characters/$curCharacter/config.yaml'), new ParserOptions().useObjects());
-			if (daConf.barColor != null) barColor = Std.string(daConf.barColor);
-			if (daConf.iconName != null) iconName = daConf.iconName;
-			if (daConf.deadData != null) {
-				for (x in Reflect.fields(daConf.deadData)) {
-					if (Reflect.hasField(daConf.deadData, x)) Reflect.setField(this.deadData, x, Reflect.getProperty(daConf.deadData, x));
-				}
-			}
-		}
 		
 		switch (curCharacter)
 		{
@@ -85,18 +81,20 @@ class Character extends FlxSprite
 						charScript = new CallbackScript(Paths.getPath('characters/$curCharacter/init.hxs'), 'Character:$curCharacter', {
 							animation: animation,
 							addOffset: addOffset,
-							rescaleOffsets: rescaleOffsets,
+							addAnim: this.addAnim,
+							setGraphicSize: setGraphicSize,
 							scale: scale,
+							updateHitbox: updateHitbox,
 							playAnim: playAnim,
 							char: this,
 							Paths: new CustomPaths(curCharacter, "characters"),
 							_Paths: Paths
 						});
-						charScript.exec("create", []);
+						charScript.exec(CREATE, []);
 					}
 					catch (e) {
 						charScript = null;
-						trace('Failed to load $curCharacter from hscript: ${e.message}');
+					    trace('Failed to load $curCharacter from hscript: ${e.message}');
 						loadBfInstead();
 					}
 				}
@@ -105,7 +103,10 @@ class Character extends FlxSprite
 
 		dance();
 
-		if (animation.exists("danceLeft") && animation.exists("danceRight")) bopSpeed = 1;
+		if (bopSpeed == -1) {
+			if (animation.exists("danceLeft") && animation.exists("danceRight")) bopSpeed = 1;
+			else bopSpeed = 2;
+		}
 
 		if (isPlayer)
 		{
@@ -129,13 +130,15 @@ class Character extends FlxSprite
 			}
 		}
 
-		if (charScript != null && charScript.exists("createPost")) charScript.exec("createPost", []);
+		if (charScript != null && charScript.exists(CREATE_POST)) charScript.exec(CREATE_POST, []);
 	}
 
 	override function update(elapsed:Float)
 	{
+		if (!active) destroy();
 		if (!curCharacter.startsWith('bf'))
 		{
+			if (animation.curAnim == null) return;
 			if (animation.curAnim.name.startsWith('sing'))
 			{
 				holdTimer += elapsed;
@@ -154,12 +157,14 @@ class Character extends FlxSprite
 
 		super.update(elapsed);
 
-		if (charScript != null && charScript.exists("update")) {
-			charScript.exec("update", [elapsed]);
+		if (charScript != null && charScript.exists(UPDATE)) {
+			charScript.exec(UPDATE, [elapsed]);
 			return;
 		}
 
-		if (animation.curAnim.finished && animation.getByName('${animation.curAnim.name}Loop') != null) playAnim('${animation.curAnim.name}Loop', true);
+		if (animation.curAnim == null) return;
+
+		if (animation.curAnim.finished && animation.exists('${animation.curAnim.name}Loop')) playAnim('${animation.curAnim.name}Loop', true);
 
 		switch (curCharacter)
 		{
@@ -176,44 +181,18 @@ class Character extends FlxSprite
 	 */
 	public function dance(force = false)
 	{
-		if (charScript != null && charScript.exists("dance")) {
-			charScript.exec("dance", []);
+		if (debugMode) return;
+		if (animation?.curAnim?.name.contains("sing") && !animation?.curAnim?.finished && !force) return;
+		if (charScript != null && charScript.exists(DANCE)) {
+			charScript.exec(DANCE, []);
 			return;
 		}
-		if (!debugMode)
-		{
-			if (!animation.curAnim.name.startsWith('hair')) {
-				if (animation.exists('danceLeft') && animation.exists('danceRight')) {
-					danced = !danced;
-					playAnim(danced ? "danceRight" : "danceLeft", force);
-				}
-				else playAnim("idle", force);
-			}
-			/*switch (curCharacter)
-			{
-				case 'gf' | 'gf-christmas' | 'gf-car' | 'gf-pixel':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-				case 'spooky':
-					danced = !danced;
-
-					if (danced)
-						playAnim('danceRight');
-					else
-						playAnim('danceLeft');
-				default:
-					playAnim('idle', true);
-
-			}*/
+		
+		if (animation?.exists('danceLeft') && animation?.exists('danceRight')) {
+			danced = !danced;
+			playAnim(danced ? "danceRight" : "danceLeft", force);
 		}
+		else playAnim("idle", force);
 	}
 
 	// skibbidy beep po
@@ -258,21 +237,13 @@ class Character extends FlxSprite
 	    flipX = true;
 	}
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
+	override function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		if (stopAnims) return;
 		if (stopDancing && (AnimName.contains("dance") || AnimName == "idle")) return;
 		if (stopSinging && AnimName.contains("sing")) return;
 	
-		animation.play(AnimName, Force, Reversed, Frame);
-
-		var daOffset = animOffsets.get(AnimName);
-		if (animOffsets.exists(AnimName))
-		{
-			offset.set(daOffset[0], daOffset[1]);
-		}
-		else
-			offset.set(0, 0);
+		super.playAnim(AnimName, Force, Reversed, Frame);
 
 		if (curCharacter == 'gf')
 		{
@@ -289,22 +260,6 @@ class Character extends FlxSprite
 			{
 				danced = !danced;
 			}
-		}
-	}
-
-	public function addOffset(name:String, x:Float = 0, y:Float = 0)
-	{
-		defaultOffsets[name] = [x, y];
-		x *= scale.x;
-		y *= scale.y;
-		animOffsets[name] = [x, y];
-	}
-
-	// saw this in fe and needed it badly
-	public function rescaleOffsets() {
-		for (k => v in animOffsets) {
-			v[0] = defaultOffsets[k][0] * scale.x;
-			v[1] = defaultOffsets[k][1] * scale.y;
 		}
 	}
 }
