@@ -8,18 +8,16 @@ var lightingOffset = 8;
 var halloweenBG:FlxSprite;
 
 function create() {
-	var hallowTex = Paths.getSparrowAtlas('halloween_bg');
 	halloweenBG = new FlxSprite(-200, -100);
-	halloweenBG.frames = hallowTex;
+	halloweenBG.frames = Paths.getSparrowAtlas('halloween_bg');
 	halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
 	halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
 	halloweenBG.animation.play('idle');
 	halloweenBG.antialiasing = true;
-    // stage.publicSprites["halloweenBG"] = halloweenBG;
-	stage.add(halloweenBG);
+	add(halloweenBG);
 }
 
-function reposCharacters() {
+function createPost() {
 	PlayState.dad.y += 200;
 }
 
@@ -28,12 +26,12 @@ function beatHit(beat) {
 }
 
 function lightningStrikeShit(beat) {
-	FlxG.sound.play(Paths.soundRandom('sounds/thunder_', 1, 2));
+	FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
 	halloweenBG.animation.play('lightning');
 
 	lightningStrikeBeat = beat;
 	lightingOffset = FlxG.random.int(8, 24);
 
-	PlayState.boyfriend.animation.play('scared', true);
+	PlayState.bf.playAnim('scared', true);
 	PlayState.gf.playAnim('scared', true);
 }

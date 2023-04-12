@@ -1,18 +1,13 @@
+function getIcon() return "senpai";
 function create() {
     char.barColor = "0xd5d5d3";
-    char.frames = _Paths.getSparrowAtlas('reused/senpai', 'characters');
-    char.animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
-    char.animation.addByPrefix('singUP', 'Angry Senpai UP NOTE', 24, false);
-    char.animation.addByPrefix('singLEFT', 'Angry Senpai LEFT NOTE', 24, false);
-    char.animation.addByPrefix('singRIGHT', 'Angry Senpai RIGHT NOTE', 24, false);
-    char.animation.addByPrefix('singDOWN', 'Angry Senpai DOWN NOTE', 24, false);
+    char.frames = _Paths.getSparrowAtlas('characters/senpai');
     
-    char.addOffset('idle');
-    char.addOffset("singUP", 5, 37);
-    char.addOffset("singRIGHT");
-    char.addOffset("singLEFT", 40);
-    char.addOffset("singDOWN", 14);
-    char.playAnim('idle');
+    addAnim('idle', 'Angry Senpai Idle');
+    addAnim('singUP', 'Angry Senpai UP NOTE', [0, 6]);
+    addAnim('singLEFT', 'Angry Senpai LEFT NOTE', [6, 1]);
+    addAnim('singRIGHT', 'Angry Senpai RIGHT NOTE');
+    addAnim('singDOWN', 'Angry Senpai DOWN NOTE', [1, 1]);
     
     char.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
     char.updateHitbox();

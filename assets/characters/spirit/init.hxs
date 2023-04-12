@@ -1,26 +1,22 @@
 function create() {
     char.barColor = "0x59b4ff";
     char.frames = Paths.getPackerAtlas('spirit');
-    char.animation.addByPrefix('idle', "idle spirit_", 24, false);
-    char.animation.addByPrefix('singUP', "up_", 24, false);
-    char.animation.addByPrefix('singRIGHT', "right_", 24, false);
-    char.animation.addByPrefix('singLEFT', "left_", 24, false);
-    char.animation.addByPrefix('singDOWN', "spirit down_", 24, false);
+    addAnim('idle', "idle spirit_", [-60, -51]);
+    addAnim('singUP', "up_", [-53, -49]);
+    addAnim('singRIGHT', "right_", [-53, -52]);
+    addAnim('singLEFT', "left_", [-50, -57]);
+    addAnim('singDOWN', "spirit down_", [10, 10]);
     
-    char.addOffset('idle', -220, -280);
-    char.addOffset('singUP', -220, -240);
-    char.addOffset("singRIGHT", -220, -280);
-    char.addOffset("singLEFT", -200, -280);
-    char.addOffset("singDOWN", 170, 110);
+    setGraphicSize(Std.int(char.width * PlayState.daPixelZoom));
     
-    char.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
+    
+    playAnim('idle');
     char.updateHitbox();
-    
-    char.playAnim('idle');
-    
     char.antialiasing = false;
-    
-    char.displaceData.x -= 150;
-    char.displaceData.y += 100;
     char.bopSpeed = 1;
+
+    char.displaceData.x = -200;
+    char.displaceData.y = 100;
+    char.displaceData.camX = 100;
+    char.displaceData.camY = 100;
 }

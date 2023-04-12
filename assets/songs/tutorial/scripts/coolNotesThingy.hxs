@@ -1,0 +1,32 @@
+function createPost() {
+    for (x in game.cpuStrums) { 
+        remove(x);
+        add(x);
+        var midpoint = PlayState.dad.getMidpoint();
+        x.animation.getByName("confirm").frameRate -= 3;
+        x.x = midpoint.x - 350;
+        x.y = midpoint.y - 150;
+        x.cameras = [game.camGame];
+        x.alpha = 1;
+        x.scrollFactor.set(1, 1);
+        x.x += 300;
+        switch (x.ID) {
+            case 0: x.x -= 200;
+            case 1: x.y += 200;
+            case 2: x.y -= 200;
+            case 3: x.x += 200;
+        }
+    }
+    // game.cpuStrums.members.forEach(t -> t.cameras = [game.camGame]);
+}
+
+function update() {
+    for (x in game.cpuStrums) x.visible = x.animation.curAnim.name != "static";
+}
+
+function noteSpawn(n) {
+    if (!n.mustPress) {
+        n.strumSyncVariables.remove("alpha");
+        n.alpha = 0;
+    }
+}

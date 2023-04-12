@@ -21,6 +21,7 @@ function create() {
 			bg.alpha = 0.7;
 	}, 5);
     dia.box = new FlxSprite(-20, 45);
+    dia.box.antialiasing = false;
     dia.box.frames = Paths.getSparrowAtlas('dialogueBox-evil');
 	dia.box.animation.addByPrefix('open', 'Spirit Textbox spawn', 24, false);
 	dia.box.animation.addByIndices('idle', 'Spirit Textbox spawn', [10], "", 24);
@@ -32,6 +33,7 @@ function create() {
     var dadPortrait = new FlxSprite(320, 170).loadGraphic(Paths.image("portraits/spiritFaceForward"));
     dadPortrait.setGraphicSize(Std.int(dadPortrait.width * 6));
     dadPortrait.screenCenter();
+    dadPortrait.antialiasing = false;
     dadPortrait.y -= 50;
     dia.portraits["dad"] = dadPortrait;
 }

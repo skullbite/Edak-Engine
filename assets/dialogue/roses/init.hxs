@@ -23,6 +23,7 @@ function create() {
 	}, 5);
     dia.box = new FlxSprite(-20, 45);
     dia.box.frames = Paths.getSparrowAtlas('dialogueBox-senpaiMad');
+    dia.box.antialiasing = false;
 	dia.box.animation.addByPrefix('open', 'SENPAI ANGRY IMPACT SPEECH', 24, false);
 	dia.box.animation.addByIndices('idle', 'SENPAI ANGRY IMPACT SPEECH', [3], "", 24);
     dia.box.setGraphicSize(Std.int(dia.box.width * PlayState.daPixelZoom * 0.9));
@@ -31,6 +32,7 @@ function create() {
 
     dia.portraits["bf"] = new FlxSprite(500, 350);
     dia.portraits["bf"].frames = _Paths.getSparrowAtlas('portraits/bfPortrait', 'dialogue');
+    dia.portraits["bf"].antialiasing = false;
 	dia.portraits["bf"].animation.addByPrefix('enter', 'Boyfriend portrait enter', 24, false);
 	dia.portraits["bf"].setGraphicSize(Std.int(dia.portraits["bf"].width * PlayState.daPixelZoom * 0.9));
 }

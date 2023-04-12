@@ -3,11 +3,12 @@ package;
 import flixel.FlxSprite;
 
 function create() {
+    if (PlayState.SONG.song == "Tutorial") PlayState.instance.doStrumIntro = false;
     var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
     bg.antialiasing = true;
     bg.scrollFactor.set(0.9, 0.9);
     bg.active = false;
-    stage.add(bg);
+    add(bg);
 
     var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
     stageFront.scale.set(1.1, 1.1);
@@ -15,7 +16,7 @@ function create() {
     stageFront.antialiasing = true;
     stageFront.scrollFactor.set(0.9, 0.9);
     stageFront.active = false;
-    stage.add(stageFront);
+    add(stageFront);
 
     var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
     stageCurtains.scale.set(0.9, 0.9);
@@ -23,11 +24,11 @@ function create() {
     stageCurtains.antialiasing = true;
     stageCurtains.scrollFactor.set(1.3, 1.3);
     stageCurtains.active = false;
-    stage.foreground.add(stageCurtains);
+    foreground.add(stageCurtains);
 }
 
-function reposCharacters() {
-    if (PlayState.SONG.song.toLowerCase() == 'tutorial') { 
+function createPost() {
+    if (PlayState.SONG.song == "Tutorial") {
         PlayState.dad.x = 400;
         PlayState.dad.y = 130;
     }

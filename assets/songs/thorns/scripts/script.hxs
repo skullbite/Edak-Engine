@@ -1,8 +1,8 @@
-function onCreatePost() {
+function createPost() {
     PlayState.gf.bopSpeed = 2;
 }
 
-function onBeatHit(beat) {
+function beatHit(beat) {
     switch (beat) {
         case 32: game.bopSpeed = 1;
         case 64,192: 
@@ -26,7 +26,6 @@ function onBeatHit(beat) {
             game.hudBumpZoom = 0.03;
             game.bopSpeed = 4;
             PlayState.gf.bopSpeed = 2;
-
     }
     
 }

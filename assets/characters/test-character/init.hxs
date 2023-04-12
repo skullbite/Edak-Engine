@@ -5,13 +5,13 @@ function create() {
     char.loadGraphic(Paths.image("week54prototype"));
     char.displaceData.y = 300;
 				
-    char.animation.add("singLEFT", [0], 0);
-    char.animation.add("singRIGHT", [0], 0);
-    char.animation.add("singUP", [0], 0);
-    char.animation.add("singDOWN", [0], 0);
-    char.animation.add("idle", [0], 0);
+    animation.add("singLEFT", [0], 0);
+    animation.add("singRIGHT", [0], 0);
+    animation.add("singUP", [0], 0);
+    animation.add("singDOWN", [0], 0);
+    animation.add("idle", [0], 0);
 
-    char.animation.callback = (n, i, d) -> {
+    animation.callback = (n, i, d) -> {
     	switch (n) {
     		case "singLEFT": char.color = 0x8f3571;
     		case "singRIGHT": char.color = 0xcb2e33;
@@ -21,5 +21,5 @@ function create() {
     	}
     };
 
-    char.playAnim('idle');
+    playAnim('idle');
 }

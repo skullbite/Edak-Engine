@@ -17,18 +17,18 @@ function create() {
     fastCarCanDrive = true;
     var skyBG = new FlxSprite(-120, -50).loadGraphic(Paths.image('limoSunset'));
 	skyBG.scrollFactor.set(0.1, 0.1);
-	stage.add(skyBG);
+	add(skyBG);
 
 	bgLimo = new FlxSprite(-200, 480);
 	bgLimo.frames = Paths.getSparrowAtlas('bgLimo');
 	bgLimo.animation.addByPrefix('drive', "background limo pink", 24);
 	bgLimo.animation.play('drive');
 	bgLimo.scrollFactor.set(0.4, 0.4);
-	stage.add(bgLimo);
+	add(bgLimo);
 
 	grpLimoDancers = new FlxTypedGroup();
     if (FlxG.save.data.distractions) {
-		stage.add(grpLimoDancers);
+		add(grpLimoDancers);
 	
 		for (i in 0...5) {
 			var dancer = new FlxSprite((370 * i) + 130, bgLimo.y - 400);
@@ -47,7 +47,7 @@ function create() {
 	/* wanted to add this back but the shader is busted
     var overlayShit = new FlxSprite(-500, -600).loadGraphic(Paths.image('limoOverlay'));
 	overlayShit.alpha = 0.5;
-    stage.add(overlayShit);
+    add(overlayShit);
 
 
     var shaderBullshit = new BlendModeEffect(new OverlayShader(), 0xf85151);
@@ -67,26 +67,24 @@ function create() {
 
 	fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('fastCarLol'));
 	fastCar.visible = false;
-    if (Settings.get("distractions")) stage.add(fastCar);
+    if (Settings.get("distractions")) add(fastCar);
 }
 
 function beatHit(beat) {
-    if (Settings.get("distractions")) {
-        grpLimoDancers.forEach(d -> d.animation.play(dancersDanced ? "danceLeft" : "danceRight"));
-		dancersDanced = !dancersDanced;
-
-        if (FlxG.random.bool(10) && fastCarCanDrive) fastCarDrive();
-    }
+    if (!Settings.get("distractions")) return;
+    grpLimoDancers.forEach(d -> d.animation.play(dancersDanced ? "danceLeft" : "danceRight"));
+	dancersDanced = !dancersDanced;
+    if (FlxG.random.bool(10) && fastCarCanDrive) fastCarDrive();
 }
 
-function reposCharacters() {
-    PlayState.boyfriend.y -= 220;
-	PlayState.boyfriend.x += 260;
-	PlayState.boyfriend.displaceData.camX = -300;
+function createPost() {
+    PlayState.bf.y -= 220;
+	PlayState.bf.x += 260;
+	PlayState.bf.displaceData.camX = -300;
 }
 
 function fastCarDrive() {
-    FlxG.sound.play(Paths.soundRandom('sounds/carPass', 0, 1), 0.7);
+    FlxG.sound.play(Paths.soundRandom('carPass', 0, 1), 0.7);
 
     fastCar.visible = true;
 	fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;

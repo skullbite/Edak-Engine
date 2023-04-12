@@ -1,0 +1,6 @@
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+
+function camMove(char:String) {
+    FlxTween.tween(PlayState, { defaultCamZoom: char == "dad" ? 1.23 : 1.05 }, .4, { ease: FlxEase.circOut });
+}

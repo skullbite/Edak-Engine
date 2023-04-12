@@ -1,27 +1,26 @@
 function create() {
+    char.deadData = {
+        char: "bf-pixel/dead",
+        sound: "gameover/weeb/fnf_loss_sfx-pixel",
+        music: "ingame/weeb/gameOver-pixel",
+        end: "ingame/weeb/gameOverEnd-pixel"
+    }
+
     char.barColor = "0xf368f0";
+
     char.frames = Paths.getSparrowAtlas('bfPixel');
-    char.animation.addByPrefix('idle', 'BF IDLE', 24, false);
-    char.animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
-    char.animation.addByPrefix('singLEFT', 'BF LEFT NOTE', 24, false);
-    char.animation.addByPrefix('singRIGHT', 'BF RIGHT NOTE', 24, false);
-    char.animation.addByPrefix('singDOWN', 'BF DOWN NOTE', 24, false);
-    char.animation.addByPrefix('singUPmiss', 'BF UP MISS', 24, false);
-    char.animation.addByPrefix('singLEFTmiss', 'BF LEFT MISS', 24, false);
-    char.animation.addByPrefix('singRIGHTmiss', 'BF RIGHT MISS', 24, false);
-    char.animation.addByPrefix('singDOWNmiss', 'BF DOWN MISS', 24, false);
+
+    addAnim('idle', 'BF IDLE');
+    addAnim('singUP', 'BF UP NOTE');
+    addAnim('singLEFT', 'BF LEFT NOTE');
+    addAnim('singRIGHT', 'BF RIGHT NOTE');
+    addAnim('singDOWN', 'BF DOWN NOTE');
+    addAnim('singUPmiss', 'BF UP MISS');
+    addAnim('singLEFTmiss', 'BF LEFT MISS');
+    addAnim('singRIGHTmiss', 'BF RIGHT MISS');
+    addAnim('singDOWNmiss', 'BF DOWN MISS');
     
-    char.addOffset('idle');
-    char.addOffset("singUP");
-    char.addOffset("singRIGHT");
-    char.addOffset("singLEFT");
-    char.addOffset("singDOWN");
-    char.addOffset("singUPmiss");
-    char.addOffset("singRIGHTmiss");
-    char.addOffset("singLEFTmiss");
-    char.addOffset("singDOWNmiss");
-    
-    char.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
+    setGraphicSize(Std.int(char.width * PlayState.daPixelZoom));
     char.updateHitbox();
     
     char.playAnim('idle');

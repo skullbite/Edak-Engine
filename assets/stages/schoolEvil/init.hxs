@@ -4,24 +4,25 @@ import flixel.addons.effects.FlxTrail;
 import flixel.FlxSprite;
 
 function create() {
+	Paths.useFullDir = false;
 	PlayState.curUi = "pixel";
-	stage.cameraDisplace.x = 400;
-	stage.cameraDisplace.y = 200;
     var bg:FlxSprite = new FlxSprite(400, 200);
+	bg.antialiasing = false;
 	bg.frames = Paths.getSparrowAtlas('animatedEvilSchool');
 	bg.animation.addByPrefix('idle', 'background 2', 24);
 	bg.animation.play('idle');
 	bg.scrollFactor.set(0.8, 0.9);
 	bg.scale.set(6, 6);
-	stage.add(bg);
+	add(bg);
 }
 
-function reposCharacters() {
-	PlayState.boyfriend.x += 200;
-	PlayState.boyfriend.y += 220;
-	PlayState.boyfriend.displaceData.camY = -70;
+function createPost() {
+	PlayState.bf.x += 200;
+	PlayState.bf.y += 220;
+	PlayState.bf.displaceData.camY = -140;
 	PlayState.gf.x += 180;
 	PlayState.gf.y += 300;
+	trace(FlxTrail);
 	var trail = new FlxTrail(PlayState.dad, null, 4, 24, 0.3, 0.069);
 	PlayState.dadGroup.insert(0, trail);
 }

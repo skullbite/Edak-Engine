@@ -1,11 +1,16 @@
 package;
 // i had multiple aneurysms porting this
 import flixel.system.FlxSound;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.FlxSprite;
 import flixel.FlxG;
 
 var trainMoving = false;
 var trainCooldown = 0;
+var windowTween = null;
+var window:FlxSprite;
+var winColors = [0x31a2fd, 0x31fd8c, 0xfb33f5, 0xfd4531, 0xfba633];
 var curLight = 0;
 var trainFrameTiming = 0.0;
 var startedMoving = false;
@@ -14,53 +19,43 @@ var trainCars = 8;
 var trainSound:FlxSound;
 
 function create() {
-	stage.cameraDisplace.x = 400;
-	stage.cameraDisplace.y = -50;
-    importLib("flixel.group.FlxTypedGroup");
+	set("curLight", curLight);
+	set("winColors", winColors);
     var bg = new FlxSprite(-100).loadGraphic(Paths.image('sky'));
 	bg.scrollFactor.set(0.1, 0.1);
-	stage.add(bg);
+	add(bg);
 
 	var city = new FlxSprite(-10).loadGraphic(Paths.image('city'));
 	city.scrollFactor.set(0.3, 0.3);
 	city.scale.set(0.85, 0.85);
 	city.updateHitbox();
-	stage.add(city);
+	add(city);
 
-
-	var phillyCityLights = new FlxTypedGroup();
-	if (Settings.get("distractions")) stage.add(phillyCityLights);
-    stage.publicSprites["phillyCityLights"] = phillyCityLights;
-
-
-	for (i in 0...5)
-	{
-			var light = new FlxSprite(city.x).loadGraphic(Paths.image('win' + i));
-			light.scrollFactor.set(0.3, 0.3);
-			light.visible = false;
-			light.scale.set(0.85, 0.85);
-			light.updateHitbox();
-			light.antialiasing = true;
-			stage.publicSprites["phillyCityLights"].add(light);
-
-	}
+	window = new FlxSprite(city.x).loadGraphic(Paths.image('window'));
+	window.alpha = 0;
+	window.color = winColors[curLight];
+	window.scrollFactor.set(0.3, 0.3);
+	window.setGraphicSize(Std.int(window.width * .85));
+	window.updateHitbox();
+	add(window);
+	set("window", window);
 
     var streetBehind = new FlxSprite(-40, 50).loadGraphic(Paths.image('behindTrain'));
-    stage.add(streetBehind);
+    add(streetBehind);
 
 	var phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('train'));
-	if (Settings.get("distractions")) stage.add(phillyTrain);
+	if (Settings.get("distractions")) add(phillyTrain);
     stage.publicSprites["phillyTrain"] = phillyTrain;
 
 
-	trainSound = new FlxSound().loadEmbedded(Paths.sound('sounds/train_passes'));
+	trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
 	FlxG.sound.list.add(trainSound);
 
 	// var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
 
 	var street = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('street'));
     
-	stage.add(street);
+	add(street);
 }
 
 function update(elapsed) {
@@ -83,13 +78,17 @@ function beatHit(beat) {
 
         if (beat % 4 == 0)
         {
-            stage.publicSprites["phillyCityLights"].forEach(light -> light.visible = false);
+			if (windowTween != null) windowTween.cancel();
+            window.alpha = 0;
 			
 			var lastLight = curLight;
 
-            while (curLight == lastLight) curLight = FlxG.random.int(0, stage.publicSprites["phillyCityLights"].length - 1);
+            while (curLight == lastLight) curLight = FlxG.random.int(0, winColors.length - 1);
+			set("curLight", curLight);
 
-            stage.publicSprites["phillyCityLights"].members[curLight].visible = true;
+            window.color = winColors[curLight];
+			window.alpha = 1;
+			windowTween = FlxTween.tween(window, { alpha: 0 }, Conductor.crochet / 300);
         }
             // phillyCityLights.members[curLight].alpha = 1;
         if (beat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)

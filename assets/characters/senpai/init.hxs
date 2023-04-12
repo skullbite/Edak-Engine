@@ -1,26 +1,19 @@
 function create() {
     char.barColor = "0xd5d5d3";
-    char.frames = _Paths.getSparrowAtlas('reused/senpai', 'characters');
-    char.animation.addByPrefix('idle', 'Senpai Idle', 24, false);
-    char.animation.addByPrefix('singUP', 'SENPAI UP NOTE', 24, false);
-    char.animation.addByPrefix('singLEFT', 'SENPAI LEFT NOTE', 24, false);
-    char.animation.addByPrefix('singRIGHT', 'SENPAI RIGHT NOTE', 24, false);
-    char.animation.addByPrefix('singDOWN', 'SENPAI DOWN NOTE', 24, false);
-    
-    char.addOffset('idle');
-    char.addOffset("singUP", 5, 37);
-    char.addOffset("singRIGHT");
-    char.addOffset("singLEFT", 40);
-    char.addOffset("singDOWN", 14);
+    char.frames = _Paths.getSparrowAtlas('characters/senpai');
+
+    addAnim('idle', 'Senpai Idle');
+    addAnim('singUP', 'SENPAI UP NOTE', [0, 6]);
+    addAnim('singLEFT', 'SENPAI LEFT NOTE', [6, 1]);
+    addAnim('singRIGHT', 'SENPAI RIGHT NOTE');
+    addAnim('singDOWN', 'SENPAI DOWN NOTE', [1, 1]);
     
     char.playAnim('idle');
-    
-    char.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
-    char.updateHitbox();
+    setGraphicSize(Std.int(char.width * PlayState.daPixelZoom));
     
     char.antialiasing = false;
     char.displaceData.x += 150;
     char.displaceData.y += 360;
-    char.displaceData.camX -= 200;
-    char.displaceData.camY -= 330;
+    char.displaceData.camX = 70;
+    char.displaceData.camY = 92;
 }

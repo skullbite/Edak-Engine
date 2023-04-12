@@ -3,7 +3,7 @@ package;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
-function onBeatHit(beat) {
+function beatHit(beat) {
     switch (beat) {
         case 8, 136, 360: game.bopSpeed = 2;
         case 72: game.bopSpeed = 1;

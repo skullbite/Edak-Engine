@@ -24,6 +24,7 @@ function create() {
 	}, 5);
     
     dia.box = new FlxSprite(-20, 45);
+    dia.box.antialiasing = false;
     dia.box.frames = Paths.getSparrowAtlas("dialogueBox-pixel");
     dia.box.animation.addByPrefix('open', 'Text Box Appear', 12, false);
 	dia.box.animation.addByIndices('idle', 'Text Box Appear', [3], "", 12);
@@ -31,11 +32,13 @@ function create() {
     dia.box.screenCenter();
     dia.box.y = 350;
     dia.portraits["dad"] = new FlxSprite(425, 350);
+    dia.portraits["dad"].antialiasing = false;
     dia.portraits["dad"].frames = Paths.getSparrowAtlas("portraits/senpaiPortrait");
     dia.portraits["dad"].animation.addByPrefix('enter', 'Senpai Portrait Enter', 24, false);
     dia.portraits["dad"].setGraphicSize(Std.int(dia.portraits["dad"].width * PlayState.daPixelZoom * 0.9));
 
     dia.portraits["bf"] = new FlxSprite(500, 350);
+    dia.portraits["bf"].antialiasing = false;
     dia.portraits["bf"].frames = _Paths.getSparrowAtlas('portraits/bfPortrait', 'dialogue');
 	dia.portraits["bf"].animation.addByPrefix('enter', 'Boyfriend portrait enter', 24, false);
 	dia.portraits["bf"].setGraphicSize(Std.int(dia.portraits["bf"].width * PlayState.daPixelZoom * 0.9));

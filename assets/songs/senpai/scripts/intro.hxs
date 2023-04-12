@@ -5,7 +5,7 @@ import CoolUtil;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
-function onCutscene() {
+function cutscene() {
     var lunchbox = FlxG.sound.play(Paths.music('ingame/weeb/Lunchbox'), 0, true);
 	lunchbox.fadeIn(1, 0, 0.8);
     var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2));

@@ -1,38 +1,26 @@
 function create() {
     char.frames = Paths.getSparrowAtlas("BOYFRIEND");
-    char.animation.addByPrefix('idle', 'BF idle dance', 24, false);
-    char.animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
-    char.animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
-    char.animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
-    char.animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
-    char.animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
-    char.animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
-    char.animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);
-    char.animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
-    char.animation.addByPrefix('hey', 'BF HEY', 24, false);
-
-    char.animation.addByPrefix('firstDeath', "BF dies", 24, false);
-    char.animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-    char.animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
-
-    char.animation.addByPrefix('scared', 'BF idle shaking', 24);
-
-    char.addOffset('idle', -5);
-    char.addOffset("singUP", -29, 27);
-    char.addOffset("singRIGHT", -38, -7);
-    char.addOffset("singLEFT", 12, -6);
-    char.addOffset("singDOWN", -10, -50);
-    char.addOffset("singUPmiss", -29, 27);
-    char.addOffset("singRIGHTmiss", -30, 21);
-    char.addOffset("singLEFTmiss", 12, 24);
-    char.addOffset("singDOWNmiss", -11, -19);
-    char.addOffset("hey", 7, 4);
-    char.addOffset('firstDeath', 37, 11);
-    char.addOffset('deathLoop', 37, 5);
-    char.addOffset('deathConfirm', 37, 69);
-    char.addOffset('scared', -4);
     
-    char.playAnim('idle');
+    addAnim("idle", "BF idle dance", [-5, 0]);
+    addAnim("singUP", 'BF NOTE UP0', [-29, 27]);
+    addAnim("singLEFT", "BF NOTE LEFT0", [12, -6]);
+    addAnim("singRIGHT", "BF NOTE RIGHT0", [-38, -7]);
+    addAnim("singDOWN", "BF NOTE DOWN0", [-10, -50]);
+    addAnim("singUPmiss", "BF NOTE UP MISS", [-29, 27]);
+    addAnim("singRIGHTmiss", "BF NOTE RIGHT MISS", [-30, 21]);
+    addAnim("singLEFTmiss", "BF NOTE LEFT MISS", [12, 24]);
+    addAnim("singDOWNmiss", "BF NOTE DOWN MISS", [-11, -19]);
     
+    addAnim("hey", "BF HEY", [7, 4]);
+    addAnim("scared", "BF idle shaking", [-4, 0]);
+    
+    addAnim("firstDeath", "BF dies", [37, 11]);
+    addAnim("deathLoop", "BF Dead Loop", [37, 5]);
+    addAnim("deathConfirm", "BF Dead confirm", [37, 69]);
+    
+    playAnim("idle");
+    
+    char.displaceData.camX = -100;
+    char.displaceData.camY = -100;
     char.flipX = true;
 }
