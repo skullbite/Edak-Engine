@@ -41,10 +41,12 @@ import openfl.display.StageQuality;
 import uiGroups.ComboGroup;
 import uiGroups.SplashGroup;
 import uiGroups.Strumline;
+#if VIDEOS
 #if (hxCodec >= "2.6.1")
 import hxcodec.VideoHandler;
 #else
 import vlc.MP4Handler;
+#end
 #end
 import flixel.addons.display.FlxRuntimeShader;
 
@@ -1933,6 +1935,7 @@ class PlayState extends MusicBeatState
 		add(thing);
 	}
 
+	#if VIDEOS
 	function playVideo(videoPath:String, endCallBack:Void -> Void) {
 		#if (hxCodec >= "2.6.1")
 		var videoHandler = new VideoHandler();
@@ -1942,6 +1945,7 @@ class PlayState extends MusicBeatState
 		videoHandler.finishCallback = endCallBack;
 		videoHandler.playVideo(Paths.video(videoPath));
 	}
+	#end
 
 	function openCustomSubState(targetSub:String) openSubState(new CustomSubState(targetSub));
 

@@ -1,6 +1,5 @@
 package;
 
-import sys.thread.Mutex;
 import StoryMenuState.WeekData;
 import yaml.Parser.ParserOptions;
 import StoryMenuState.DifficultyData;
@@ -62,11 +61,9 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
-	var mutex:Mutex;
 
 	override function create()
 	{
-		mutex = new Mutex();
 		var weekDataStuff = CoolUtil.coolTextFile(Paths.txt("weeks/order"));
 		#if MODS
 		var awesomeMods = PolyFrog.getModWeeks();

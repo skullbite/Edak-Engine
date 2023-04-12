@@ -3,7 +3,7 @@
 declare -a dumbLibs=("flixel" "openfl" "flixel-addons" "flixel-ui" "yaml" "hxcodec")
 if ! command -v haxe; then
     echo "No haxe? :("
-    echo "https://haxe.org/download/"
+    echo "https://haxe.org/download/version/4.3.0"
     exit 0
 fi
 

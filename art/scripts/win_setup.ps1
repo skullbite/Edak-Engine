@@ -27,7 +27,7 @@ try {
 }
 catch { 
     Write-Host "No haxe? :(" -ForegroundColor Red
-    Write-Host "https://haxe.org/download/" -ForegroundColor Blue
+    Write-Host "https://haxe.org/download/version/4.3.0" -ForegroundColor Blue
     # Write-Host $_
 
 }

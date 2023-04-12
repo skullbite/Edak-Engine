@@ -28,7 +28,7 @@ jobs:
 
       - uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.2.5
+          haxe-version: 4.3.0
       
       - name: Install Haxelib
         run: |
@@ -45,7 +45,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990e
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
 
       - name: Create Version Tag and Asset
         run: |
@@ -72,7 +72,7 @@ jobs:
 
       - uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.2.5
+          haxe-version: 4.3.0
       
       - name: Install Haxelib
         run: |
@@ -89,7 +89,7 @@ jobs:
           haxelib install hxcodec
           haxelib install yaml
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/ 0b7303fd3f240a581afba7e94ee34f8c4693990e
+          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
 
       - name: Create Version Tag and Asset
         run: |
