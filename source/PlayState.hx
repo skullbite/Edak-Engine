@@ -108,12 +108,13 @@ class PlayState extends MusicBeatState
 	// private var curSection:Int = 0;
 
 	private var camFollow:FlxObject;
-	public static var startOn:OneOfTwo<Array<Int>, String> = "dad";
-	private var camOn(default, set):String = "dad";
-    function set_camOn(val:String) {
+	public static var startOn:OneOfTwo<Array<Float>, String> = "dad";
+	private var camOn(default, set):OneOfTwo<Array<Float>, String> = "dad";
+    function set_camOn(val:OneOfTwo<Array<Float>, String>) {
         if (val == camOn) return camOn = val;
         var char:Character = null;
-        switch (val) {
+		if (val is Array) camFollow.setPosition(val[0], val[1]);
+        else switch (val) {
             case "bf": char = bf;
             case "gf": char = gf;
             case "dad": char = dad;

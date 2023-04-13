@@ -33,6 +33,7 @@ class Stage extends FlxTypedGroup<FlxBasic> {
                             add: add,
                             remove: remove,
                             foreground: foreground,
+                            infrontOfGf: infrontOfGf,
                             stage: this,
                             Paths: pathsThing,
                             _Paths: Paths
