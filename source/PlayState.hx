@@ -1135,37 +1135,27 @@ class PlayState extends MusicBeatState
 						if (!daNote.noHit) {
 							var altAnim:String = "";
 	
-						    if (SONG.notes[Math.floor(curStep / 16)] != null)
+						    if (SONG.notes[curSection] != null)
 						    {
-						    	if (SONG.notes[Math.floor(curStep / 16)].altAnim)
+						    	if (SONG.notes[curSection].altAnim)
 						    		altAnim = '-alt';
 						    }
-							if (dad != null) switch (daNote.noteData)
-								{
-									case 2:
-										dad.playAnim('singUP' + altAnim, !daNote.isSustainNote);
-									case 3:
-										dad.playAnim('singRIGHT' + altAnim, !daNote.isSustainNote);
-									case 1:
-										dad.playAnim('singDOWN' + altAnim, !daNote.isSustainNote);
-									case 0:
-										dad.playAnim('singLEFT' + altAnim, !daNote.isSustainNote);
-								}
+							dad?.playAnim('sing${Character.directions[daNote.noteData]}' + altAnim, !daNote.isSustainNote);
 								
-								cpuStrums.lightStrum(daNote.noteData);
+							cpuStrums.lightStrum(daNote.noteData);
 								
 		
-								if (dad != null) dad.holdTimer = 0;
+							if (dad != null) dad.holdTimer = 0;
 			
-								if (SONG.needsVoices)
-									vocals.volume = 1;
+							if (SONG.needsVoices)
+								vocals.volume = 1;
 			
-								daNote.active = false;
+							daNote.active = false;
 		
 								
-								daNote.kill();
-								notes.remove(daNote, true);
-								daNote.destroy();
+							daNote.kill();
+							notes.remove(daNote, true);
+							daNote.destroy();
 						}
 					}
 
@@ -1538,10 +1528,11 @@ class PlayState extends MusicBeatState
 							}
 						}
 					});
-					
-					if (bf != null && bf.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) || FlxG.save.data.botplay))
+			 
+					if (bf != null && bf.holdTimer > Conductor.stepCrochet * (bf.singTime / 1000) && (!holdArray.contains(true) || FlxG.save.data.botplay))
 					{
-						if (!(bf.curAnim?.name.startsWith("sing") || bf.curAnim?.name.startsWith("miss"))) bf.dance();
+						if (bf?.curAnim?.name.startsWith("sing") || !bf?.curAnim?.name.startsWith("miss")) 
+							bf.dance(true);
 					}
 			 
 					playerStrums.forEach(function(spr:FlxSprite)
@@ -1585,17 +1576,7 @@ class PlayState extends MusicBeatState
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
-			if (bf != null) switch (direction)
-			{
-				case 0:
-					bf.playAnim('singLEFTmiss', true);
-				case 1:
-					bf.playAnim('singDOWNmiss', true);
-				case 2:
-					bf.playAnim('singUPmiss', true);
-				case 3:
-					bf.playAnim('singRIGHTmiss', true);
-			}
+			bf?.playAnim('sing${Character.directions[direction]}miss');
 	}
 
 	/*function badNoteCheck()
@@ -1732,21 +1713,7 @@ class PlayState extends MusicBeatState
 					var noteCall = HFunk.doDaCallback(NOTE_HIT, [note.noteData, note]);
 					if (noteCall.contains(HVars.STOP)) return;
 
-					if (bf != null) switch (note.noteData)
-					{
-						case 2:
-							bf.playAnim('singUP', !note.isSustainNote);
-						case 3:
-							bf.playAnim('singRIGHT', !note.isSustainNote);
-						case 1:
-							bf.playAnim('singDOWN', !note.isSustainNote);
-						case 0:
-							bf.playAnim('singLEFT', !note.isSustainNote);
-					}
-
-
-					/*if(!loadRep && note.mustPress)
-						saveNotes.push(HelperFunctions.truncateFloat(note.strumTime, 2));*/
+					bf?.playAnim('sing${Character.directions[note.noteData]}', !note.isSustainNote);
 				
 					playerStrums.lightStrum(note.noteData);
 					if (note.rating == "sick" && !note.isSustainNote) splashes.spawnSplash(note.noteData);
@@ -1791,19 +1758,19 @@ class PlayState extends MusicBeatState
 		}
 
 
-		var nextSect = SONG.notes[Math.floor(curStep / 16)];
+		var nextSect = SONG.notes[curSection];
 		if (nextSect != null)
 		{
 			if (nextSect.bpm != null && nextSect.bpm != Conductor.bpm && nextSect.bpm > 0 && (nextSect.changeBPM == null || (nextSect.changeBPM != null && nextSect.changeBPM)))
 			{
-				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
+				Conductor.changeBPM(SONG.notes[curSection].bpm);
 				FlxG.log.add('CHANGED BPM!');
 			}
 			// else
 			// Conductor.changeBPM(SONG.bpm);
 
 			// Dad doesnt interupt his own notes
-			/*if (SONG.notes[Math.floor(curStep / 16)].mustHitSection && dad.curCharacter != 'gf')
+			/*if (SONG.notes[curSection].mustHitSection && dad.curCharacter != 'gf')
 				dad.dance();*/
 		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
@@ -1826,13 +1793,7 @@ class PlayState extends MusicBeatState
 
 		if (curBeat % gf?.bopSpeed == 0 && !gf?.animation.curAnim?.name.startsWith("sing")) gf?.dance();
 		if (curBeat % bf?.bopSpeed == 0 && !bf?.animation.curAnim?.name.startsWith("sing")) bf?.dance();
-		if (curBeat % dad?.bopSpeed == 0 && !dad?.animation.curAnim?.name.startsWith("sing")) dad.dance();
-
-		if (curBeat % 16 == 15 && SONG.song == 'Tutorial' && dad != null && dad.curCharacter == 'gf' && curBeat > 16 && curBeat < 48)
-			{
-				if (bf != null) bf.playAnim('hey', true);
-				if (dad != null) dad.playAnim('cheer', true);
-			}
+		if (curBeat % dad?.bopSpeed == 0 && !dad?.animation.curAnim?.name.startsWith("sing")) dad?.dance();
 	}
 
 	override function onFocusLost() {

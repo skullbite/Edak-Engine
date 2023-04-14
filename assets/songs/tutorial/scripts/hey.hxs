@@ -1,0 +1,6 @@
+function beatHit(beat) {
+    if (beat % 16 == 15 && dad != null && beat > 16 && beat < 48) {
+        bf.playAnim('hey', true);
+        dad.playAnim('cheer', true);
+    }
+}

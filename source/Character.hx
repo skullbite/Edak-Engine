@@ -22,14 +22,13 @@ typedef SwagConfig = {
 
 class Character extends FrogSprite
 {
-
-
+	public static var directions = ["LEFT", "DOWN", "UP", "RIGHT"];
 	public var debugMode:Bool = false;
 	public var barColor:String = "0xe76aca";
-
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var iconName(get, default):String;
+	public var singTime:Float = 4;
 	function get_iconName() {
 		if (charScript != null && charScript.exists(ICON)) return charScript.exec(ICON, []);
 		return curCharacter;
@@ -45,7 +44,7 @@ class Character extends FrogSprite
 	};
 
 	public var holdTimer:Float = 0;
-	// -1 so if it's set to anything else, the bop speed gets automatically set
+	// -1 so if it's not set to anything else, the bop speed gets automatically set
 	public var bopSpeed:Int = -1;
 	public var stopAnims = false;
 	public var stopSinging = false;
@@ -138,19 +137,15 @@ class Character extends FrogSprite
 		if (!active) destroy();
 		if (!curCharacter.startsWith('bf'))
 		{
-			if (animation.curAnim == null) return;
-			if (animation.curAnim.name.startsWith('sing'))
+			if (curAnim == null) return;
+			if (curAnim.name.startsWith('sing'))
 			{
 				holdTimer += elapsed;
 			}
 
-			var dadVar:Float = 4;
-
-			if (curCharacter == 'dad')
-				dadVar = 6.1;
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
+			if (holdTimer >= Conductor.stepCrochet * singTime * 0.0011)
 			{
-				dance();
+				dance(true);
 				holdTimer = 0;
 			}
 		}
@@ -162,14 +157,14 @@ class Character extends FrogSprite
 			return;
 		}
 
-		if (animation.curAnim == null) return;
+		if (curAnim == null) return;
 
-		if (animation.curAnim.finished && animation.exists('${animation.curAnim.name}Loop')) playAnim('${animation.curAnim.name}Loop', true);
+		if (curAnim.finished && animation.exists('${curAnim.name}Loop')) playAnim('${curAnim.name}Loop', true);
 
 		switch (curCharacter)
 		{
 			case 'gf':
-				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
+				if (curAnim?.name == 'hairFall' && curAnim?.finished)
 					playAnim('danceRight');
 		}
 	}
@@ -182,13 +177,13 @@ class Character extends FrogSprite
 	public function dance(force = false)
 	{
 		if (debugMode) return;
-		if (animation?.curAnim?.name.contains("sing") && !animation?.curAnim?.finished && !force) return;
+		if (curAnim?.name.contains("sing") && !curAnim?.finished && !force) return;
 		if (charScript != null && charScript.exists(DANCE)) {
 			charScript.exec(DANCE, []);
 			return;
 		}
 		
-		if (animation?.exists('danceLeft') && animation?.exists('danceRight')) {
+		if (animation.exists('danceLeft') && animation.exists('danceRight')) {
 			danced = !danced;
 			playAnim(danced ? "danceRight" : "danceLeft", force);
 		}

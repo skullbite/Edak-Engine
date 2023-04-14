@@ -1,6 +1,7 @@
 function create() {
     char.barColor = "0xf191ba";
     char.frames = Paths.getSparrowAtlas("DADDY_DEAREST");
+    char.singTime = 6.1;
     addAnim("idle", "Dad idle dance");
     addAnim("singUP", "Dad Sing Note UP", [-6, 50]);
     addAnim("singRIGHT", "Dad Sing Note RIGHT", [0, 27]);
