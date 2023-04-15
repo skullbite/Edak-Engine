@@ -177,7 +177,7 @@ class Character extends FrogSprite
 	public function dance(force = false)
 	{
 		if (debugMode) return;
-		if (curAnim?.name.contains("sing") && !curAnim?.finished && !force) return;
+		if (animation.curAnim?.name.contains("sing") && !curAnim?.finished && !force) return;
 		if (charScript != null && charScript.exists(DANCE)) {
 			charScript.exec(DANCE, []);
 			return;
