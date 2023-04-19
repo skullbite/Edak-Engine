@@ -1,6 +1,9 @@
 package hstuff;
 
 enum abstract Callbacks(String) to String {
+    var INIT = "init";
+    var PRELOAD = "preload";
+    var CALLBACK = "callback";
     var CREATE = "create";
     var CREATE_POST = "createPost";
     var UPDATE = "update";
@@ -8,6 +11,8 @@ enum abstract Callbacks(String) to String {
     var STEP = "stepHit";
     var BEAT = "beatHit";
     var SECTION = "sectionHit";
+    var EVENT_LOAD = "eventLoad";
+    var EVENT = "event";
     var CUTSCENE = "cutscene";
     var OPPONENT = "opponentNoteHit";
     var SONG_START = "songStart";
@@ -24,6 +29,7 @@ enum abstract Callbacks(String) to String {
     var GAME_OVER_UPDATE = "gameOverUpdate";
     var GAME_OVER_END = "gameOverEnd";
     var CAMERA = "camMove";
+    var BEFORE_EXIT = "preExit";
 
     var ICON = "getIcon";
     var DANCE = "dance";

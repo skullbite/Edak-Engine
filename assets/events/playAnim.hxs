@@ -1,0 +1,15 @@
+function init() {
+    name = "Play Animation";
+    description = "Plays animation on character.\n1: bf/gf/dad\n2: animation name";
+}
+
+function callback(val1, val2, strumTime) {
+    var char = null;
+    switch (val1) {
+        case "bf": char = PlayState.bf;
+        case "gf": char = PlayState.gf;
+        case "dad": char = PlayState.dad;
+    }
+
+    if (char != null) char.playAnim(val2, true);
+}

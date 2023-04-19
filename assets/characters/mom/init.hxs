@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0xf191ba";
+    char.barColor = 0xfff191ba;
     char.frames = Paths.getSparrowAtlas("Mom_Assets");
     
     addAnim("idle", "Mom Idle");

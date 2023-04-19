@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0x8978cc";
+    char.barColor = 0xff8978cc;
     char.frames = Paths.getSparrowAtlas('Pico_FNF_assetss');
 
     addAnim('idle', "Pico Idle Dance", 24, false);

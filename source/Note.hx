@@ -57,7 +57,7 @@ class Note extends FlxSprite
 		
 		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
-		switch (this.noteType) {
+		if (noteData != -1) switch (this.noteType) {
 			default:
 				if (FileSystem.exists(Paths.getPath('custom-notes/$noteType.hxs'))) {
 					try {

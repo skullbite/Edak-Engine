@@ -24,7 +24,7 @@ class Character extends FrogSprite
 {
 	public static var directions = ["LEFT", "DOWN", "UP", "RIGHT"];
 	public var debugMode:Bool = false;
-	public var barColor:String = "0xe76aca";
+	public var barColor:Int = 0xffe76aca;
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var iconName(get, default):String;

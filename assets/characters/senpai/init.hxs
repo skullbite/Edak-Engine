@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0xd5d5d3";
+    char.barColor = 0xffd5d5d3;
     char.frames = _Paths.getSparrowAtlas('characters/senpai');
 
     addAnim('idle', 'Senpai Idle');

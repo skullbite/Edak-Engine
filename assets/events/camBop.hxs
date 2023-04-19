@@ -1,0 +1,9 @@
+function init() {
+    name = "Bop Camera";
+    description = "Bops the camera";
+}
+
+function callback() {
+    game.camGame.zoom += camBumpZoom;
+	game.camHUD.zoom += hudBumpZoom;
+}

@@ -68,6 +68,10 @@ class Stage extends FlxTypedGroup<FlxBasic> {
         if (stageScript?.exists(UPDATE)) stageScript.exec(UPDATE, [elapsed]);
     }
 
+    public function event(event:String, v1:String, v2:String, strumTime:Float) {
+        if (stageScript?.exists(EVENT)) stageScript.exec(EVENT, [event, v1, v2, strumTime]);
+    }
+
     function loadStageInstead() {
         // PlayState.defaultCamZoom = 0.9;
 		var bg = new FlxSprite(-600, -200).loadGraphic(Paths.getPath('stage/images/stageback.png', 'stages'));

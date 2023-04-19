@@ -1,5 +1,6 @@
 package;
 
+import hstuff.CallbackScript;
 import flixel.util.typeLimit.OneOfTwo;
 import yaml.Parser.ParserOptions;
 import StoryMenuState.DifficultyData;
@@ -58,10 +59,8 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {
-
 	public static var instance:PlayState = null;
 	public static var HFunk:FunkScript;
-
 	public static var curStage:String = '';
 	public static var curUi:String = "normal";
 	public static var SONG:SwagSong;
@@ -103,6 +102,8 @@ class PlayState extends MusicBeatState
 
 	public var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
+	private var events:Array<Dynamic> = [];
+	private var eventScripts:Map<String, CallbackScript> = [];
 
 	public var strumLine:FlxSprite;
 	// private var curSection:Int = 0;
@@ -219,8 +220,8 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = true;
 	
-	// Will fire once to prevent debug spam messages and broken animations
-	private var triggeredAlready:Bool = false;
+	// because if you die with a state change queued the game softlocks
+	private var stateChangeFired:Bool = false;
 
 	#if desktop
 	// RPC stuff
@@ -490,8 +491,8 @@ class PlayState extends MusicBeatState
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 
-		var bfColor = bf != null ? FlxColor.fromString(bf.barColor) : 0xFF66FF33;
-		var dadColor = dad != null ? FlxColor.fromString(dad.barColor) : 0xFFFF0000;
+		var bfColor = bf != null ? bf.barColor : 0xFF66FF33;
+		var dadColor = dad != null ? dad.barColor : 0xFFFF0000;
 		healthBar.createFilledBar(dadColor, bfColor);
 		// healthBar
 		addToHUD(healthBar);
@@ -661,7 +662,7 @@ class PlayState extends MusicBeatState
 		if (!paused) FlxG.sound.playMusic(Paths.inst(SONG.song, musicPost), 1, false);
 		FlxG.sound.music.onComplete = HFunk.funcExists(SONG_END) ? () -> HFunk.doDaCallback(SONG_END, []) : endSong;
 		vocals.play();
-		resyncVocals();
+		if (FlxG.sound.music.time > vocals.time || FlxG.sound.music.time < vocals.time) resyncVocals();
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
@@ -695,6 +696,40 @@ class PlayState extends MusicBeatState
 
 		var playerCounter:Int = 0;
 
+		var eventPaths:Array<String> = [];
+		if (Paths.songDataDir(SONG.song).contains("events"))
+			eventPaths = eventPaths.concat(FileSystem.readDirectory(Paths.getPath('songs/${SONG.song}/events')).filter(s -> s.endsWith('.hxs')).map(s -> 'songs/${SONG.song}/events/$s'));
+		#if MODS
+		if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + '/events')) 
+			eventPaths = eventPaths.concat(FileSystem.readDirectory(Paths.curModDir + '/events').filter(d -> d.endsWith('.hxs')).map(d -> Paths.curModDir + '/events/$d'));
+		#end
+		if (FileSystem.exists('assets/events')) 
+			eventPaths = eventPaths.concat(FileSystem.readDirectory('assets/events').filter(d -> d.endsWith('.hxs')).map(d -> 'assets/events/$d'));
+		
+
+		for (x in eventPaths) {
+			var daScript:CallbackScript = new CallbackScript(x, 'Event:$x', {
+				name: "INVALID__",
+				description: "N/A",
+				game: this,
+				Paths: Paths
+			});
+
+			try {
+				daScript.exec(INIT, []);
+			}
+			catch (e) {
+				trace(e.message);
+				continue;
+			}
+
+			var eventName:String = daScript.get("name");
+				
+			if (eventName == "INVALID__") continue;
+			if (eventScripts.exists(eventName)) continue;
+			eventScripts.set(eventName, daScript);
+		}
+
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 		for (section in noteData)
 		{
@@ -714,6 +749,26 @@ class PlayState extends MusicBeatState
 					gottaHitNote = !section.mustHitSection;
 				}
 
+				if (daNoteData == -1) {
+					for (x in 0...songNotes[2].length) {
+						if (!(songNotes[2] is Array)) continue;
+						var eventData = songNotes[2][x];
+						var name = eventData[0];
+						var val1 = eventData[1];
+						var val2 = eventData[2];
+						// crashes are bad m'kay
+						if ((!(name is String) || name == null) || (!(val1 is String) || val1 == null) || (!(val2 is String) || val2 == null)) continue; 
+						var iHateHaxe:Array<Dynamic> = [name, val1, val2, daStrumTime];
+						var eventScript = null;
+						if (eventScripts.exists(name)) eventScript = eventScripts[name];
+ 						
+						events.push(iHateHaxe);
+						HFunk.doDaCallback(EVENT_LOAD, iHateHaxe);
+						if (eventScript != null) eventScript.exec(PRELOAD, [val1, val2, daStrumTime]);
+					}
+					continue;
+				}
+				
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
@@ -873,6 +928,15 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.botplay && FlxG.keys.justPressed.ONE)
 			camHUD.visible = !camHUD.visible;
 
+		if (events.length != 0) {
+			if (events[0][3] <= Conductor.songPosition) {
+				HFunk.doDaCallback(EVENT, events[0]);
+				stage.event(events[0][0], events[0][1], events[0][2], events[0][3]);
+				if (eventScripts.exists(events[0][0])) eventScripts.get(events[0][0]).exec(CALLBACK, [events[0][1], events[0][2], events[0][3]]);
+				events.shift();
+			}
+		}
+
 		// reverse iterate to remove oldest notes first and not invalidate the iteration
 		// stop iteration as soon as a note is not removed
 		// all notes should be kept in the correct order and this is optimal, safe to do every frame/update
@@ -905,37 +969,16 @@ class PlayState extends MusicBeatState
 		
 		updateHealthBarStuff();
 		
-		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
-		{
-			persistentUpdate = false;
-			persistentDraw = true;
-			paused = true;
+		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause) openPause();
 
-			FlxG.sound.music.pause();
-		    vocals.pause();
-
-			var pauseRets = HFunk.doDaCallback(PAUSE, []);
-			if (pauseRets.contains(HVars.STOP)) return;
-
-			// 1 / 1000 chance for Gitaroo Man easter egg
-			// imma be real, this gets annoying when you're trying to test
-			#if !debug
-			if (FlxG.random.bool(0.1))
-			{
-				trace('GITAROO MAN EASTER EGG');
-				FlxG.switchState(new GitarooPause());
-			}
-			else
-			#end
-				openSubState(new PauseSubState());
-		}
-
-		if (FlxG.keys.justPressed.SEVEN)
+		if (FlxG.keys.justPressed.SEVEN && !stateChangeFired)
 		{
 			#if desktop
 			DiscordClient.changePresence("Chart Editor", null, null, true);
 			#end
 			FlxG.switchState(new ChartingState());
+			HFunk.doDaCallback(BEFORE_EXIT, []);
+			stateChangeFired = true;
 		}
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
@@ -951,19 +994,19 @@ class PlayState extends MusicBeatState
 
 		/* if (FlxG.keys.justPressed.NINE)
 			FlxG.switchState(new Charting()); */
-
-		#if debug
-		if (FlxG.keys.justPressed.EIGHT) {
+	
+		if (FlxG.keys.justPressed.EIGHT && !stateChangeFired) {
 			var isPlayer = false;
-			var char = dad != null ? dad.curCharacter : null;
+			var char = dad?.curCharacter ?? null;
 			if (FlxG.keys.pressed.CONTROL) {
 				isPlayer = true;
-				char = bf != null ? bf.curCharacter : null;
+				char = bf?.curCharacter ?? null;
 			}
-			if (FlxG.keys.pressed.SHIFT) char = gf != null ? gf.curCharacter : null;
+			if (FlxG.keys.pressed.SHIFT) char = gf?.curCharacter ?? null;
 			if (char != null) FlxG.switchState(new AnimationDebug(char, isPlayer));
+			HFunk.doDaCallback(BEFORE_EXIT, []);
+			stateChangeFired = true;
 		}
-		#end
 
 		if (startingSong)
 		{
@@ -1041,11 +1084,6 @@ class PlayState extends MusicBeatState
 						if (daNote != null) daNote.destroy();
 						break;
 					}
-					if (![0, 1, 2, 3].contains(daNote.noteData)) {
-						notes.remove(daNote, true);
-						daNote.destroy();
-						break;
-					}
 
 					// NoteHandler.handleNote(daNote);
 					if (daNote.tooLate)
@@ -1064,9 +1102,9 @@ class PlayState extends MusicBeatState
 					if (FlxG.save.data.downscroll)
 						{
 							if (daNote.mustPress)
-								daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2));
+								daNote.y = (playerStrums.members[daNote.noteData].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2));
 							else
-								daNote.y = (cpuStrums.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2));
+								daNote.y = (cpuStrums.members[daNote.noteData].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2));
 							if(daNote.isSustainNote)
 							{
 								// Remember = minus makes notes go up, plus makes them go down
@@ -1140,7 +1178,7 @@ class PlayState extends MusicBeatState
 						    	if (SONG.notes[curSection].altAnim)
 						    		altAnim = '-alt';
 						    }
-							dad?.playAnim('sing${Character.directions[daNote.noteData]}' + altAnim, !daNote.isSustainNote);
+							dad?.playAnim('sing${Character.directions[daNote.noteData]}' + altAnim, true);
 								
 							cpuStrums.lightStrum(daNote.noteData);
 								
@@ -1223,6 +1261,12 @@ class PlayState extends MusicBeatState
 
 		Assets.cache.removeSound(Paths.inst(SONG.song, musicPost, true));
 		if (SONG.needsVoices) Assets.cache.removeSound(Paths.voices(SONG.song, musicPost, true));
+
+		HFunk.doDaCallback(BEFORE_EXIT, []);
+		for (k => v in HFunk.scripts) {
+			v.active = false;
+		} 
+		
 	}
 
 	function endSong():Void
@@ -1560,7 +1604,7 @@ class PlayState extends MusicBeatState
 		health -= 0.04;
 		combo = 0;
 		misses++;
-		if (gf != null && combo > 5 && gf.animation.exists('sad')) gf.playAnim('sad');
+		if (gf != null && combo > 5 && gf.animation.exists('sad')) gf.playAnim('sad', true);
 
 			//var noteDiff:Float = Math.abs(daNote.strumTime - Conductor.songPosition);
 			//var wife:Float = EtternaFunctions.wife3(noteDiff, FlxG.save.data.etternaMode ? 1 : 1.7);
@@ -1576,7 +1620,7 @@ class PlayState extends MusicBeatState
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
-			bf?.playAnim('sing${Character.directions[direction]}miss');
+			bf?.playAnim('sing${Character.directions[direction]}miss', true);
 	}
 
 	/*function badNoteCheck()
@@ -1713,7 +1757,7 @@ class PlayState extends MusicBeatState
 					var noteCall = HFunk.doDaCallback(NOTE_HIT, [note.noteData, note]);
 					if (noteCall.contains(HVars.STOP)) return;
 
-					bf?.playAnim('sing${Character.directions[note.noteData]}', !note.isSustainNote);
+					bf?.playAnim('sing${Character.directions[note.noteData]}', true);
 				
 					playerStrums.lightStrum(note.noteData);
 					if (note.rating == "sick" && !note.isSustainNote) splashes.spawnSplash(note.noteData);
@@ -1791,9 +1835,9 @@ class PlayState extends MusicBeatState
 		    iconP2.updateHitbox();
 		}
 
-		if (curBeat % gf?.bopSpeed == 0 && !gf?.animation.curAnim?.name.startsWith("sing")) gf?.dance();
-		if (curBeat % bf?.bopSpeed == 0 && !bf?.animation.curAnim?.name.startsWith("sing")) bf?.dance();
-		if (curBeat % dad?.bopSpeed == 0 && !dad?.animation.curAnim?.name.startsWith("sing")) dad?.dance();
+		if (gf != null && curBeat % gf.bopSpeed == 0 && !gf.animation.curAnim?.name.startsWith("sing")) gf.dance(true);
+		if (bf != null && curBeat % bf.bopSpeed == 0 && !bf.animation.curAnim?.name.startsWith("sing")) bf.dance(true);
+		if (dad != null && curBeat % dad.bopSpeed == 0 && !dad.animation.curAnim?.name.startsWith("sing")) dad.dance(true);
 	}
 
 	override function onFocusLost() {
@@ -1823,6 +1867,7 @@ class PlayState extends MusicBeatState
 	}
 
 	function runGameOver() {
+		if (stateChangeFired) return;
 		if (bf != null) bf.stunned = true;
 
 		persistentUpdate = false;

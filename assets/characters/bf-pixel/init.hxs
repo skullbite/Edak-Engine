@@ -6,7 +6,7 @@ function create() {
         end: "ingame/weeb/gameOverEnd-pixel"
     }
 
-    char.barColor = "0xf368f0";
+    char.barColor = 0xfff368f0;
 
     char.frames = Paths.getSparrowAtlas('bfPixel');
 

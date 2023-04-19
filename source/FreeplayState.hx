@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxEase;
 import StoryMenuState.WeekData;
 import yaml.Parser.ParserOptions;
 import StoryMenuState.DifficultyData;
@@ -304,7 +305,8 @@ class FreeplayState extends MusicBeatState
 				jukeboxInst.kill();
 				jukeboxVocals.kill();
 			}
-			LoadingState.loadAndSwitchState(new PlayState());
+			if (FlxG.keys.pressed.SHIFT) FlxG.switchState(new ChartingState());
+			else LoadingState.loadAndSwitchState(new PlayState());
 		}
 	}
 
@@ -399,16 +401,17 @@ class FreeplayState extends MusicBeatState
 		    changeDiff();
 		}
 
-		bg.color = songs[curSelected].color;
+		// bg.color = songs[curSelected].color;
 
 		// i honestly don't know why this isn't working so i'll come back to it
-		/*if (bg.color != songs[curSelected].color) {
-			trace(songs[curSelected].color);
+		// shadow mario said add an alpha value to hex ints
+		if (bg.color != songs[curSelected].color) {
 			if (colorTween != null) colorTween.cancel();
-		    colorTween = FlxTween.color(bg, .5, bg.color, songs[curSelected].color, {
-		    	onComplete: t -> colorTween = null
+		    colorTween = FlxTween.color(bg, 1, bg.color, songs[curSelected].color, {
+		    	onComplete: t -> colorTween = null,
+				ease: FlxEase.smoothStepOut
 		    });
-		}*/
+		}
 		
 		/*#if PRELOAD_ALL
 		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);

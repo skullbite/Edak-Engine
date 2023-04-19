@@ -24,7 +24,7 @@ class FunkScript extends HBase {
             Sys.println(path + ': script loaded successfully!');
         }
         catch (e) {
-            Sys.println(path + ': script failed to load.\n ${e.message}');
+            Sys.println(path + ': script failed to load.\n${e.message}');
         }
     }
 

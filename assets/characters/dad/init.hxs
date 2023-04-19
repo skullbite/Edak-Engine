@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0xf191ba";
+    char.barColor = 0xfff191ba;
     char.frames = Paths.getSparrowAtlas("DADDY_DEAREST");
     char.singTime = 6.1;
     addAnim("idle", "Dad idle dance");

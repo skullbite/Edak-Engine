@@ -3,7 +3,7 @@ package;
 using StringTools;
 
 function create() {
-   char.barColor = "0x6800a5";
+   char.barColor = 0xff6800a5;
    char.frames = Paths.getSparrowAtlas("GF_assets");
 
    addAnim("cheer", "GF Cheer");

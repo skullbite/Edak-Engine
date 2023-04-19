@@ -1,6 +1,6 @@
 function getIcon() return "monster";
 function create() {
-    char.barColor = "0x78ff71";
+    char.barColor = 0xff78ff71;
     char.frames = Paths.getSparrowAtlas('monsterChristmas');
     addAnim('idle', 'monster idle');
     addAnim('singUP', 'monster up note', [-20, 50]);

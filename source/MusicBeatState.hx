@@ -22,6 +22,7 @@ class MusicBeatState extends FlxUIState
 	private var curBeat:Int = 0;
 	private var curSection:Int = 0;
 	private var controls(get, never):Controls;
+	private var chartingMode:Bool = false;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -53,7 +54,7 @@ class MusicBeatState extends FlxUIState
 
 		updateCurStep();
 		updateBeat();
-		updateSection();
+		if (!chartingMode) updateSection();
 
 		if (oldStep != curStep && curStep > 0)
 			stepHit();

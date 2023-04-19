@@ -83,7 +83,7 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
         rating.setGraphicSize(Std.int(rating.width * scaleStuff));
         rating.x = basePos.x - 70;
         rating.screenCenter(Y);
-        rating.y -= 65;
+        rating.y = basePos.y - 65;
         rating.acceleration.x = 0;
         rating.acceleration.y = 550;
         rating.velocity.y -= FlxG.random.int(140, 175);

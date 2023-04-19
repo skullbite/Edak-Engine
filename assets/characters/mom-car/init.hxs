@@ -2,7 +2,7 @@ package;
 
 function getIcon() return "mom";
 function create() {
-    char.barColor = "0xf191ba";
+    char.barColor = 0xfff191ba;
     char.frames = Paths.getSparrowAtlas("momCar");
     addAnim("idle", "Mom Idle").addLoop([8, 9, 10, 11, 12, 13]);
     addAnim("singUP", "Mom Up Pose", [14, 71]);

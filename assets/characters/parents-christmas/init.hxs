@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0xf191ba";
+    char.barColor = 0xfff191ba;
     char.frames = Paths.getSparrowAtlas('mom_dad_christmas_assets');
     addAnim('idle', 'Parent Christmas Idle');
     addAnim('singUP', 'Parent Up Note Dad', [-47, 24]);

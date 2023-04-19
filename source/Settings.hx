@@ -28,7 +28,7 @@ class Settings {
                 displayName: "Scroll Speed",
                 type: "float",
                 value: 1,
-                min: 1,
+                min: 0.9,
                 max: 4
             },
             "offset" => {

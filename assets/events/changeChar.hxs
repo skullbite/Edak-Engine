@@ -1,0 +1,75 @@
+import Character;
+import Boyfriend;
+import sys.FileSystem as fs;
+
+function init() {
+    name = "Change Character";
+    description = "Changes the character\n1: bf/gf/dad\n2: new character";
+}
+
+function preload(v1, v2) {
+    var charGroup = null;
+    var char = null;
+    switch (v1) {
+        case "bf": 
+            char = PlayState.bf;
+            charGroup = PlayState.bfGroup;
+        case "gf": 
+            char = PlayState.gf;
+            charGroup = PlayState.gfGroup;
+        case "dad": 
+            char = PlayState.dad;
+            charGroup = PlayState.dadGroup;
+    }
+    
+    if (charGroup == null) return;
+    if (charGroup.members.filter(t -> t.curCharacter == v2).length > 0) return;
+    if (!fs.exists(Paths.getPath('characters/' + v2 + '/init.hxs'))) {
+        trace('failed to find ' + v2);
+        return;
+    }
+
+    var nextChar:Character = null;
+    if (v1 == "bf") nextChar = new Boyfriend(char.x, char.y, v2);
+    else nextChar = new Character(char.x, char.y, v2);
+    nextChar.alpha = .005;
+    charGroup.insert(0, nextChar);
+}
+
+function callback(v1, v2) {
+    var charGroup = null;
+    var char = null;
+    switch (v1) {
+        case "bf": 
+            char = PlayState.bf;
+            charGroup = PlayState.bfGroup;
+        case "gf": 
+            char = PlayState.gf;
+            charGroup = PlayState.gfGroup;
+        case "dad": 
+            char = PlayState.dad;
+            charGroup = PlayState.dadGroup;
+    }
+
+    if (charGroup == null) return;
+    var nextChar = charGroup.members.filter(t -> t.curCharacter == v2)[0];
+    if (nextChar == null) return;
+
+    nextChar.alpha = char.alpha;
+    switch (v1) {
+        case "bf": 
+            PlayState.bf = nextChar;
+            game.iconP1.swapIcon(nextChar.iconName);
+            game.healthBar.createFilledBar(PlayState.dad.barColor != null ? PlayState.dad.barColor : 0xFFFF0000, nextChar.barColor);
+        case "gf": PlayState.gf = nextChar;
+        case "dad": 
+            PlayState.dad = nextChar;
+            game.iconP2.swapIcon(nextChar.iconName);
+            game.healthBar.createFilledBar(nextChar.barColor, PlayState.bf.barColor != null ? PlayState.bf.barColor : 0xFF66FF33);
+    }
+    charGroup.remove(char);
+    char.visible = false;
+    char.destroy();
+
+    // game.healthBar.createFilledBar()
+}

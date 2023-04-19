@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0x59b4ff";
+    char.barColor = 0xff59b4ff;
     char.frames = Paths.getPackerAtlas('spirit');
     addAnim('idle', "idle spirit_", [-60, -51]);
     addAnim('singUP', "up_", [-53, -49]);

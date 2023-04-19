@@ -177,11 +177,12 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume": close();
-				case "Restart Song": FlxG.resetState();
+				case "Restart Song": 
+					PlayState.HFunk.doDaCallback(BEFORE_EXIT, []);
+					FlxG.resetState();
 				#if debug
 				case "Toggle Botplay":
 					Settings.set("botplay", !Settings.get("botplay"));
-					PlayState.instance.updateScoreTxt();
 				#end
 				case "Exit to menu":
 					if (FlxG.save.data.fpsCap > 290)

@@ -10,7 +10,7 @@ var trainMoving = false;
 var trainCooldown = 0;
 var windowTween = null;
 var window:FlxSprite;
-var winColors = [0x31a2fd, 0x31fd8c, 0xfb33f5, 0xfd4531, 0xfba633];
+var winColors = [0xFF31a2fd, 0xFF31fd8c, 0xFFfb33f5, 0xFFfd4531, 0xFFfba633];
 var curLight = 0;
 var trainFrameTiming = 0.0;
 var startedMoving = false;

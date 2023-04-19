@@ -1,5 +1,5 @@
 function create() {
-    char.barColor = "0xb2b2b2";
+    char.barColor = 0xffb2b2b2;
     char.frames = Paths.getSparrowAtlas('spooky_kids_assets');
     addAnim('singUP', 'spooky UP NOTE', [-20, 26]);
     addAnim('singDOWN', 'spooky DOWN note', [-50, -130]);

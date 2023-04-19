@@ -3,7 +3,7 @@ name: ""
 songs:
   - Tutorial
 colors:
-  - 0x6800a5
+  - 0xff6800a5
 icons:
   - gf
 defaultDifficulty: 1
