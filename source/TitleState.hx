@@ -108,10 +108,6 @@ class TitleState extends MusicBeatState
 		    }
 		#end
 
-		#if PLAYBASE
-		    FlxG.switchState(new PlayBase());
-		#end
-
 		swagShader = new ColorSwap();
 
 		if (FlxG.save.data.weekUnlocked != null)
