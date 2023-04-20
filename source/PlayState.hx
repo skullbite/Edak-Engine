@@ -661,8 +661,8 @@ class PlayState extends MusicBeatState
 
 		if (!paused) FlxG.sound.playMusic(Paths.inst(SONG.song, musicPost), 1, false);
 		FlxG.sound.music.onComplete = HFunk.funcExists(SONG_END) ? () -> HFunk.doDaCallback(SONG_END, []) : endSong;
+		vocals.time = FlxG.sound.music.time;
 		vocals.play();
-		if (FlxG.sound.music.time > vocals.time || FlxG.sound.music.time < vocals.time) resyncVocals();
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
@@ -698,7 +698,7 @@ class PlayState extends MusicBeatState
 
 		var eventPaths:Array<String> = [];
 		if (Paths.songDataDir(SONG.song).contains("events"))
-			eventPaths = eventPaths.concat(FileSystem.readDirectory(Paths.getPath('songs/${SONG.song}/events')).filter(s -> s.endsWith('.hxs')).map(s -> 'songs/${SONG.song}/events/$s'));
+			eventPaths = eventPaths.concat(FileSystem.readDirectory(Paths.getPath('songs/${SONG.song.toLowerCase()}/events')).filter(s -> s.endsWith('.hxs')).map(s -> Paths.curModDir + '/songs/${SONG.song.toLowerCase()}/events/$s'));
 		#if MODS
 		if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + '/events')) 
 			eventPaths = eventPaths.concat(FileSystem.readDirectory(Paths.curModDir + '/events').filter(d -> d.endsWith('.hxs')).map(d -> Paths.curModDir + '/events/$d'));
@@ -1835,9 +1835,20 @@ class PlayState extends MusicBeatState
 		    iconP2.updateHitbox();
 		}
 
-		if (gf != null && curBeat % gf.bopSpeed == 0 && !gf.animation.curAnim?.name.startsWith("sing")) gf.dance(true);
-		if (bf != null && curBeat % bf.bopSpeed == 0 && !bf.animation.curAnim?.name.startsWith("sing")) bf.dance(true);
-		if (dad != null && curBeat % dad.bopSpeed == 0 && !dad.animation.curAnim?.name.startsWith("sing")) dad.dance(true);
+		// WHY DO THESE KEEP FALLING THROUGH OH MY GOD
+		try {
+			if (gf != null && curBeat % gf.bopSpeed == 0 && !gf.animation.curAnim?.name.startsWith("sing")) gf.dance(true);
+		}
+		catch (e) {}
+		try {
+			if (bf != null && curBeat % bf.bopSpeed == 0 && !bf.animation.curAnim?.name.startsWith("sing")) bf.dance(true);
+		}
+		catch (e) {}
+		
+		try {
+			if (dad != null && curBeat % dad.bopSpeed == 0 && !dad.animation.curAnim?.name.startsWith("sing")) dad.dance(true);
+		}
+		catch (e) {}
 	}
 
 	override function onFocusLost() {

@@ -270,11 +270,11 @@ class ChartingState extends MusicBeatState
 		if (FileSystem.exists('assets/events')) eventScripts = FileSystem.readDirectory('assets/events').filter(s -> s.endsWith(".hxs")).map(s -> 'assets/events/$s');
 			
 		#if MODS
-		if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + 'events')) 
-			eventScripts = eventScripts.concat(FileSystem.readDirectory(Paths.curModDir + 'events').filter(s -> s.endsWith(".hxs")).map(s -> Paths.curModDir + 'events/$s'));
+		if (Paths.curModDir != null && FileSystem.exists(Paths.curModDir + '/events')) 
+			eventScripts = eventScripts.concat(FileSystem.readDirectory(Paths.curModDir + '/events').filter(s -> s.endsWith(".hxs")).map(s -> Paths.curModDir + '/events/$s'));
 		#end
 		if (Paths.songDataDir(_song.song).contains("events"))
-			eventScripts = eventScripts.concat(FileSystem.readDirectory(Paths.getPath('songs/${_song.song}/events')).filter(s -> s.endsWith('.hxs')).map(s -> 'songs/${_song.song}/events/$s'));
+			eventScripts = eventScripts.concat(FileSystem.readDirectory(Paths.getPath('songs/${_song.song}/events')).filter(s -> s.endsWith('.hxs')).map(s -> Paths.curModDir + '/songs/${_song.song.toLowerCase()}/events/$s'));
 		for (x in eventScripts) {
 			var daScript = new CallbackScript(x, 'Event:$x', {
 				name: "INVALID__",
@@ -1873,7 +1873,11 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), 'assets/songs/${_song.song.toLowerCase()}/charts/${(eventsOnly ? 'events' : currentDiff).toLowerCase()}.json');
+			var saveWhere = 'assets';
+			#if MODS
+			saveWhere = Paths.curModDir ?? 'assets';
+			#end
+			_file.save(data.trim(), saveWhere + '/songs/${_song.song.toLowerCase()}/charts/${(eventsOnly ? 'events' : currentDiff).toLowerCase()}.json');
 		}
 	}
 
