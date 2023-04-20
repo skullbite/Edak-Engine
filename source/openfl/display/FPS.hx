@@ -28,6 +28,12 @@ class FPS extends TextField
 	**/
 	public var currentFPS(default, null):Int;
 
+	public var borderSize:Int = 2;
+
+	// border code isn't mine
+	// https://github.com/Raltyro/FNF-PsikeEngine/blob/main/source/openfl/display/FPS.hx
+	@:noCompletion private final borders:Array<TextField> = new Array<TextField>();
+
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
 	@:noCompletion private var times:Array<Float>;
@@ -35,6 +41,17 @@ class FPS extends TextField
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
+
+		var border:TextField;
+		for (i in 0...8) {
+			borders.push(border = new TextField());
+			border.selectable = false;
+			border.mouseEnabled = false;
+			border.autoSize = LEFT;
+			border.multiline = true;
+			border.width = 800;
+			border.height = 70;
+		}
 
 		this.x = x;
 		this.y = y;
@@ -57,6 +74,12 @@ class FPS extends TextField
 			__enterFrame(time - currentTime);
 		});
 		#end
+		addEventListener(Event.REMOVED, function(_) {
+			for (border in borders) this.parent.removeChild(border);
+		});
+		addEventListener(Event.ADDED, function(_) {
+			for (border in borders) this.parent.addChildAt(border, this.parent.getChildIndex(this));
+		});
 	}
 
 	// Event Handlers
@@ -86,5 +109,33 @@ class FPS extends TextField
 		}
 
 		cacheCount = currentCount;
+	}
+
+	@:noCompletion override function set_visible(value:Bool):Bool {
+		for (border in borders) border.visible = value;
+		return super.set_visible(value);
+	}
+
+	@:noCompletion override function set_defaultTextFormat(value:TextFormat):TextFormat {
+		for (border in borders) {
+			border.defaultTextFormat = value;
+			border.textColor = 0xFF000000;
+		}
+		return super.set_defaultTextFormat(value);
+	}
+
+	@:noCompletion override function set_x(x:Float):Float {
+		for (i in 0...8) borders[i].x = x + ([0, 3, 5].contains(i) ? borderSize : [2, 4, 7].contains(i) ? -borderSize : 0);
+		return super.set_x(x);
+	}
+
+	@:noCompletion override function set_y(y:Float):Float {
+		for (i in 0...8) borders[i].y = y + ([0, 1, 2].contains(i) ? borderSize : [5, 6, 7].contains(i) ? -borderSize : 0);
+		return super.set_y(y);
+	}
+
+	@:noCompletion override function set_text(text:String):String {
+		for (border in borders) border.text = text;
+		return super.set_text(text);
 	}
 }
