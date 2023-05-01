@@ -176,8 +176,11 @@ class Character extends FrogSprite
 	 */
 	public function dance(force = false)
 	{
-		if (debugMode) return;
-		if (animation.curAnim?.name.contains("sing") && !curAnim?.finished && !force) return;
+		if (debugMode || animation == null) return;
+		// yeah i hate nesting
+		if (animation.curAnim != null) {
+			if (animation.curAnim?.name.contains("sing") && !animation.curAnim?.finished && !force) return;
+		}
 		if (charScript != null && charScript.exists(DANCE)) {
 			charScript.exec(DANCE, []);
 			return;
