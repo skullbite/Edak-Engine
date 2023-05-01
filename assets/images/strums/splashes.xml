@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="splashes.png">
+	<!-- Created with Adobe Animate version 23.0.1.70 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<!-- Splashes by ✨Skellz#5046 -->
+	<SubTexture name="SplashBlub0000" x="100" y="100" width="103" height="105" frameX="-2" frameY="-6" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashBlub0001" x="303" y="100" width="108" height="111" frameX="-2" frameY="-4" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashBlub0002" x="511" y="100" width="114" height="112" frameX="0" frameY="0" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashBlub0003" x="725" y="100" width="102" height="107" frameX="-3" frameY="-3" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashGreb0000" x="927" y="100" width="103" height="105" frameX="-2" frameY="-6" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashGreb0001" x="1130" y="100" width="108" height="111" frameX="-2" frameY="-4" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashGreb0002" x="1338" y="100" width="114" height="112" frameX="0" frameY="0" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashGreb0003" x="1552" y="100" width="102" height="107" frameX="-3" frameY="-3" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashPurble0000" x="1754" y="100" width="103" height="105" frameX="-2" frameY="-6" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashPurble0001" x="1957" y="100" width="108" height="111" frameX="-2" frameY="-4" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashPurble0002" x="2165" y="100" width="114" height="112" frameX="0" frameY="0" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashPurble0003" x="2379" y="100" width="102" height="107" frameX="-3" frameY="-3" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashReb0000" x="2581" y="100" width="103" height="105" frameX="-2" frameY="-6" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashReb0001" x="2784" y="100" width="108" height="111" frameX="-2" frameY="-4" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashReb0002" x="2992" y="100" width="114" height="112" frameX="0" frameY="0" frameWidth="114" frameHeight="115"/>
+	<SubTexture name="SplashReb0003" x="3206" y="100" width="102" height="107" frameX="-3" frameY="-3" frameWidth="114" frameHeight="115"/>
+	<!-- <SubTexture name="blue0000" x="3408" y="100" width="157" height="154"/>
+	<SubTexture name="green0000" x="3665" y="100" width="157" height="154"/>
+	<SubTexture name="purple0000" x="3922" y="100" width="154" height="157"/>
+	<SubTexture name="red0000" x="4176" y="100" width="154" height="157"/> -->
+</TextureAtlas>

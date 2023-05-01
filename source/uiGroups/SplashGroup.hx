@@ -1,28 +1,43 @@
 package uiGroups;
 
+import flixel.util.FlxColor;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxSprite;
 import flixel.FlxG;
 
 class SplashGroup extends FlxTypedGroup<FlxSprite> {
-    public var splashAssets = "strums/noteSplashes";
     public var targetStrumGroup = PlayState.instance.playerStrums;
+    // i'm gonna knock this offset system down soon
     public var offsets = {
         x: 132, 
         y: 145 
     };
-    public var perStrumOffsets = [{x: 0, y: 0}, {x: 5, y: 0}, {x: 0, y: 0}, {x: 0, y: 0}];
+    public var perStrumOffsets = [{x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}];
     var firstSplash = true;
     
-	public var color:Int = 0xffffff;
-	public var scale:Float = 1;
+	public var color:FlxColor = 0xffffff;
+	public var scale:Float = 1.5;
 	public var defaultFramerate:Int = 24;
 
-    public function spawnSplash(noteData:Int, ?customAnim:String) {
+    public function spawnSplash(noteData:Int, ?customSprite:FlxSprite) {
         var strumTarget = targetStrumGroup.members[noteData];
         // recycle(Splash);
+
+        if (customSprite != null) {
+            customSprite.animation.play("splash");
+            customSprite.animation.finishCallback = n -> {
+                customSprite.alpha = 0;
+                customSprite.kill();
+                if (firstSplash) {
+                    customSprite.alpha = 0.005;
+                    firstSplash = false;
+                }
+            }
+            add(customSprite);
+            return;
+        }
        
-        var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x + perStrumOffsets[noteData].x, offsets.y + perStrumOffsets[noteData].y, noteData, splashAssets, defaultFramerate, customAnim);
+        var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x + perStrumOffsets[noteData].x, offsets.y + perStrumOffsets[noteData].y, noteData, defaultFramerate);
         splash.cameras = [PlayState.instance.camHUD];
         if (firstSplash) {
             splash.alpha = 0.005;
@@ -41,20 +56,20 @@ class SplashGroup extends FlxTypedGroup<FlxSprite> {
     }
 }
 
+// default splashes by ✨Skellz#5046 
 class Splash extends FlxSprite {
-    public function new(x:Int, y:Int, offX:Int, offY:Int, noteData:Int, splashAssets:String, framerate:Int, ?customAnim:String) {
+    public function new(x:Int, y:Int, offX:Int, offY:Int, noteData:Int, framerate:Int, ?customAnim:String) {
         super(x, y);
-        frames = Paths.getSparrowAtlas(splashAssets);
+        frames = Paths.getSparrowAtlas("strums/splashes");
         offset.x = offX;
         offset.y = offY;
-        var rando = FlxG.random.int(1, 2);
         
         if (customAnim != null) animation.addByPrefix("splash", customAnim, framerate, false);
         else switch (noteData) {
-            case 0: animation.addByPrefix("splash", 'note splash purple $rando', framerate, false);
-            case 1: animation.addByPrefix("splash", 'note splash blue $rando', framerate, false);
-            case 2: animation.addByPrefix("splash", 'note splash green $rando', framerate, false);
-            case 3: animation.addByPrefix("splash", 'note splash red $rando', framerate, false);
+            case 0: animation.addByPrefix("splash", 'SplashPurble', framerate, false);
+            case 1: animation.addByPrefix("splash", 'SplashBlub', framerate, false);
+            case 2: animation.addByPrefix("splash", 'SplashGreb', framerate, false);
+            case 3: animation.addByPrefix("splash", 'SplashReb', framerate, false);
         }
     }
 }
