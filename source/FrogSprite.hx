@@ -13,11 +13,10 @@ class FrogSprite extends FlxSprite {
     public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0) {
         animation.play(AnimName, Force, Reversed, Frame);
 
-		
 		if (animOffsets.exists(AnimName))
 		{
 			var daOffset = animOffsets.get(AnimName);
-			offset.set(daOffset[0] * scale.x, daOffset[1] * scale.y);
+			offset.set(daOffset[0] * scale.x * (flipX ? -1 : 1), daOffset[1] * scale.y * (flipY ? -1 : 1));
 		}
 		else
 			offset.set(0, 0);
