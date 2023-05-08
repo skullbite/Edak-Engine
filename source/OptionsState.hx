@@ -44,6 +44,7 @@ class BoolValueText extends TickText {
             Settings.set(key, value);
             switch (key) {
                 case "fps": (cast (Lib.current.getChildAt(0), Main)).toggleFPS(value);
+                case "darkBg": OptionsState.instance.bg.loadGraphic(Paths.image('menuBGs/${value ? 'menuBlack' : 'menuDesat'}'));
             }
         }
 
@@ -149,6 +150,7 @@ class SubStateOpenText extends TickText {
 // inspired by the KE v1.8 options menu
 class OptionsState extends MusicBeatState {
     static public var instance:OptionsState;
+    public var bg:FlxSprite;
     var baseBox:FlxSprite;
     var topBox:FlxSprite;
     var settingCatText:FlxText;
@@ -173,7 +175,7 @@ class OptionsState extends MusicBeatState {
         subCam.bgColor.alpha = 0;
         FlxG.cameras.add(subCam);*/
 
-        var bg = new FlxSprite(Paths.image('menuBGs/menuDesat'));
+        bg = new FlxSprite(Paths.image('menuBGs/${Settings.get("darkBg") ? 'menuBlack' : 'menuDesat'}'));
         bg.color = 0xFFea71fd;
         add(bg);
 

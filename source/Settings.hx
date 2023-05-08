@@ -115,6 +115,11 @@ class Settings {
                 displayName: "Easter Egg Pause",
                 type: "bool",
                 value: false
+            },
+            "darkBg" => {
+                displayName: "Use Black Menu BG",
+                type: "bool",
+                value: false
             }
         ]
     ];
