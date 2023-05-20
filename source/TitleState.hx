@@ -1,5 +1,6 @@
 package;
 
+import flixel.system.debug.log.LogStyle;
 import sys.io.File;
 import shaders.ColorSwap;
 import flixel.addons.display.FlxBackdrop;
@@ -39,6 +40,7 @@ using StringTools;
 class TitleState extends MusicBeatState
 {
 	static var initialized:Bool = false;
+	static var gameReady:Bool = false;
 
 	var blackScreen:FlxSprite;
 	var checkers:FlxBackdrop = null;
@@ -56,22 +58,8 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
-		}
+		if (!gameReady) initGame();
 		
-		
-		PlayerSettings.init();
-
-		#if desktop
-		DiscordClient.initialize();
-
-		Application.current.onExit.add (function (exitCode) {
-			DiscordClient.shutdown();
-		 });
-		 
-		#end
 		
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
@@ -79,26 +67,18 @@ class TitleState extends MusicBeatState
 		Paths.music('menu/freakyMenu');
 		Paths.music('ingame/breakfast');
 
-		#if debug
-		FlxG.console.registerClass(Paths);
-		FlxG.console.registerClass(PlayState);
-		FlxG.console.autoPause = false;
-		#end
-
 		// DEBUG BULLSHIT
 
 		super.create();
 
-		FlxG.save.bind('edak', 'skullbite');
+		
 		
 		#if FORCERESET
 		    // this flag causes random lag so be careful
 		    FlxG.save.erase();
 		#end
 		
-		Settings.init();
 
-		Highscore.load();
 
 		#if AUTOSAVE
 		    if (Settings.get("autosave") != null) {
@@ -257,6 +237,34 @@ class TitleState extends MusicBeatState
 			initialized = true;
 
 		// credGroup.add(credTextShit);
+	}
+
+	function initGame() {
+		@:privateAccess
+		{
+			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
+		}
+		FlxG.save.bind('edak', 'skullbite');
+	
+	
+	
+		PlayerSettings.init();
+		Settings.init();
+
+		#if desktop
+		DiscordClient.initialize();
+		Application.current.onExit.add(_ -> DiscordClient.shutdown());
+		#end
+
+		#if debug
+		FlxG.console.registerClass(Paths);
+		FlxG.console.registerClass(PlayState);
+		FlxG.console.autoPause = false;
+		LogStyle.WARNING.openConsole = false;
+		LogStyle.WARNING.errorSound = null;
+		#end
+		
+		gameReady = true;
 	}
 
 	function getIntroTextShit():Array<Array<String>>

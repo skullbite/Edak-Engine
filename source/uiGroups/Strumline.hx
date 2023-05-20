@@ -20,8 +20,7 @@ class Strumline extends FlxTypedGroup<FrogSprite> {
         for (i in 0...4)
             {
                 // FlxG.log.add(i);
-                var middleScrollOffset = Settings.get("middlescroll") && !Settings.get("downscroll") && followMiddlescroll ? 20 : 0;
-                var babyArrow = new FrogSprite(0, (Settings.get("downscroll") ? FlxG.height - 165 : 50) + middleScrollOffset);
+                var babyArrow = new FrogSprite(0, (Settings.get("downscroll") ? FlxG.height - 150 : 50));
     
                 switch (PlayState.curUi)
                 {
@@ -89,7 +88,6 @@ class Strumline extends FlxTypedGroup<FrogSprite> {
     
                 // psych engine!!!!!
                 if (Settings.get("middlescroll") && followMiddlescroll) {
-                    if (Settings.get("downscroll")) babyArrow.y -= 10;
                     if (forDad) {
                         babyArrow.alpha = .5;
                         babyArrow.x += 320;

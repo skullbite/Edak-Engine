@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import hstuff.CallbackScript;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import hstuff.HVars;
@@ -16,6 +17,7 @@ class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
 	public var noteScript:Null<CallbackScript>;
+	public var chartingMode:Bool = false;
 	public var raw:Array<Dynamic>;
 
 	public var mustPress:Bool = false;
@@ -204,8 +206,8 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		// if (isSustainNote && PlayState.curUi == 'pixel') offset.x = pixelSustainOffset;
 		if (noteScript?.exists(UPDATE)) noteScript.exec(UPDATE, [elapsed]);
+		if (chartingMode) return;
 		
 		if (mustPress)
 		{
@@ -228,7 +230,6 @@ class Note extends FlxSprite
 			}
 
 			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset * Conductor.timeScale && !wasGoodHit) tooLate = true;
-			// if (!isOnScreen(PlayState.instance.camHUD) && Settings.get("downscroll") ? y > FlxG.height : y < -60) tooLate = true;
 		}
 		else
 		{
@@ -236,12 +237,6 @@ class Note extends FlxSprite
 
 			if (strumTime <= Conductor.songPosition)
 				wasGoodHit = true;
-		}
-
-		if (tooLate)
-		{
-			if (alpha > 0.3)
-				alpha = 0.3;
 		}
 
 		if (tooLate)

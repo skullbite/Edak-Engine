@@ -84,6 +84,7 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
         rating.x = basePos.x - 70;
         rating.screenCenter(Y);
         rating.y = basePos.y - 65;
+        if (!isPixelUi) rating.y -= 70;
         rating.acceleration.x = 0;
         rating.acceleration.y = 550;
         rating.velocity.y -= FlxG.random.int(140, 175);

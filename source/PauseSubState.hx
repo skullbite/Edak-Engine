@@ -183,6 +183,7 @@ class PauseSubState extends MusicBeatSubstate
 				#if debug
 				case "Toggle Botplay":
 					Settings.set("botplay", !Settings.get("botplay"));
+					PlayState.instance.updateScoreTxt();
 				#end
 				case "Exit to menu":
 					if (FlxG.save.data.fpsCap > 290)
@@ -190,12 +191,6 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.instance.preExit();
 					FlxG.switchState(PlayState.isStoryMode ? new StoryMenuState() : new FreeplayState());
 			}
-		}
-
-		if (FlxG.keys.justPressed.J)
-		{
-			// for reference later!
-			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
 		}
 	}
 

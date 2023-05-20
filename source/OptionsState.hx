@@ -19,6 +19,7 @@ class TickText extends FlxText {
     public var type:String;
     override function new(x:Int, y:Int, type:String, settingsKey:String) {
         super(x, y, 0, "", 35);
+        antialiasing = false;
         this.type = type;
         key = settingsKey;
         font = Paths.font("vcr.ttf");

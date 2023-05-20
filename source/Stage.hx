@@ -12,10 +12,6 @@ class Stage extends FlxTypedGroup<FlxBasic> {
     public var foreground:FlxTypedGroup<FlxBasic>;
     public var infrontOfGf:FlxTypedGroup<FlxBasic>; // limo AUUUUUGH
     public var stageScript:Null<CallbackScript> = null;
-    public var cameraDisplace:{x:Float,y:Float} = {
-        x: 0.0,
-        y: 0.0
-    };
     public function new() {
         super();
         publicSprites = new Map();

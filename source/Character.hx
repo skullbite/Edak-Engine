@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import hstuff.HVars;
 import hstuff.CallbackScript;
 import sys.FileSystem;
@@ -151,6 +152,8 @@ class Character extends FrogSprite
 		}
 
 		super.update(elapsed);
+
+		if (animation.curAnim.looped && animation.curAnim.frames[animation.curAnim.frames.length - 1] == animation.curAnim.curFrame && FlxG.state.subState != GameOverSubstate.instance) dance(true);
 
 		if (charScript != null && charScript.exists(UPDATE)) {
 			charScript.exec(UPDATE, [elapsed]);
