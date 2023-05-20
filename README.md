@@ -1,16 +1,17 @@
-# Edak Engine (Alpha)
+![image](https://user-images.githubusercontent.com/20869262/233237345-83cf057e-ff50-4969-89ae-22d9e18faa0f.png)
+---
 
-A fork of Kade Engine v1.5 that looks to make FNF easier to softcode and configure. 
-
-(Not intended for use on web right now.)
+**Edak Engine is a supercharged fork of Kade Engine 1.5. It improves multiple aspects of the game, whether it be gameplay, or modding.**
 
 # Features
-- Configurable weeks, custom notes and difficulties 
-- Softcodable characters, stages, substates and dialogue
-- A cleaner filesystem
+- Events, scripts, stages, characters, and more can be created with hscript!
+- [Ez Modding!](https://github.com/Skullbite/Edak-Engine/wiki)
+- Easier to navigate filesystem!
+- Overhauled UIs for the playstate and some menus.
+- Support for Shaders and Videos.
 
 # Credits
-[TheWorldMachinima](https://github.com/TheWorldMachinima) - Maintains the SScript library used by this engine.
+[TheWorldMachinima](https://github.com/TheWorldMachinima) - Maintains the Teascript library used by this engine
 
 [KadeDev](https://github.com/KadeDev) - Made the engine I forked
 
