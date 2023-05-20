@@ -44,8 +44,8 @@ jobs:
           haxelib install flixel-ui
           haxelib install hxcodec
           haxelib install yaml
+          haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
 
       - name: Create Version Tag and Asset
         run: |
@@ -88,8 +88,8 @@ jobs:
           haxelib install flixel-ui
           haxelib install hxcodec
           haxelib install yaml
+          haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git SScript https://github.com/TheWorldMachinima/SScript/
 
       - name: Create Version Tag and Asset
         run: |
