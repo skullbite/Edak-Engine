@@ -3,10 +3,10 @@ function create() {
     char.frames = Paths.getSparrowAtlas('Pico_FNF_assetss');
 
     addAnim('idle', "Pico Idle Dance", 24, false);
-    addAnim('singUP', 'pico Up note0', [-29, 27]);
-    addAnim('singDOWN', 'Pico Down Note0', [200, -70]);
-    addAnim('singLEFT', 'Pico Note Right0', [65, 9]);
-    addAnim('singRIGHT', 'Pico NOTE LEFT0', [-68, -7]);
+    addAnim('singUP', 'pico Up note0', [29, 27]);
+    addAnim('singDOWN', 'Pico Down Note0', [-200, -70]);
+    addAnim('singLEFT', 'Pico Note Right0', [-65, 9]);
+    addAnim('singRIGHT', 'Pico NOTE LEFT0', [68, -7]);
 
     // will return to at some point lol
     /* if (char.isPlayer) {

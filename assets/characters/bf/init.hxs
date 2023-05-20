@@ -15,12 +15,12 @@ function create() {
     addAnim("scared", "BF idle shaking", [-4, 0]);
     
     addAnim("firstDeath", "BF dies", [37, 11]);
-    addAnim("deathLoop", "BF Dead Loop", [37, 5]);
+    addAnim("deathLoop", "BF Dead Loop", [37, 5], null, 24, true);
     addAnim("deathConfirm", "BF Dead confirm", [37, 69]);
     
     playAnim("idle");
     
-    char.displaceData.camX = -100;
-    char.displaceData.camY = -100;
+    /* char.displaceData.camX = -100;
+    char.displaceData.camY = -100; */
     char.flipX = true;
 }

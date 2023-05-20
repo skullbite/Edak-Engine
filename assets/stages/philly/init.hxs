@@ -1,6 +1,5 @@
-package;
 // i had multiple aneurysms porting this
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.FlxSprite;
@@ -17,6 +16,8 @@ var startedMoving = false;
 var trainFinishing = false;
 var trainCars = 8;
 var trainSound:FlxSound;
+
+var phillyTrain:FlxSprite;
 
 function create() {
 	set("curLight", curLight);
@@ -43,9 +44,8 @@ function create() {
     var streetBehind = new FlxSprite(-40, 50).loadGraphic(Paths.image('behindTrain'));
     add(streetBehind);
 
-	var phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('train'));
+	phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('train'));
 	if (Settings.get("distractions")) add(phillyTrain);
-    stage.publicSprites["phillyTrain"] = phillyTrain;
 
 
 	trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
@@ -54,7 +54,6 @@ function create() {
 	// var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
 
 	var street = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('street'));
-    
 	add(street);
 }
 
@@ -111,7 +110,6 @@ function updateTrainPos() {
 				startedMoving = true;
 				PlayState.gf.playAnim('hairBlow');
 			}
-            var phillyTrain = stage.publicSprites["phillyTrain"];
 
 			if (startedMoving)
 			{
@@ -133,8 +131,7 @@ function updateTrainPos() {
 }
 
 function trainReset() {
-	PlayState.gf.playAnim('hairFall');
-    var phillyTrain = stage.publicSprites["phillyTrain"];
+	PlayState.gf.playAnim('hairFall', true);
 	phillyTrain.x = FlxG.width + 200;
 	trainMoving = false;
 	// trainSound.stop();

@@ -32,6 +32,8 @@ function preload(v1, v2) {
     var nextChar:Character = null;
     if (v1 == "bf") nextChar = new Boyfriend(char.x, char.y, v2);
     else nextChar = new Character(char.x, char.y, v2);
+    nextChar.x += nextChar.displaceData.x;
+    nextChar.y += nextChar.displaceData.y;
     nextChar.alpha = .005;
     charGroup.insert(0, nextChar);
 }

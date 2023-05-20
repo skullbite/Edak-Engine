@@ -2,8 +2,8 @@ function create() {
     char.frames = Paths.getSparrowAtlas("bfPixelsDEAD");
 
     addAnim("firstDeath", "BF Dies pixel", 24, false);
-    addAnim("deathLoop", "Retry Loop", [-37, 0]);
-    addAnim("deathConfirm", "RETRY CONFIRM", [-37, 0]);
+    addAnim("deathLoop", "Retry Loop", [37, 0]);
+    addAnim("deathConfirm", "RETRY CONFIRM", [37, 0]);
 
     playAnim("firstDeath");
 
