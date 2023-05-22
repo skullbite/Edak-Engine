@@ -633,6 +633,7 @@ class ChartingState extends MusicBeatState
 			updateHeads(true, "bf");
 		});
 		player1DropDown.selectedLabel = p1In ? _song.player1 : characters[characters.indexOf('${_song.player1} (invalid)')];
+		player1DropDown.dropDirection = Down;
 
 		var player1Label = new FlxText(10,80,64,'Player 1');
 
@@ -643,6 +644,7 @@ class ChartingState extends MusicBeatState
 			updateHeads(true, "dad");
 		});
 		player2DropDown.selectedLabel = p2In ? _song.player2 : characters[characters.indexOf('${_song.player2} (invalid)')];
+		player2DropDown.dropDirection = Down;
 
 		var player2Label = new FlxText(140,80,64,'Player 2');
 
