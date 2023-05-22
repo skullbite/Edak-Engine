@@ -38,7 +38,6 @@ class SplashGroup extends FlxTypedGroup<FlxSprite> {
         }
        
         var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x + perStrumOffsets[noteData].x, offsets.y + perStrumOffsets[noteData].y, noteData, defaultFramerate);
-        splash.cameras = [PlayState.instance.camHUD];
         if (firstSplash) {
             splash.alpha = 0.005;
             firstSplash = false;

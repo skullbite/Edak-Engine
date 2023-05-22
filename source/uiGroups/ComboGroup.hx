@@ -36,15 +36,12 @@ class ComboGroup extends FlxTypedGroup<FlxBasic> {
         rating = new FlxSprite();
         rating.alpha = 0;
 
-        rating.cameras = [PlayState.instance.camHUD];
         add(rating);
         
         numbers = new FlxTypedGroup<FlxSprite>();
-        numbers.cameras = [PlayState.instance.camHUD];
         add(numbers);
 
         ms = new FlxText();
-        ms.cameras = [PlayState.instance.camHUD];
         ms.text = "0ms";
         ms.alpha = 0;
         ms.font = Paths.font("vcr.ttf");

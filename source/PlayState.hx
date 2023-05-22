@@ -360,6 +360,7 @@ class PlayState extends MusicBeatState
 		splashes = new SplashGroup();
 		splashes.spawnSplash(0);
 		combos = new ComboGroup();
+		
 
 		if (SONG.gfVersion != null) gf = new Character(400, 130, SONG.gfVersion);
 		if (gf != null && gf.scrollFactor != null) {
@@ -579,8 +580,8 @@ class PlayState extends MusicBeatState
 		cpuStrums.doIntro();
 		playerStrums.doIntro();
 
-		add(splashes);
-		add(combos);
+		addToHUD(splashes);
+		addToHUD(combos);
 
 		
 		var daThingy = -20;
@@ -1781,7 +1782,7 @@ class PlayState extends MusicBeatState
 		super.stepHit();
 		HFunk.doDaCallback(STEP, [curStep]);
 		stage.stepHit(curStep);
-		if (FlxG.sound.music.time >= Conductor.songPosition + 15 || FlxG.sound.music.time <= Conductor.songPosition - 15)
+		if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
 			resyncVocals();
 
 
