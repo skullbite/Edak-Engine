@@ -1,6 +1,10 @@
 package hstuff;
 
 import tea.TeaScript;
+import states.PlayState;
+import utils.HelperFunctions;
+import substates.GameOverSubstate;
+import utils.Conductor; 
 
 // @:enum abstract FlxColor(String) to String {}
 

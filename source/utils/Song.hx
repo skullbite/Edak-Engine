@@ -1,0 +1,78 @@
+package utils;
+
+import sys.io.File;
+import utils.Section.SwagSection;
+import haxe.Json;
+
+using StringTools;
+
+typedef SwagSong =
+{
+	var song:String;
+	var notes:Array<SwagSection>;
+	// var events:Array<Dynamic>; // [strumTime, [["ev1","val1","val2"], ["ev2","v1","v2"]]]
+	var bpm:Float;
+	var needsVoices:Bool;
+	var speed:Float;
+
+	var player1:String;
+	var player2:String;
+	var ?gfVersion:String;
+	var stage:String;
+	var ?diff:String; // just for the autosave
+}
+
+class Song
+{
+	public var song:String;
+	public var notes:Array<SwagSection>;
+	public var bpm:Float;
+	public var needsVoices:Bool = true;
+	public var speed:Float = 1;
+
+	public var player1:String = 'bf';
+	public var player2:String = 'dad';
+	public var gfVersion:String = 'gf';
+	public var stage:String = 'stage';
+
+	public function new(song, notes, bpm)
+	{
+		this.song = song;
+		this.notes = notes;
+		this.bpm = bpm;
+	}
+
+	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
+	{
+		var rawJson = File.getContent(Paths.json(folder.toLowerCase() + '/charts/' + jsonInput.toLowerCase(), true)).trim();
+
+		while (!rawJson.endsWith("}"))
+		{
+			rawJson = rawJson.substr(0, rawJson.length - 1);
+			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
+		}
+
+		// FIX THE CASTING ON WINDOWS/NATIVE
+		// Windows???
+		// trace(songData);
+
+		// trace('LOADED FROM JSON: ' + songData.notes);
+		/* 
+			for (i in 0...songData.notes.length)
+			{
+				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
+				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
+			}
+
+				daNotes = songData.notes;
+				daSong = songData.song;
+				daBpm = songData.bpm; */
+
+		return parseJSONshit(rawJson);
+	}
+
+	public static function parseJSONshit(rawJson:String):SwagSong
+	{
+		return cast Json.parse(rawJson).song;
+	}
+}

@@ -1,4 +1,4 @@
-import Character;
+import sprites.Character;
 import Boyfriend;
 import sys.FileSystem as fs;
 

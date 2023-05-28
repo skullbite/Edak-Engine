@@ -1,2 +1,2 @@
-import Paths;
-import Settings;
+import utils.Paths;
+import utils.Settings;

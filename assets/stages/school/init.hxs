@@ -3,7 +3,7 @@ package;
 import BackgroundGirls;
 import CoolUtil;
 import flixel.FlxSprite;
-import FrogSprite;
+import sprites.FrogSprite;
 
 var girlsDanced = false;
 var bgGirls:FrogSprite;

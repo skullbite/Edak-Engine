@@ -1,6 +1,7 @@
 package hstuff;
 
 import hstuff.HVars.Callbacks;
+import states.PlayState;
 
 // Better name than HGame
 class FunkScript extends HBase {
