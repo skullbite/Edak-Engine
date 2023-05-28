@@ -1,6 +1,12 @@
 name: edakBuilder
 
-on: push
+on: 
+  push:
+    branches:
+      - edak
+      
+  workflow_dispatch:
+    
 
 jobs:
   makeRelease:
