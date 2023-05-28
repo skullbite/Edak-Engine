@@ -1163,7 +1163,7 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
-						HFunk.doDaCallback(OPPONENT, [daNote.noteData, daNote]);
+						HFunk.doDaCallback(OPPONENT, [daNote]);
 
 
 						if (!daNote.noHit) {
@@ -1610,7 +1610,7 @@ class PlayState extends MusicBeatState
 			songScore -= 10;
 			updateAccuracy();
 			updateScoreTxt();
-			var missCall = HFunk.doDaCallback(NOTE_MISS, [direction, daNote]);
+			var missCall = HFunk.doDaCallback(NOTE_MISS, [daNote]);
 			if (missCall.contains(HVars.STOP)) return;
 
 			FlxG.sound.play(Paths.soundRandom('miss/missnote', 1, 3), FlxG.random.float(0.1, 0.2));
@@ -1751,7 +1751,7 @@ class PlayState extends MusicBeatState
 					
 					updateAccuracy();
 
-					var noteCall = HFunk.doDaCallback(NOTE_HIT, [note.noteData, note]);
+					var noteCall = HFunk.doDaCallback(NOTE_HIT, [note]);
 					if (noteCall.contains(HVars.STOP)) return;
 
 					bf?.playAnim('sing${Character.directions[note.noteData]}', true);
