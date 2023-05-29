@@ -119,7 +119,7 @@ class Character extends FrogSprite
 			{
 				// var animArray
 				var oldRight = animation.getByName('singRIGHT').frames;
-				if (animation != null && !animation.exists("singLEFT") && !animation.exists("singRIGHT")) return;
+				if (!animation.exists("singLEFT") && !animation.exists("singRIGHT")) return;
 				animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
 				animation.getByName('singLEFT').frames = oldRight;
 
