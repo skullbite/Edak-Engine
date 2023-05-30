@@ -156,6 +156,7 @@ class OptionsState extends MusicBeatState {
     var baseBox:FlxSprite;
     var topBox:FlxSprite;
     var settingCatText:FlxText;
+    var controlTxt:FlxText;
     var categories:Array<String> = [];
     var curCategory:Int = 0;
     var categorySelected:Bool = false;
@@ -180,6 +181,12 @@ class OptionsState extends MusicBeatState {
         bg = new FlxSprite(Paths.image('menuBGs/${Settings.get("darkBg") ? 'menuBlack' : 'menuDesat'}'));
         bg.color = 0xFFea71fd;
         add(bg);
+
+        controlTxt = new FlxText(0, FlxG.height - 20, 0, "< > Switch Category | [ENTER] Enter Category | [ESC] Exit Menu", 15);
+        controlTxt.font = Paths.font("vcr.ttf");
+        controlTxt.borderStyle = OUTLINE;
+        controlTxt.borderSize = 2;
+        add(controlTxt);
 
         baseBox = new FlxSprite().makeGraphic(1000, 600);
         baseBox.color = 0x000000;
@@ -229,6 +236,8 @@ class OptionsState extends MusicBeatState {
         highlightChar.visible = categorySelected;
         darkThing.visible = !categorySelected;
         if (!acceptInput) return;
+        if (categorySelected) controlTxt.text = "< > Change Settings | [ESC] Exit Category";
+        else controlTxt.text = "< > Switch Category | [ENTER] Enter Category | [ESC] Exit Menu";
         if (FlxG.keys.justPressed.ESCAPE) { 
             if (!categorySelected) {
                 // FlxG.cameras.remove(subCam);

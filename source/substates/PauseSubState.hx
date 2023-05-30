@@ -105,6 +105,11 @@ class PauseSubState extends MusicBeatSubstate
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 
+		if (FlxG.sound.music.playing) {
+			FlxG.sound.music.pause();
+			PlayState.instance.vocals.pause();
+		}
+		
 		super.update(elapsed);
 
 		var upP = controls.UP_P;

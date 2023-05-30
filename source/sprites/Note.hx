@@ -19,7 +19,8 @@ class Note extends FlxSprite
 	public var strumTime:Float = 0;
 	public var noteScript:Null<CallbackScript>;
 	public var chartingMode:Bool = false;
-	public var raw:Array<Dynamic>;
+	public var raw(get, null):Array<Dynamic>;
+	function get_raw() return [strumTime, noteData, sustainLength, noteType];
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;

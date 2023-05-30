@@ -1,5 +1,6 @@
 package;
 
+import states.MainMenuState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
@@ -44,7 +45,7 @@ class OutdatedSubState extends MusicBeatSubstate
 		
 		var txt:FlxText = new FlxText(0, 0, FlxG.width,
 			"Your Edak Engine is outdated!\nYou are on "
-			+ MainMenuState.edakEngineVer
+			+ MainMenuState.engineVer
 			+ "\nwhile the most recent version is " + needVer + "."
 			+ "\n\nWhat's new:\n\n"
 			+ currChanges

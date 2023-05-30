@@ -19,7 +19,6 @@ typedef SwagSong =
 	var player2:String;
 	var ?gfVersion:String;
 	var stage:String;
-	var ?diff:String; // just for the autosave
 }
 
 class Song

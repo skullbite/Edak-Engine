@@ -347,7 +347,7 @@ class TitleState extends MusicBeatState
 			{
 				// Get current version of Kade Engine
 				
-				#if (UPDATES)
+				#if (UPDATES) // todo: add this back when the substate is remade
 				var http = new haxe.Http("https://raw.githubusercontent.com/Skullbite/Edak-Engine/master/version.downloadMe");
 				var returnedData:Array<String> = [];
 				

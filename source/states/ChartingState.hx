@@ -116,6 +116,7 @@ class ChartingState extends MusicBeatState
 	public var anotherGridLine:FlxSprite;
 	public var wowAnotherGridLine:FlxSprite;
 	public var amazingAnotherGridLine:FlxSprite;
+	var playingMusic:Bool = false;
 	var vocals:FlxSound;
 
 	var inputFields:Array<FlxUIInputText> = [];
@@ -455,7 +456,7 @@ class ChartingState extends MusicBeatState
 		evPage = new FlxUIText(UI_box.width / 2 - 20, addB.y - 10, 0, 'N/A');
 		evPage.size = 15;
 
-		evDesc = new FlxUIText(10, 200, 0, eventData.filter(d -> d[0] == evDrop.selectedLabel)[0][0]);
+		evDesc = new FlxUIText(10, 200, 0, eventData.filter(d -> d[0] == evDrop.selectedLabel)[0][1] ?? 'N/A');
 		evDesc.size = 10;
 
 		var tab_group_events = new FlxUI(null, UI_box);
@@ -512,9 +513,9 @@ class ChartingState extends MusicBeatState
 			saveLevel();
 		});
 
-		var saveEventsButton:FlxButton = new FlxButton(saveButton.x, saveButton.y + 20, "Save Events", () -> {
+		/*var saveEventsButton:FlxButton = new FlxButton(saveButton.x, saveButton.y + 20, "Save Events", () -> {
 			saveLevel(true);
-		});
+		});*/
 
 		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y, "Reload Audio", function()
 		{
@@ -680,7 +681,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(check_voices);
 		tab_group_song.add(check_mute_inst);
 		tab_group_song.add(saveButton);
-		tab_group_song.add(saveEventsButton);
+		// tab_group_song.add(saveEventsButton);
 		tab_group_song.add(reloadSong);
 		tab_group_song.add(reloadSongJson);
 		tab_group_song.add(loadAutosaveBtn);
@@ -1011,6 +1012,11 @@ class ChartingState extends MusicBeatState
 
 		curStep = recalculateSteps();
 
+		if (!playingMusic && (vocals.playing || FlxG.sound.music.playing)) {
+			FlxG.sound.music.pause();
+			vocals.pause();
+		}
+
 		/*if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.RIGHT)
 			snap = snap * 2;
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.LEFT)
@@ -1277,7 +1283,7 @@ class ChartingState extends MusicBeatState
 			}	
 			if (FlxG.keys.justPressed.SPACE)
 			{
-				if (FlxG.sound.music.playing)
+				if (playingMusic)
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
@@ -1290,6 +1296,7 @@ class ChartingState extends MusicBeatState
 					vocals.play();
 					FlxG.sound.music.play();
 				}
+				playingMusic = !playingMusic;
 			}
 
 			if (FlxG.keys.justPressed.R)
@@ -1657,8 +1664,9 @@ class ChartingState extends MusicBeatState
 			note.x = Math.floor((daNoteInfo + 1) * GRID_SIZE);
 			note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * 16)));
 			if (daNoteInfo % 4 == -1) {
-				note.loadGraphic(Paths.image('icons/face'), 300, 150);
-				note.animation.add("test", [0, 1], 0);
+				note.frames = null;
+				note.loadGraphic(Paths.image('icons/face'), true, 150, 150);
+				note.animation.add("test", [0, 1], 0, false, false);
 				note.animation.play("test");
 				
 				var correlatingTxt = new EventText(gridBG.x, note.y, i);
@@ -1939,15 +1947,22 @@ class ChartingState extends MusicBeatState
 
 	function loadAutosave():Void
 	{
+		var extraData:{diff:String,?modPath:String} = Settings.get("autosave_ext");
 		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
-		PlayState.difficulty = PlayState.SONG.diff.toLowerCase();
-		Reflect.deleteField(PlayState.SONG, "diff");
+		#if MODS
+		if (extraData.modPath != null) Paths.curModDir = extraData.modPath; 
+		#end
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 
 	function autosaveSong():Void
 	{
-		_song.diff = currentDiff;
+		Settings.set("autosave_ext", {
+			diff: currentDiff,
+			#if MODS
+			modPath: Paths.curModDir
+			#end
+		});
 		FlxG.save.data.autosave = Json.stringify({
 			"song": _song
 		});

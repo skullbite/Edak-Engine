@@ -77,4 +77,12 @@ class MusicBeatSubstate extends FlxSubState
 	}
 	
 	public function sectionHit() {}
+
+	public function fancyOpenURL(schmancy:String) {
+		#if linux
+		Sys.command('/usr/bin/xdg-open', [schmancy, "&"]);
+		#else
+		FlxG.openURL(schmancy);
+		#end
+	}
 }
