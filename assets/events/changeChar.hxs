@@ -1,5 +1,5 @@
 import sprites.Character;
-import Boyfriend;
+import sprites.Boyfriend;
 import sys.FileSystem as fs;
 
 function init() {

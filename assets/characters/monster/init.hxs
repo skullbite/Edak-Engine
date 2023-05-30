@@ -2,10 +2,12 @@ function create() {
     char.barColor = 0xff78ff71;
     char.frames = Paths.getSparrowAtlas('Monster_Assets');
     addAnim('idle', 'monster idle');
-    addAnim('singUP', 'monster up note', [-20, 50]);
-    addAnim('singDOWN', 'monster down', [-30, -40]);
+    addAnim('singUP', 'monster up note', [0, 90]);
+    addAnim('singDOWN', 'monster down', [-30, -80]);
     addAnim('singRIGHT', 'Monster left note', [-30, 0]);
-    addAnim('singLEFT', 'Monster Right note', [-51, 0]);
+    addAnim('singLEFT', 'Monster Right note', [-31, 20]);
     
     playAnim('idle');
+
+    char.displaceData.y = -100;
 }
