@@ -50,6 +50,9 @@ import sprites.Character;
 import sprites.Boyfriend;
 import sprites.HealthIcon;
 import utils.Song;
+#if desktop
+import utils.Discord.DiscordClient;
+#end
 
 using StringTools;
 
@@ -162,6 +165,10 @@ class ChartingState extends MusicBeatState
 			};
 		}
 		currentDiff = PlayState.difficulty;
+
+		#if desktop
+        DiscordClient.changePresence('Charting ${_song.song}', null);
+        #end
 
 		bg = new FlxSprite(-100).loadGraphic(Paths.image('menuBGs/menuBlack'));
 		bg.alpha = .8;

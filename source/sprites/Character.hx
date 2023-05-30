@@ -60,6 +60,8 @@ class Character extends FrogSprite
 		camY: 0
 	};
 
+	public var error:Null<String>;
+
 	public static function fetchIcon(name:String) {
 		if (FileSystem.exists(Paths.getPath('characters/$name/init.hxs'))) {
 			var script:CallbackScript = new CallbackScript(Paths.getPath('characters/$name/init.hxs'), '', {});
@@ -96,11 +98,15 @@ class Character extends FrogSprite
 					}
 					catch (e) {
 						charScript = null;
+						error = e.message;
 					    trace('Failed to load $curCharacter from hscript: ${e.message}');
 						loadBfInstead();
 					}
 				}
-				else loadBfInstead();
+				else {
+					error = 'No character script found for "$curCharacter".';
+					loadBfInstead();
+				}
 		}
 
 		dance();
@@ -202,7 +208,6 @@ class Character extends FrogSprite
 	// skibbidy beep po
 	// (in case there's an issue with hscript)
 	function loadBfInstead() {
-		curCharacter = "bf";
 		frames = FlxAtlasFrames.fromSparrow(Paths.getPath('bf/BOYFRIEND.png', 'characters'), Paths.getPath('bf/BOYFRIEND.xml', 'characters'));
 		animation.addByPrefix('idle', 'BF idle dance', 24, false);
 		animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);

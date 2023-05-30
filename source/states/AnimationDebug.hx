@@ -16,6 +16,7 @@ class AnimationDebug extends MusicBeatState {
 	var buttons:FlxTypedGroup<FlxSpriteButton>;
 	var cameraDisplaceButton:FlxSpriteButton;
 	var camDis:FlxText;
+	var errText:FlxText;
 	var resetButton:FlxSpriteButton;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
@@ -52,6 +53,17 @@ class AnimationDebug extends MusicBeatState {
 		add(anims);
 		buttons = new FlxTypedGroup();
 		add(buttons);
+
+
+		if (char.error != null) {
+			errText = new FlxText(0, FlxG.height - 100, 0, '${char.curCharacter} failed to load: ${char.error}', 20);
+			errText.font = Paths.font("vcr.ttf");
+			errText.color = FlxColor.RED;
+			errText.borderStyle = OUTLINE;
+			errText.borderSize = 2;
+			errText.screenCenter(X);
+			add(errText);
+		}
 
 
 		var iHateMapLoops = 0;

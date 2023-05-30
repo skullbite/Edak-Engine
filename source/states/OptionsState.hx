@@ -13,6 +13,9 @@ import hstuff.HBase;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import substates.KeyBindMenu;
+#if desktop
+import utils.Discord.DiscordClient;
+#end
 
 class TickText extends FlxText {
     public var key:String;
@@ -232,6 +235,9 @@ class OptionsState extends MusicBeatState {
     }
 
     override function update(elapsed) {
+        #if desktop
+        DiscordClient.changePresence("In the Options Menu", null);
+        #end
         super.update(elapsed);
         highlightChar.visible = categorySelected;
         darkThing.visible = !categorySelected;

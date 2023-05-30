@@ -35,7 +35,7 @@ typedef WeekData = {
 	songs:Array<String>,
 	icons:Array<String>,
 	colors:Array<Int>,
-	?hiddenInStory:Bool,
+	?hideInStory:Bool,
 	difficulties:Array<String>,
 	?storyDad:String,
 	?storyBf:String,
@@ -98,7 +98,7 @@ class StoryMenuState extends MusicBeatState
 
 		for (week in 0...weekDataStuff.length) {
 			var coolWeekData:WeekData = Yaml.read(Paths.yaml("weeks/" + weekDataStuff[week]), new ParserOptions().useObjects());
-			if (coolWeekData.hiddenInStory != null && coolWeekData.hiddenInStory) continue;
+			if (coolWeekData == null || (coolWeekData.hideInStory != null && !coolWeekData.hideInStory)) continue;
 			coolWeekData.path = weekDataStuff[week].split("/").pop().replace(".yaml", "");
 			weekData.push(coolWeekData);
 			// to do: reimplement week lock
@@ -112,8 +112,10 @@ class StoryMenuState extends MusicBeatState
 				var modThing = week.split("/");
 				modThing.resize(2);
 				daWeek.modPath = modThing.join("/");
-				weekData.push(daWeek);
-				weekUnlocked.push(true);
+				if (daWeek == null || (daWeek.hideInStory != null && !daWeek.hideInStory)) {
+					weekData.push(daWeek);
+				    weekUnlocked.push(true);
+				}
 			}
 		}
 		#end
