@@ -121,22 +121,7 @@ class Character extends FrogSprite
 			flipX = !flipX;
 
 			// Doesn't flip for BF, since his are already in the right place???
-			if (!curCharacter.startsWith('bf'))
-			{
-				// var animArray
-				var oldRight = animation.getByName('singRIGHT').frames;
-				if (!animation.exists("singLEFT") && !animation.exists("singRIGHT")) return;
-				animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-				animation.getByName('singLEFT').frames = oldRight;
-
-				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singRIGHTmiss') != null)
-				{
-					var oldMiss = animation.getByName('singRIGHTmiss').frames;
-					animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-					animation.getByName('singLEFTmiss').frames = oldMiss;
-				}
-			}
+			if (!curCharacter.startsWith('bf')) flipLeftRight();
 		}
 
 		if (charScript != null && charScript.exists(CREATE_POST)) charScript.exec(CREATE_POST, []);
@@ -145,7 +130,7 @@ class Character extends FrogSprite
 	override function update(elapsed:Float)
 	{
 		if (!active) destroy();
-		if (!curCharacter.startsWith('bf'))
+		if (!isPlayer)
 		{
 			if (curAnim == null) return;
 			if (curAnim.name.startsWith('sing'))
@@ -203,6 +188,22 @@ class Character extends FrogSprite
 			playAnim(danced ? "danceRight" : "danceLeft", force);
 		}
 		else playAnim("idle", force);
+	}
+
+	function flipLeftRight() {
+		// var animArray
+		var oldRight = animation.getByName('singRIGHT').frames;
+		if (!animation.exists("singLEFT") && !animation.exists("singRIGHT")) return;
+		animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
+		animation.getByName('singLEFT').frames = oldRight;
+
+		// IF THEY HAVE MISS ANIMATIONS??
+		if (animation.getByName('singRIGHTmiss') != null)
+		{
+			var oldMiss = animation.getByName('singRIGHTmiss').frames;
+			animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
+			animation.getByName('singLEFTmiss').frames = oldMiss;
+		}
 	}
 
 	// skibbidy beep po
