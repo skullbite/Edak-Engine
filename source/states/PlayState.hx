@@ -1124,6 +1124,7 @@ class PlayState extends MusicBeatState
 					
 					var curStrum = (daNote.mustPress ? playerStrums : cpuStrums).members[daNote.noteData];
 					var strumLineMid = curStrum.height / 2;
+					// FlxG.height / 2 < curStrum.y - strumLineMid
 					
 					if (FlxG.save.data.downscroll)
 						{
@@ -1179,9 +1180,12 @@ class PlayState extends MusicBeatState
 		
 							if (dad != null) dad.holdTimer = 0;
 			
+							if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
+								resyncVocals();
+
 							if (SONG.needsVoices)
 								vocals.volume = 1;
-			
+							
 							daNote.active = false;
 		
 								
@@ -1522,7 +1526,6 @@ class PlayState extends MusicBeatState
 								{
 									if (mashViolations != 0)
 										mashViolations--;
-									scoreTxt.color = FlxColor.WHITE;
 									goodNoteHit(coolNote);
 								}
 							}
@@ -1565,11 +1568,21 @@ class PlayState extends MusicBeatState
 						}
 					});
 			 
-					if (bf != null && bf.animation != null && bf.animation.curAnim != null && bf.holdTimer > Conductor.stepCrochet * bf.singTime * 0.001) {
+					if (bf != null && !bf.stopDancing && bf.animation != null && bf.animation.curAnim != null && bf.holdTimer > Conductor.stepCrochet * bf.singTime * 0.001) {
+						var data = switch (bf.curAnim.name) {
+							case "singLEFT": 0;
+							case "singDOWN": 1;
+							case "singUP": 2;
+							case "singRIGHT": 3;
+							default: 
+								if (bf.curAnim.name.endsWith("Loop")) -2;
+								else -1;
+						}
+
 						if (
-							((!Settings.get("botplay") && !holdArray.contains(true)) || 
-							(Settings.get("botplay") && (bf.curAnim.finished || bf.curAnim.looped))) && 
-							bf.curAnim.name.startsWith('sing')
+							data != -1 &&
+							((!Settings.get("botplay") && playerStrums.members[data].curAnim.name != "confirm") || 
+							(Settings.get("botplay") && (bf.curAnim.finished || bf.curAnim.looped)))
 						) bf.dance(true);
 					}
 			 
@@ -1740,8 +1753,11 @@ class PlayState extends MusicBeatState
 					else
 						totalNotesHit += 1;
 
-					note.wasGoodHit = true;
-					vocals.volume = 1;
+					if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
+						resyncVocals();
+
+					if (SONG.needsVoices)
+						vocals.volume = 1;
 		
 					note.kill();
 					notes.remove(note, true);
@@ -1828,9 +1844,9 @@ class PlayState extends MusicBeatState
 		}
 
 		// WHY DO THESE KEEP FALLING THROUGH OH MY GOD
-		if (gf != null && gf.animation != null && curBeat % gf.bopSpeed == 0 && !gf.animation.curAnim?.name.startsWith("sing")) gf.dance(true);
-		if (bf != null && bf.animation != null && curBeat % bf.bopSpeed == 0 && !bf.animation.curAnim?.name.startsWith("sing")) bf.dance(true);
-		if (dad != null && dad.animation != null && curBeat % dad.bopSpeed == 0 && !dad.animation.curAnim?.name.startsWith("sing")) dad.dance(true);
+		if (gf != null && !gf.stopDancing && gf.animation != null && curBeat % gf.bopSpeed == 0 && !gf.animation.curAnim?.name.startsWith("sing")) gf.dance(true);
+		if (bf != null && !bf.stopDancing && bf.animation != null && curBeat % bf.bopSpeed == 0 && (!bf.animation.curAnim?.name.startsWith("sing") && !playerStrums.members.map(d -> d.curAnim.name).contains("confirm"))) bf.dance(true);
+		if (dad != null && !dad.stopDancing && dad.animation != null && curBeat % dad.bopSpeed == 0 && !dad.animation.curAnim?.name.startsWith("sing")) dad.dance(true);
 	}
 
 	override function onFocus() {

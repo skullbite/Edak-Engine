@@ -1,5 +1,6 @@
 package states;
 
+import flixel.system.debug.log.LogStyle;
 import openfl.Lib;
 import flixel.math.FlxMath;
 import flixel.FlxCamera;
@@ -50,6 +51,16 @@ class BoolValueText extends TickText {
             switch (key) {
                 case "fps": (cast (Lib.current.getChildAt(0), Main)).toggleFPS(value);
                 case "darkBg": OptionsState.instance.bg.loadGraphic(Paths.image('menuBGs/${value ? 'menuBlack' : 'menuDesat'}'));
+                case "debug":
+                    FlxG.debugger.toggleKeys = value ? [F2, GRAVEACCENT, BACKSLASH] : null;
+                    if (FlxG.debugger.visible && !value) FlxG.debugger.visible = false;
+                    /*else if (value) {
+                        var uhhh = new LogStyle();
+                        uhhh.openConsole = true;
+                        uhhh.size = 20;
+                        FlxG.log.clear();
+                        FlxG.log.advanced("you turned on debug lol", uhhh);
+                    }*/
             }
         }
 

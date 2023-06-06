@@ -351,7 +351,7 @@ class FreeplayState extends MusicBeatState
 				jukeboxInst.kill();
 				jukeboxVocals.kill();
 			}*/
-			if (FlxG.keys.pressed.SHIFT) FlxG.switchState(new ChartingState());
+			if (FlxG.keys.pressed.SHIFT) LoadingState.loadAndSwitchState(new ChartingState());
 			else LoadingState.loadAndSwitchState(new PlayState());
 		}
 	}

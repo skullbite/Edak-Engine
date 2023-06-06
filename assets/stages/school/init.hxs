@@ -1,7 +1,6 @@
 package;
 
-import BackgroundGirls;
-import CoolUtil;
+import utils.CoolUtil;
 import flixel.FlxSprite;
 import sprites.FrogSprite;
 

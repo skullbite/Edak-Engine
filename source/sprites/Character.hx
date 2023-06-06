@@ -123,8 +123,6 @@ class Character extends FrogSprite
 			// Doesn't flip for BF, since his are already in the right place???
 			if (!curCharacter.startsWith('bf')) flipLeftRight();
 		}
-
-		if (charScript != null && charScript.exists(CREATE_POST)) charScript.exec(CREATE_POST, []);
 	}
 
 	override function update(elapsed:Float)
@@ -147,7 +145,7 @@ class Character extends FrogSprite
 
 		super.update(elapsed);
 
-		if (animation.curAnim.looped && animation.curAnim.frames[animation.curAnim.frames.length - 1] == animation.curAnim.curFrame && FlxG.state.subState != GameOverSubstate.instance) dance(true);
+		// if (animation.curAnim.looped && animation.curAnim.frames[animation.curAnim.frames.length - 1] == animation.curAnim.curFrame && FlxG.state.subState != GameOverSubstate.instance) dance(true);
 
 		if (charScript != null && charScript.exists(UPDATE)) {
 			charScript.exec(UPDATE, [elapsed]);
@@ -175,9 +173,6 @@ class Character extends FrogSprite
 	{
 		if (debugMode || animation == null) return;
 		// yeah i hate nesting
-		if (animation.curAnim != null) {
-			if (animation.curAnim?.name.contains("sing") && !animation.curAnim?.finished && !force) return;
-		}
 		if (charScript != null && charScript.exists(DANCE)) {
 			charScript.exec(DANCE, []);
 			return;

@@ -1,5 +1,6 @@
 package states;
 
+import utils.GameDataInit;
 import flixel.system.debug.log.LogStyle;
 import sys.io.File;
 import shaders.ColorSwap;
@@ -60,52 +61,29 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		if (!gameReady) {
+			GameDataInit.lol();
+			gameReady = true;
+			#if FORCERESET
+		    // this flag causes random lag so be careful
+		    FlxG.save.erase();
+		    #end
+		}
 
-		if (!gameReady) initGame();
-		
-		
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 		FlxSprite.defaultAntialiasing = true;
-		Paths.music('menu/freakyMenu');
-		Paths.music('ingame/breakfast');
-
-		// DEBUG BULLSHIT
-
 		super.create();
-
-		
-		
-		#if FORCERESET
-		    // this flag causes random lag so be careful
-		    FlxG.save.erase();
-		#end
-		
-
 
 		#if AUTOSAVE
 		    if (Settings.get("autosave") != null) {
 		        PlayState.SONG = Song.parseJSONshit(Settings.get("autosave"));
-				PlayState.difficulty = "Hard";
+				PlayState.difficulty = "hard";
 				FlxG.switchState(new PlayState());
 		    }
 		#end
 
 		swagShader = new ColorSwap();
-
-		if (FlxG.save.data.weekUnlocked != null)
-		{
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
-			if (StoryMenuState.weekUnlocked.length < 4)
-				StoryMenuState.weekUnlocked.insert(0, true);
-
-			// QUICK PATCH OOPS!
-			if (!StoryMenuState.weekUnlocked[0])
-				StoryMenuState.weekUnlocked[0] = true;
-		}
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -240,34 +218,6 @@ class TitleState extends MusicBeatState
 			initialized = true;
 
 		// credGroup.add(credTextShit);
-	}
-
-	function initGame() {
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
-		}
-		FlxG.save.bind('edak', 'skullbite');
-	
-	
-	
-		PlayerSettings.init();
-		Settings.init();
-
-		#if desktop
-		DiscordClient.initialize();
-		Application.current.onExit.add(_ -> DiscordClient.shutdown());
-		#end
-
-		#if debug
-		FlxG.console.registerClass(Paths);
-		FlxG.console.registerClass(PlayState);
-		FlxG.console.autoPause = false;
-		LogStyle.WARNING.openConsole = false;
-		LogStyle.WARNING.errorSound = null;
-		#end
-		
-		gameReady = true;
 	}
 
 	function getIntroTextShit():Array<Array<String>>

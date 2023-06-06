@@ -24,7 +24,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', #if debug 'Toggle Botplay', #end 'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -35,6 +35,8 @@ class PauseSubState extends MusicBeatSubstate
 	public function new()
 	{
 		super();
+
+		if (Settings.get("debug")) menuItems.insert(2, 'Toggle Botplay');
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('ingame/breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -105,20 +107,14 @@ class PauseSubState extends MusicBeatSubstate
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 
-		if (FlxG.sound.music.playing) {
-			FlxG.sound.music.pause();
-			PlayState.instance.vocals.pause();
-		}
+		if (FlxG.sound.music.playing) FlxG.sound.music.pause();
+		if (PlayState.instance.vocals.playing) PlayState.instance.vocals.pause();
 		
 		super.update(elapsed);
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
-		var rightP = controls.RIGHT_P;
 		var accepted = controls.ACCEPT;
-		var oldOffset:Float = 0;
-		var songPath = 'assets/data/' + PlayState.SONG.song.toLowerCase() + '/';
 
 		if (upP)
 		{
@@ -128,62 +124,6 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			changeSelection(1);
 		}
-		
-		/*#if cpp
-			else if (leftP)
-			{
-				oldOffset = PlayState.songOffset;
-				PlayState.songOffset -= 1;
-				if (FileSystem.exists(songPath + oldOffset + '.offset')) sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
-				perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.';
-
-				// Prevent loop from happening every single time the offset changes
-				if(!offsetChanged)
-				{
-					grpMenuShit.clear();
-
-					menuItems = ['Restart Song', 'Exit to menu'];
-
-					for (i in 0...menuItems.length)
-					{
-						var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-						songText.isMenuItem = true;
-						songText.targetY = i;
-						grpMenuShit.add(songText);
-					}
-
-					changeSelection();
-
-					cameras = [pauseCam];
-					offsetChanged = true;
-				}
-			}else if (rightP)
-			{
-				oldOffset = PlayState.songOffset;
-				PlayState.songOffset += 1;
-				sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
-				perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.';
-				if(!offsetChanged)
-				{
-					grpMenuShit.clear();
-
-					menuItems = ['Restart Song', 'Exit to menu'];
-
-					for (i in 0...menuItems.length)
-					{
-						var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-						songText.isMenuItem = true;
-						songText.targetY = i;
-						grpMenuShit.add(songText);
-					}
-
-					changeSelection();
-
-					cameras = [pauseCam];
-					offsetChanged = true;
-				}
-			}
-		#end*/
 
 		if (accepted)
 		{
@@ -195,11 +135,9 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song": 
 					PlayState.HFunk.doDaCallback(BEFORE_EXIT, []);
 					FlxG.resetState();
-				#if debug
 				case "Toggle Botplay":
 					Settings.set("botplay", !Settings.get("botplay"));
 					PlayState.instance.updateScoreTxt();
-				#end
 				case "Exit to menu":
 					if (FlxG.save.data.fpsCap > 290)
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);

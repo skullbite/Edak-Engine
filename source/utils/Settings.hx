@@ -1,4 +1,6 @@
 package utils;
+
+import states.StoryMenuState;
 import openfl.Lib;
 import flixel.FlxG;
 
@@ -102,6 +104,11 @@ class Settings {
                 type: "bool",
                 value: false
             },
+            "debug" => {
+                displayName: "Debugging Mode",
+                type: "bool",
+                value: false
+            },
             "flashing" => {
                 displayName: "Use Flashing Lights",
                 type: "bool",
@@ -144,13 +151,23 @@ class Settings {
             if (!Reflect.hasField(FlxG.save.data, k)) set(k, v);
         }
 
-        Conductor.recalculateTimings();
-		PlayerSettings.player1.controls.loadKeyBinds();
-		KeyBinds.keyCheck();
+        FlxG.save.bind('edak', 'skullbite');
+        if (FlxG.save.data.weekUnlocked != null) {
+            // FIX LATER!!!
+            // WEEK UNLOCK PROGRESSION!!
+            // StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
 
+            if (StoryMenuState.weekUnlocked.length < 4)
+                StoryMenuState.weekUnlocked.insert(0, true);
+
+            // QUICK PATCH OOPS!
+            if (!StoryMenuState.weekUnlocked[0])
+                StoryMenuState.weekUnlocked[0] = true;
+        }
         FlxG.save.flush();
 
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+        if (!FlxG.save.data.debug) FlxG.debugger.toggleKeys = null;
     }
 
     public static function get(settingKey:String):Dynamic return Reflect.getProperty(FlxG.save.data, settingKey);
