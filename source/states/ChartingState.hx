@@ -374,9 +374,8 @@ class ChartingState extends MusicBeatState
 			for (i in _song.notes[curSection].sectionNotes)
 			{
 				if (i[0] == curSelectedNote[0] && i[1] % 4 == -1) {
-					trace(i);
 					i[2][curEventsIndex][0] = curEventType;
-					trace(i);
+					trace(i[2]);
 				}
 			}
 	
