@@ -282,8 +282,10 @@ class TitleState extends MusicBeatState
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
-			if (FlxG.save.data.flashing)
+			if (FlxG.save.data.flashing) {
 				titleText.animation.play('press');
+				titleText.offset.set(-7, -6);
+			}
 
 			FlxG.camera.flash(FlxColor.WHITE, 1);
 			FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
