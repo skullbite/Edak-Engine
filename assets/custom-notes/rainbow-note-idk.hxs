@@ -1,6 +1,6 @@
 import flixel.FlxG;
 import shaders.ColorSwap;
-import Note;
+import sprites.Note;
 
 var colorThing:ColorSwap = new ColorSwap();
 var holdNames = Note.colors.map(t -> t + "hold");

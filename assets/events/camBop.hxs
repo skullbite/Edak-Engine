@@ -4,6 +4,6 @@ function init() {
 }
 
 function callback() {
-    game.camGame.zoom += camBumpZoom;
-    game.camHUD.zoom += hudBumpZoom;
+    game.camGame.zoom += game.camBumpZoom;
+    game.camHUD.zoom += game.hudBumpZoom;
 }
