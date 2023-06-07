@@ -814,7 +814,6 @@ class PlayState extends MusicBeatState
 				var susLength:Float = swagNote.sustainLength;
 
 				susLength = susLength / Conductor.stepCrochet;
-				unspawnNotes.push(swagNote);
 				
 
 				for (susNote in 0...Math.floor(susLength))
@@ -837,6 +836,7 @@ class PlayState extends MusicBeatState
 				swagNote.mustPress = gottaHitNote;
 
 				if (swagNote.mustPress) swagNote.x += FlxG.width / 2; // general offset
+				unspawnNotes.push(swagNote);
 
 				HFunk.doDaCallback(NOTE_SPAWN, [swagNote]);
 			}
@@ -1162,25 +1162,15 @@ class PlayState extends MusicBeatState
 	
 					if (!daNote.mustPress && daNote.wasGoodHit)
 					{
-						HFunk.doDaCallback(OPPONENT, [daNote]);
+						var dadHit = HFunk.doDaCallback(OPPONENT, [daNote]);
 
 
 						if (!daNote.noHit) {
 							var altAnim:String = "";
-	
-						    if (SONG.notes[curSection] != null)
-						    {
-						    	if (SONG.notes[curSection].altAnim)
-						    		altAnim = '-alt';
-						    }
-							dad?.playAnim('sing${Character.directions[daNote.noteData]}' + altAnim, true);
-								
-							cpuStrums.lightStrum(daNote.noteData);
-								
-		
+									
 							if (dad != null) dad.holdTimer = 0;
 			
-							if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
+							if (FlxG.sound.music.time >= Conductor.songPosition + 10 || FlxG.sound.music.time <= Conductor.songPosition - 10)
 								resyncVocals();
 
 							if (SONG.needsVoices)
@@ -1192,6 +1182,13 @@ class PlayState extends MusicBeatState
 							daNote.kill();
 							notes.remove(daNote, true);
 							daNote.destroy();
+
+							if (!dadHit.contains(HVars.STOP)) {
+								dad?.playAnim('sing${Character.directions[daNote.noteData]}' + altAnim, true);
+							    cpuStrums.lightStrum(daNote.noteData);
+							}
+
+							
 						}
 					}
 
@@ -1753,7 +1750,7 @@ class PlayState extends MusicBeatState
 					else
 						totalNotesHit += 1;
 
-					if (FlxG.sound.music.time >= Conductor.songPosition + 20 || FlxG.sound.music.time <= Conductor.songPosition - 20)
+					if (FlxG.sound.music.time >= Conductor.songPosition + 10 || FlxG.sound.music.time <= Conductor.songPosition - 10)
 						resyncVocals();
 
 					if (SONG.needsVoices)
