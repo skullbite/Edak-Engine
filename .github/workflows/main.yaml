@@ -48,7 +48,7 @@ jobs:
           haxelib install flixel
           haxelib install flixel-addons
           haxelib install flixel-ui
-          haxelib install hxcodec
+          haxelib install hxcodec 2.6.1
           haxelib install yaml
           haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
@@ -92,7 +92,7 @@ jobs:
           haxelib install flixel
           haxelib install flixel-addons
           haxelib install flixel-ui
-          haxelib install hxcodec
+          haxelib install hxcodec 2.6.1
           haxelib install yaml
           haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
