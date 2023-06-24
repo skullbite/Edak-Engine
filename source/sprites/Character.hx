@@ -46,6 +46,8 @@ class Character extends FrogSprite
 		bpm: 100
 	};
 
+	// ticked if the character is spawned directly from the PlayState
+	public var primary:Bool = false;
 	public var holdTimer:Float = 0;
 	// -1 so if it's not set to anything else, the bop speed gets automatically set
 	public var bopSpeed:Int = -1;
@@ -127,8 +129,8 @@ class Character extends FrogSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!active) destroy();
-		if (!isPlayer)
+		// if (!active) destroy(); guhhhh
+		if (!isPlayer && primary)
 		{
 			if (curAnim == null) return;
 			if (curAnim.name.startsWith('sing'))

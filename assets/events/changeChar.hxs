@@ -58,6 +58,7 @@ function callback(v1, v2) {
     if (nextChar == null) return;
 
     nextChar.alpha = char.alpha;
+    nextChar.primary = true;
     switch (v1) {
         case "bf": 
             PlayState.bf = nextChar;

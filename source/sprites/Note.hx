@@ -28,15 +28,14 @@ class Note extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
+	public var distance:Float = 0;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var isSustainEnd(get, null):Bool = false;
-	function get_isSustainEnd():Bool {
-		return animation.curAnim?.name.endsWith("holdend");
-	}
+	function get_isSustainEnd():Bool return animation.curAnim?.name.endsWith("holdend");
 	public var noteType:String;
 	public var noHit:Bool = false;
-	public var strumSyncVariables = ["alpha", "visible", "angle", "color", "x"];
+	public var strumSyncVariables = ["alpha", "visible", "angle", "color", "x", "y"];
 
 	public var noteScore:Float = 1;
 	
@@ -58,8 +57,6 @@ class Note extends FlxSprite
 			prevNote = this;
 
 		this.prevNote = prevNote;
-		
-		// i guess your custom notes have to have the same xml anim names as the default one
 		this.noteType = noteType;
 		if (noteData != -1) switch (this.noteType) {
 			default:
@@ -83,7 +80,8 @@ class Note extends FlxSprite
 
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
-		y -= 2000;
+		y -= 3000;
+		visible = false;
 		this.strumTime = strumTime;
 
 		if (this.strumTime < 0 )
@@ -203,6 +201,8 @@ class Note extends FlxSprite
 				setGraphicSize(Std.int(width * 0.7));
 				updateHitbox();
 		}
+		if (noteScript?.exists(CREATE_POST)) noteScript.exec(CREATE_POST, []);
+		
 	}
 
 	override function update(elapsed:Float)

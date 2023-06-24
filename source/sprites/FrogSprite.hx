@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 // wanted to override the original but flx updates :(
 class FrogSprite extends FlxSprite {
     public var animOffsets:Map<String, Array<Float>> = [];
+	public var followScale:Bool = true;
 	public var curAnim(get, null):Null<FlxAnimation>;
 	public function get_curAnim() return animation.curAnim;
 	
@@ -16,7 +17,13 @@ class FrogSprite extends FlxSprite {
 		if (animOffsets.exists(AnimName))
 		{
 			var daOffset = animOffsets.get(AnimName);
-			offset.set(daOffset[0] * scale.x * (flipX ? -1 : 1), daOffset[1] * scale.y * (flipY ? -1 : 1));
+			var daX = daOffset[0];
+			var daY = daOffset[1];
+			if (followScale) {
+				daX *= scale.x * (flipX ? -1 : 1);
+				daY *= scale.y * (flipY ? -1 : 1);
+			}
+			offset.set(daX, daY);
 		}
 		else
 			offset.set(0, 0);

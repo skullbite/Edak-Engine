@@ -7,13 +7,13 @@ import flixel.FlxG;
 import states.PlayState;
 
 class SplashGroup extends FlxTypedGroup<FlxSprite> {
-    public var targetStrumGroup = PlayState.instance.playerStrums;
+    public var targetStrumGroup:Strumline = PlayState.instance.playerStrums;
     // i'm gonna knock this offset system down soon
     public var offsets = {
-        x: 132, 
-        y: 145 
+        x: 52, 
+        y: 60 
     };
-    public var perStrumOffsets = [{x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}];
+    // public var perStrumOffsets = [{x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}, {x: -80, y: -85}];
     var firstSplash = true;
     
 	public var color:FlxColor = 0xffffff;
@@ -38,7 +38,7 @@ class SplashGroup extends FlxTypedGroup<FlxSprite> {
             return;
         }
        
-        var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x + perStrumOffsets[noteData].x, offsets.y + perStrumOffsets[noteData].y, noteData, defaultFramerate);
+        var splash = new Splash(Std.int(strumTarget.getMidpoint().x), Std.int(strumTarget.getMidpoint().y), offsets.x, offsets.y, noteData, defaultFramerate);
         if (firstSplash) {
             splash.alpha = 0.005;
             firstSplash = false;
