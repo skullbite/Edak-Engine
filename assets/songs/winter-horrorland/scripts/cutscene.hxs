@@ -26,8 +26,7 @@ function cutscene() {
 		blackScreen.color = 0xA00505;
 		
 		FlxG.sound.play(Paths.sound('xmas/Lights_Turn_On'));
-		game.camFollow.y = -2050;
-		game.camFollow.x -= 200;
+		game.moveCam([game.camFollow.x - 200, -2050]);
 		FlxG.camera.focusOn(game.camFollow.getPosition());
 		FlxG.camera.zoom = 1.7;
 		new FlxTimer().start(0.8, function(tmr:FlxTimer)
@@ -41,7 +40,7 @@ function cutscene() {
 				}
 			});
 			
-			FlxTween.tween(FlxG.camera, { zoom: PlayState.defaultCamZoom }, 2.5, {
+			FlxTween.tween(FlxG.camera, { zoom: PlayState.defaultCamZoom }, 4.5, {
 				onComplete: function(twn:FlxTween)
 				{
 					game.startCountdown();
@@ -52,5 +51,5 @@ function cutscene() {
 }
 
 function countdownTick(tick) {
-	if (tick == 0 && PlayState.isStoryMode) game.camOn = "bf";
+	if (tick == 0 && PlayState.isStoryMode) game.moveCam("bf");
 }
