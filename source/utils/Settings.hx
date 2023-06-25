@@ -140,6 +140,7 @@ class Settings {
     ];
 
     public static function init() {
+        FlxG.save.bind('edak', 'skullbite');
         for (cat in categories) {
             for (k => v in cat) {
                 if (v.value != null) {
@@ -151,7 +152,6 @@ class Settings {
             if (!Reflect.hasField(FlxG.save.data, k)) set(k, v);
         }
 
-        FlxG.save.bind('edak', 'skullbite');
         if (FlxG.save.data.weekUnlocked != null) {
             // FIX LATER!!!
             // WEEK UNLOCK PROGRESSION!!

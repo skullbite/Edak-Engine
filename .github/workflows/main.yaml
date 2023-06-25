@@ -39,7 +39,7 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup C:/haxelib
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib install hxcpp
 
       - name: Install Libraries
         run: |
@@ -83,7 +83,7 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup ~/haxelib
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp > /dev/null --quiet
+          haxelib install hxcpp > /dev/null --quiet
           
       - name: Install Libraries
         run: |
