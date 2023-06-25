@@ -81,7 +81,6 @@ class Note extends FlxSprite
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 3000;
-		visible = false;
 		this.strumTime = strumTime;
 
 		if (this.strumTime < 0 )

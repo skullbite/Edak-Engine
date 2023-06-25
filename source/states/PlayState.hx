@@ -1077,12 +1077,13 @@ class PlayState extends MusicBeatState
 		FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
 		camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
 
-		#if debug
-        FlxG.watch.addQuick('songPos', Conductor.songPosition);
-        FlxG.watch.addQuick('curStep', curStep);
-        FlxG.watch.addQuick('curBeat', curBeat);
-        FlxG.watch.addQuick('curSection', curSection);
-        #end
+		if (Settings.get("debug")) {
+			FlxG.watch.addQuick('songPos', Conductor.songPosition);
+            FlxG.watch.addQuick('curStep', curStep);
+            FlxG.watch.addQuick('curBeat', curBeat);
+            FlxG.watch.addQuick('curSection', curSection);
+		}
+        
 
 		if (FlxG.keys.justPressed.R && Settings.get("resetButton")) health = 0;
 
@@ -1100,9 +1101,6 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic)
 			{
-				/*
-				    BUG: note sustains get held even if the note is supposed to miss
-				*/
 				for (x in 0...notes.length)
 				{	
 					var daNote:Note = notes.members[x];
@@ -1152,7 +1150,7 @@ class PlayState extends MusicBeatState
 							// daNote.y = (curStrum.y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2));
 							if(daNote.isSustainNote && (daNote.wasGoodHit || !daNote.mustPress) && !daNote.noHit)
 							{
-								daNote.y -= daNote.height / 2;
+								daNote.distance -= daNote.height / 2;
 
 								var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
 								swagRect.y = (curStrum.y + Note.swagWidth / 2 - daNote.distance) / daNote.scale.y;
@@ -1170,6 +1168,7 @@ class PlayState extends MusicBeatState
 
 						if (!daNote.noHit) {
 							var altAnim:String = "";
+							if (SONG.notes[curSection].altAnim) altAnim = "-alt";
 									
 							if (dad != null) dad.holdTimer = 0;
 			
