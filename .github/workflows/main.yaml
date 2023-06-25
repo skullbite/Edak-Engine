@@ -3,7 +3,7 @@ name: edakBuilder
 on: 
   push:
     branches:
-      - edak
+      - 1.1.2-EE
       
   workflow_dispatch:
     
