@@ -33,6 +33,7 @@
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
+	<haxelib name="hscript" />
 	<haxelib name="yaml" />
 	<haxelib name="hxCodec" if="VIDEOS"/>
 	<haxelib name="flixel-addons" />
@@ -48,6 +49,8 @@
 
 	<haxedef name="FLX_NO_TOUCH" if="desktop" />
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+	<haxedef name="HXCPP_STACK_LINE" />
+	<haxedef name="HXCPP_STACK_TRACE" />
 	<!-- <haxedef name="FLX_NO_DEBUG" unless="debug" /> -->
 	<haxedef name="no-deprecation-warnings" />
 	<haxedef name="hscriptPos"/>

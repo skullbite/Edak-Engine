@@ -1,18 +1,29 @@
 package;
 
-import openfl.display.BlendMode;
-import openfl.text.TextFormat;
-import openfl.display.Application;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
-import openfl.Assets;
 import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import states.TitleState;
+
+class FunkinGame extends FlxGame {
+	override function create(_:Event) {
+		try {
+			super.create(_);
+		}
+		catch (e) {
+			var theThingToPrintOut = e.stack.toString() + '\n\n${e.message}';
+			Sys.println('no funkin\'? :(' + theThingToPrintOut);
+			lime.app.Application.current.window.alert(theThingToPrintOut, "the game crash :(");
+			Sys.exit(1);
+		}
+		
+	}
+}
 
 class Main extends Sprite
 {
@@ -79,7 +90,7 @@ class Main extends Sprite
 		initialState = TitleState;
 		#end
 
-		game = new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
+		game = new FunkinGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen);
 
 		addChild(game);
 
@@ -117,5 +128,11 @@ class Main extends Sprite
 	public function getFPS():Float
 	{
 		return fpsCounter.currentFPS;
+	}
+
+	function onCrash(e) {
+		Sys.println(e);
+		Sys.exit(1);
+
 	}
 }

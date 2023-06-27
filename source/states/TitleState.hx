@@ -68,6 +68,10 @@ class TitleState extends MusicBeatState
 		    // this flag causes random lag so be careful
 		    FlxG.save.erase();
 		    #end
+			#if FORCECRASH
+			var b:FlxSprite = null;
+		    b.scale.set();
+			#end
 		}
 
 
