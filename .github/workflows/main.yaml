@@ -120,7 +120,7 @@ jobs:
   
   releaseBuilds:
     runs-on: ubuntu-latest
-    needs: [makeRelease, edakWin, edakMac]
+    needs: [edakWin, edakMac, makeRelease]
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v3
