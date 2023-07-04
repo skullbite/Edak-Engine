@@ -9,23 +9,6 @@ on:
     
 
 jobs:
-  makeRelease:
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.coolOutputs.outputs.upload }}
-      
-    steps:
-      - name: Make Release
-        id: release
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: nightly
-          prerelease: false
-      - name: Set Outputs
-        id: coolOutputs
-        run: echo "upload=${{ steps.release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
-          
   edakWin:
     runs-on: windows-latest
     needs: makeRelease
@@ -50,6 +33,7 @@ jobs:
           haxelib install flixel-ui
           haxelib install hxcodec 2.6.1
           haxelib install yaml
+          haxelib install hscript
           haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 
@@ -94,6 +78,7 @@ jobs:
           haxelib install flixel-ui
           haxelib install hxcodec 2.6.1
           haxelib install yaml
+          haxelib install hscript
           haxelib install teascript
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 
@@ -116,6 +101,22 @@ jobs:
           name: MacBuild
           path: edakMac.zip
 
+  makeRelease:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.coolOutputs.outputs.upload }}
+      
+    steps:
+      - name: Make Release
+        id: release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: nightly
+          prerelease: false
+      - name: Set Outputs
+        id: coolOutputs
+        run: echo "upload=${{ steps.release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
   
   releaseBuilds:
     runs-on: ubuntu-latest
